@@ -1,0 +1,42 @@
+# Données sensibles — ne jamais versionner
+.env
+.env.local
+.env.production
+*.key
+*.pem
+secrets.json
+config.local.json
+
+# Dépendances
+node_modules/
+.pnp
+.pnp.js
+
+# Build
+dist/
+build/
+.next/
+out/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.user
+
+# Logs
+*.log
+npm-debug.log*
+
+# Données personnelles (Phase 3+)
+devices.local.json
+network-scan-results.json
+
+# Runtime local - ne pas versionner les historiques et audits
+runtime/*.json
+!runtime/.gitkeep

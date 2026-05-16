@@ -1,0 +1,19 @@
+{
+  "name": "sallon-connect",
+  "version": "3.0.0",
+  "description": "Hub intelligent pour centraliser les appareils, services et agents IA du salon",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev":   "node --watch server.js"
+  },
+  "dependencies": {
+    "dotenv":   "^16.4.5",
+    "express":  "^4.18.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["hub", "smart-home", "agents", "local"],
+  "license": "MIT"
+}

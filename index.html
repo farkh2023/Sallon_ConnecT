@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sallon-ConnecT — Hub Intelligent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">Sallon<span>-ConnecT</span></span>
+    <ul class="nav-links">
+      <li><a href="#devices">Appareils</a></li>
+      <li><a href="#agents">Agents</a></li>
+      <li><a href="#fusion">Synthèse</a></li>
+      <li><a href="#multimedia">Multimédia</a></li>
+      <li><a href="#mediatheque">Médiathèque</a></li>
+      <li><a href="#scenarios">Scénarios</a></li>
+      <li><a href="#notifications" id="navNotifLink">Notifications <span id="navNotifBadge" class="nav-notif-badge" style="display:none">0</span></a></li>
+      <li><a href="#scheduler">Tâches</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="badge badge-blue">Hub-Agent local · Phase 13</span>
+    </div>
+    <h1 class="hero-title">Sallon-ConnecT</h1>
+    <p class="hero-subtitle">
+      Hub intelligent pour centraliser mes appareils, services multimédias et agents IA
+    </p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="navScrollTo('#agents')">Lancer les agents</button>
+      <button class="btn btn-outline" onclick="navScrollTo('#devices')">Voir les appareils</button>
+    </div>
+    <div class="hero-grid">
+      <div class="hero-stat"><strong id="statDevices">—</strong><span>Appareils</span></div>
+      <div class="hero-stat"><strong id="statAgents">—</strong><span>Agents IA</span></div>
+      <div class="hero-stat"><strong id="statScenarios">—</strong><span>Scénarios</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEVICES -->
+<section id="devices">
+  <div class="container">
+    <h2 class="section-title">Appareils connectés</h2>
+    <p class="section-subtitle">Inventaire logique du salon — aucune donnée personnelle réelle</p>
+    <div class="device-filters">
+      <button class="filter-btn active" onclick="filterDevices('all', this)">Tous</button>
+      <button class="filter-btn" onclick="filterDevices('ordinateur', this)">Ordinateurs</button>
+      <button class="filter-btn" onclick="filterDevices('tv', this)">TV</button>
+      <button class="filter-btn" onclick="filterDevices('mobile', this)">Mobile</button>
+      <button class="filter-btn" onclick="filterDevices('reseau', this)">Réseau</button>
+    </div>
+    <div class="cards-grid" id="devicesGrid"></div>
+  </div>
+</section>
+
+<!-- DEVICE DETAIL MODAL -->
+<div class="modal-overlay" id="deviceModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- AGENTS -->
+<section id="agents">
+  <div class="container">
+    <h2 class="section-title">Hub-Agent Workflow</h2>
+    <p class="section-subtitle">Simulation d'un pipeline multi-agents — cliquez sur chaque agent ou lancez tout</p>
+    <div class="launch-all-wrap">
+      <button class="btn-launch-all" onclick="launchAllAgents()">▶ Lancer le workflow complet</button>
+      <button class="btn-reset-agents" onclick="resetAgents()">↺ Réinitialiser</button>
+      <span id="agentCountLabel" style="font-size:.82rem;color:#64748b;"></span>
+    </div>
+    <div class="progress-label">Progression du workflow : <span id="progressPct">0%</span></div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+    <div class="cards-grid" id="agentsGrid"></div>
+  </div>
+</section>
+
+<!-- FUSION -->
+<section id="fusion">
+  <div class="container">
+    <h2 class="section-title">Livrable final fusionné</h2>
+    <p class="section-subtitle">Synthèse automatique générée quand tous les agents ont terminé</p>
+    <div id="fusionPending" class="fusion-pending">
+      ⏳ En attente de l'exécution de tous les agents…
+    </div>
+    <div class="fusion-box" id="fusionBox">
+      <div class="fusion-title">✅ Synthèse générée par le Hub-Agent</div>
+      <div class="fusion-grid" id="fusionGrid"></div>
+      <div class="fusion-next" id="fusionNext"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MULTIMEDIA -->
+<section id="multimedia">
+  <div class="container">
+    <h2 class="section-title">Services multimédias</h2>
+    <p class="section-subtitle">Catalogue des services intégrables dans l'écosystème Sallon-ConnecT</p>
+    <div class="cards-grid" id="mediaGrid"></div>
+  </div>
+</section>
+
+<!-- MEDIATHEQUE (Phase 4) -->
+<section id="mediatheque">
+  <div class="container">
+    <h2 class="section-title">Centre multimédia</h2>
+    <p class="section-subtitle">Tableau de bord des services multimédias Sallon-ConnecT</p>
+
+    <!-- Statut des connecteurs -->
+    <div class="connector-status-row" id="connectorStatusRow">
+      <p class="loading-placeholder">Chargement des connecteurs…</p>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="media-actions">
+      <button class="btn-media-action" onclick="refreshMediaServices()">⟳ Actualiser services</button>
+      <button class="btn-media-action" onclick="scanLocalGallery()">🖼 Scanner galerie locale</button>
+    </div>
+
+    <!-- Cartes services -->
+    <div class="cards-grid" id="mediaServicesGrid">
+      <p class="loading-placeholder">Chargement…</p>
+    </div>
+
+    <!-- Zone YouTube embed -->
+    <div class="media-zone-block">
+      <h3 class="media-zone-title">▶ Aperçu YouTube</h3>
+      <p class="media-zone-desc">Collez une URL YouTube publique — embed légal, sans clé API</p>
+      <div class="youtube-input-row">
+        <input type="text" id="youtubeUrlInput"
+          placeholder="https://www.youtube.com/watch?v=..."
+          class="youtube-input" />
+        <button class="btn-youtube-preview" onclick="previewYoutube()">Aperçu</button>
+        <button class="btn-youtube-clear" onclick="clearYoutube()">✕</button>
+      </div>
+      <div id="youtubeMsg" class="youtube-msg" style="display:none"></div>
+      <div id="youtubePreviewWrap" class="youtube-preview-wrap" style="display:none">
+        <iframe id="youtubeIframe" width="100%" height="420" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <!-- Résultats galerie locale -->
+    <div id="galleryResults" class="media-zone-block" style="display:none">
+      <h3 class="media-zone-title">🖼 Galerie locale</h3>
+      <div id="galleryContent" class="gallery-file-list"></div>
+    </div>
+
+    <!-- Playlists -->
+    <div class="media-zone-block">
+      <h3 class="media-zone-title">🎵 Playlists & Collections</h3>
+      <div class="cards-grid" id="playlistsGrid">
+        <p class="loading-placeholder">Chargement…</p>
+      </div>
+    </div>
+
+    <!-- Découverte TV & DLNA (Phase 7) -->
+    <div class="media-zone-block" id="dlnaDiscoveryBlock">
+      <div class="dlna-header">
+        <h3 class="media-zone-title">📡 Découverte TV &amp; DLNA</h3>
+        <div class="dlna-header-actions">
+          <button class="btn-dlna-discover" onclick="runDlnaDiscovery()">🔍 Découvrir appareils</button>
+          <button class="btn-dlna-clear"    onclick="clearDlnaCache()">🗑 Vider cache</button>
+        </div>
+      </div>
+      <div class="dlna-security-note">
+        🔒 Lecture seule — aucune lecture, aucune commande TV, aucune action SOAP envoyée.
+      </div>
+      <div id="dlnaPanel"><p class="loading-placeholder">Chargement statut DLNA…</p></div>
+    </div>
+
+    <!-- SmartThings Samsung TV (Phase 8) -->
+    <div class="media-zone-block" id="smartThingsBlock">
+      <div class="st-header">
+        <h3 class="media-zone-title">📺 SmartThings Samsung TV</h3>
+        <div class="st-header-actions">
+          <button class="btn-st-refresh"  onclick="loadSmartThingsStatus().then(renderSmartThingsPanel)">⟳ Actualiser</button>
+          <button class="btn-st-devices"  onclick="loadSmartThingsDevices()">📋 Appareils</button>
+          <button class="btn-st-scenes"   onclick="loadSmartThingsScenes()">🎬 Scènes</button>
+          <button class="btn-st-policy"   onclick="loadSmartThingsExecutionPolicy()">⚡ Politique d'exécution</button>
+          <button class="btn-st-audit"    onclick="loadSmartThingsSceneAudit()">📜 Audit</button>
+          <button class="btn-st-tv-cmd"   onclick="loadTvCommandPolicy()">📺 Commandes TV</button>
+        </div>
+      </div>
+      <div class="st-security-note">
+        🔒 Lecture seule — aucune scène ni commande TV n'est exécutée dans cette phase.
+      </div>
+      <div id="stPanel"><p class="loading-placeholder">Chargement SmartThings…</p></div>
+      <div id="stDevicesPanel" style="display:none">
+        <h4 class="st-sub-title">Appareils SmartThings</h4>
+        <div id="stDevicesList"></div>
+      </div>
+      <div id="stScenesPanel" style="display:none">
+        <h4 class="st-sub-title">Scènes SmartThings</h4>
+        <div id="stScenesList"></div>
+      </div>
+      <div id="stTvPanel" style="display:none">
+        <h4 class="st-sub-title">TV Samsung</h4>
+        <div id="stTvInfo"></div>
+      </div>
+
+      <!-- Phase 9 — Politique d'exécution -->
+      <div id="stExecutionPolicyPanel" style="display:none">
+        <h4 class="st-sub-title">⚡ Politique d'exécution de scènes</h4>
+        <div id="stExecutionPolicyContent"></div>
+      </div>
+
+      <!-- Phase 9 — Scènes exécutables (allowlistées) -->
+      <div id="stExecutablePanel" style="display:none">
+        <h4 class="st-sub-title">▶ Scènes exécutables</h4>
+        <div class="st-execute-warning-block">
+          ⚠ Ces scènes sont pré-approuvées dans votre allowlist. Aucune scène sensible ne peut être exécutée.
+          La confirmation et l'audit sont obligatoires.
+        </div>
+        <div id="stExecutableList"></div>
+      </div>
+
+      <!-- Phase 9 — Formulaire de confirmation (caché par défaut) -->
+      <div id="stExecutionPanel" style="display:none"></div>
+
+      <!-- Phase 9 — Historique d'audit -->
+      <div id="stAuditPanel" style="display:none">
+        <h4 class="st-sub-title">📜 Historique d'exécution (audit local)</h4>
+        <div class="st-audit-actions">
+          <button class="btn-st-audit-clear" onclick="clearSmartThingsSceneAudit()">🗑 Vider l'audit</button>
+        </div>
+        <div id="stAuditList"></div>
+      </div>
+
+      <!-- Phase 10 — Commandes TV contrôlées -->
+      <div id="stTvCommandPanel" style="display:none">
+        <h4 class="st-sub-title">📺 Commandes TV contrôlées</h4>
+        <div class="tv-cmd-security-note">
+          ⚠ Commandes réelles envoyées à la TV. Désactivées par défaut — opt-in explicite requis.
+          TV allowlistée uniquement. Confirmation obligatoire. Audit enregistré.
+        </div>
+        <!-- Politique -->
+        <div id="tvCmdPolicyContent" class="tv-cmd-policy-block"></div>
+        <!-- TV allowlistée -->
+        <div id="tvAllowedDevicesBlock" style="display:none">
+          <h5 class="tv-cmd-sub-title">TV autorisées</h5>
+          <div id="tvAllowedDevicesList"></div>
+        </div>
+        <!-- Zone commande -->
+        <div id="tvCmdExecuteBlock" style="display:none">
+          <h5 class="tv-cmd-sub-title">Envoyer une commande</h5>
+          <div class="tv-cmd-warning-block">
+            ⚠ Cette commande sera RÉELLEMENT envoyée à votre TV. Aucune action automatique — confirmation requise.
+          </div>
+          <div class="tv-cmd-preview-row">
+            <button class="btn-tv-preview" onclick="previewTvCommandUI('switch.on')">👁 Prévisualiser ON</button>
+            <button class="btn-tv-preview" onclick="previewTvCommandUI('switch.off')">👁 Prévisualiser OFF</button>
+            <button class="btn-tv-preview" onclick="previewTvCommandUI('mediaPlayback.play')">👁 Prévisualiser Play</button>
+            <button class="btn-tv-preview" onclick="previewTvCommandUI('mediaPlayback.pause')">👁 Prévisualiser Pause</button>
+          </div>
+          <div id="tvCmdPreviewResult" class="tv-cmd-preview-result" style="display:none"></div>
+          <div class="tv-cmd-form">
+            <div class="tv-cmd-field">
+              <label class="tv-cmd-label">Commande à envoyer</label>
+              <select id="tvCmdSelect" class="tv-cmd-select">
+                <option value="">— Sélectionner une commande —</option>
+                <option value="switch.on">switch.on — Allumer la TV</option>
+                <option value="switch.off">switch.off — Éteindre la TV</option>
+                <option value="mediaPlayback.play">mediaPlayback.play — Lecture</option>
+                <option value="mediaPlayback.pause">mediaPlayback.pause — Pause</option>
+                <option value="mediaPlayback.stop">mediaPlayback.stop — Arrêt</option>
+              </select>
+            </div>
+            <div class="tv-cmd-field">
+              <label class="tv-cmd-label">Code de confirmation *</label>
+              <input type="text" id="tvCmdConfirmCode" class="tv-cmd-input"
+                placeholder="Saisissez CONFIRMER_TV (ou le code configuré dans .env)"
+                autocomplete="off" />
+            </div>
+            <div class="tv-cmd-field">
+              <label class="tv-cmd-label">Raison (optionnel)</label>
+              <input type="text" id="tvCmdReason" class="tv-cmd-input"
+                placeholder="Ex: Cinéma activé depuis Sallon-ConnecT" maxlength="200" />
+            </div>
+            <div class="tv-cmd-buttons">
+              <button class="btn-tv-execute" id="btnTvExecute" onclick="executeTvCommandUI()">
+                ▶ Exécuter la commande
+              </button>
+            </div>
+          </div>
+          <div id="tvCmdResult" class="tv-cmd-result-block" style="display:none"></div>
+        </div>
+      </div>
+
+      <!-- Phase 10 — Audit TV -->
+      <div id="stTvAuditPanel" style="display:none">
+        <h4 class="st-sub-title">📋 Historique commandes TV (audit local)</h4>
+        <div class="st-audit-actions">
+          <button class="btn-st-audit-clear" onclick="clearTvAudit()">🗑 Vider l'audit TV</button>
+        </div>
+        <div id="tvAuditList"></div>
+      </div>
+    </div>
+
+    <!-- Streaming assisté (Phase 11) -->
+    <div class="media-zone-block" id="streamingBlock">
+      <div class="streaming-header">
+        <h3 class="media-zone-title">🎵 Streaming assisté</h3>
+        <div class="streaming-header-actions">
+          <button class="btn-streaming-policy"  onclick="loadStreamingPolicy()">⚙ Politique</button>
+          <button class="btn-streaming-scan"    onclick="scanMediaLibrary()">🔍 Scanner médiathèque</button>
+          <button class="btn-streaming-queue"   onclick="loadPlayQueue()">📋 File de lecture</button>
+          <button class="btn-streaming-audit"   onclick="loadStreamingAudit()">📜 Audit</button>
+        </div>
+      </div>
+      <div class="streaming-security-note">
+        🔒 Streaming assisté — aucun fichier lu automatiquement. Renderer autorisé + confirmation obligatoire. Chemins masqués.
+      </div>
+
+      <!-- Politique de streaming -->
+      <div id="streamingPolicyPanel" style="display:none">
+        <h4 class="streaming-sub-title">⚙ Politique de streaming</h4>
+        <div id="streamingPolicyContent" class="streaming-policy-grid"></div>
+      </div>
+
+      <!-- Médiathèque locale -->
+      <div id="streamingLibraryPanel" style="display:none">
+        <h4 class="streaming-sub-title">📂 Médiathèque locale</h4>
+        <div id="streamingLibraryStatus" class="streaming-library-status"></div>
+        <div id="streamingLibraryGrid" class="streaming-media-grid"></div>
+      </div>
+
+      <!-- Renderers autorisés -->
+      <div id="streamingRenderersPanel" style="display:none">
+        <h4 class="streaming-sub-title">📡 Renderers autorisés</h4>
+        <div id="streamingRenderersList" class="streaming-renderers-list"></div>
+      </div>
+
+      <!-- Formulaire de lecture -->
+      <div id="streamingPlayPanel" style="display:none">
+        <h4 class="streaming-sub-title">▶ Lancer la lecture</h4>
+        <div class="streaming-play-warning">
+          ⚠ Ce média sera lu sur le renderer sélectionné. Aucune action automatique — confirmation obligatoire.
+        </div>
+        <div class="streaming-form">
+          <div class="streaming-field">
+            <label class="streaming-label">Média sélectionné</label>
+            <div id="streamingSelectedMedia" class="streaming-selected-media">— Aucun média sélectionné —</div>
+          </div>
+          <div class="streaming-field">
+            <label class="streaming-label">Renderer cible</label>
+            <select id="streamingRendererSelect" class="streaming-select">
+              <option value="">— Sélectionner un renderer —</option>
+            </select>
+          </div>
+          <div class="streaming-field">
+            <label class="streaming-label">Code de confirmation *</label>
+            <input type="text" id="streamingConfirmCode" class="streaming-input"
+              placeholder="Saisissez CONFIRMER_STREAM (ou le code configuré dans .env)"
+              autocomplete="off" />
+          </div>
+          <div class="streaming-buttons">
+            <button class="btn-streaming-preview" id="btnStreamingPreview" onclick="previewStreamingUI()">
+              👁 Prévisualiser
+            </button>
+            <button class="btn-streaming-play" id="btnStreamingPlay" onclick="playStreamingUI()">
+              ▶ Lancer la lecture
+            </button>
+          </div>
+        </div>
+        <div id="streamingPreviewResult" class="streaming-preview-result" style="display:none"></div>
+        <div id="streamingPlayResult" class="streaming-play-result" style="display:none"></div>
+      </div>
+
+      <!-- File de lecture -->
+      <div id="streamingQueuePanel" style="display:none">
+        <h4 class="streaming-sub-title">📋 File de lecture</h4>
+        <div class="streaming-queue-actions">
+          <button class="btn-streaming-queue-clear" onclick="clearPlayQueueUI()">🗑 Vider la file</button>
+        </div>
+        <div id="streamingQueueList" class="streaming-queue-list"></div>
+        <div id="streamingQueueSummary" class="streaming-queue-summary"></div>
+      </div>
+
+      <!-- Audit streaming -->
+      <div id="streamingAuditPanel" style="display:none">
+        <h4 class="streaming-sub-title">📜 Historique streaming (audit local)</h4>
+        <div class="streaming-audit-actions">
+          <button class="btn-streaming-audit-clear" onclick="clearStreamingAuditUI()">🗑 Vider l'audit</button>
+        </div>
+        <div id="streamingAuditList"></div>
+      </div>
+
+      <!-- Panneau initial -->
+      <div id="streamingInitPanel">
+        <p class="streaming-init-msg">Cliquez "Politique" pour vérifier la configuration ou "Scanner médiathèque" pour commencer.</p>
+      </div>
+    </div>
+
+    <!-- Diagnostic smartphone Android (Phase 6) -->
+    <div class="media-zone-block" id="adbDiagnosticBlock">
+      <div class="adb-header">
+        <h3 class="media-zone-title">📱 Diagnostic smartphone Android</h3>
+        <button class="btn-adb-refresh" onclick="refreshAdbDiagnostics()">⟳ Actualiser</button>
+      </div>
+      <div class="adb-security-note">
+        🔒 Lecture seule — aucun fichier copié, aucune donnée privée lue, IDs masqués.
+      </div>
+      <div id="adbPanel"><p class="loading-placeholder">Chargement diagnostic ADB…</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENARIOS (Phase 5) -->
+<section id="scenarios">
+  <div class="container">
+    <h2 class="section-title">Scénarios intelligents</h2>
+    <p class="section-subtitle">Modes prédéfinis adaptés au contexte d'usage du salon</p>
+
+    <!-- Barre de statut moteur -->
+    <div class="scenario-engine-bar" id="scenarioEngineBar">
+      <span class="loading-placeholder">Chargement du moteur…</span>
+    </div>
+
+    <!-- Grille de scénarios -->
+    <div class="scenario-cards-list" id="scenariosGrid">
+      <p class="loading-placeholder">Chargement des scénarios…</p>
+    </div>
+
+    <!-- Zone résultat d'exécution -->
+    <div class="scenario-result-panel" id="scenarioResultPanel" style="display:none">
+      <div class="scenario-result-header">
+        <span id="scenarioResultTitle">Résultat</span>
+        <button class="btn-close-result" onclick="closeScenarioResult()">✕</button>
+      </div>
+      <div id="scenarioResultBody"></div>
+    </div>
+
+    <!-- Historique récent -->
+    <div class="scenario-history-block">
+      <div class="scenario-history-header">
+        <h3 class="media-zone-title">📋 Historique récent</h3>
+        <button class="btn-history-refresh" onclick="loadScenarioHistory()">⟳</button>
+        <button class="btn-history-clear"   onclick="clearScenarioHistory()">🗑 Vider</button>
+      </div>
+      <div id="scenarioHistoryList"><p class="loading-placeholder">Chargement…</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- NOTIFICATIONS (Phase 12) -->
+<section id="notifications">
+  <div class="container">
+    <h2 class="section-title">Centre de notifications</h2>
+    <p class="section-subtitle">Événements locaux Sallon-ConnecT — aucune donnée sensible affichée</p>
+
+    <!-- Barre d'actions -->
+    <div class="notif-actions-bar">
+      <div class="notif-stats-row" id="notifStatsRow">
+        <span class="notif-count-badge" id="notifUnreadBadge">0 non lu(s)</span>
+      </div>
+      <div class="notif-actions-group">
+        <button class="btn-notif-action" onclick="loadNotifications()">⟳ Actualiser</button>
+        <button class="btn-notif-action" onclick="markAllNotificationsRead()">✓ Tout marquer lu</button>
+        <button class="btn-notif-action btn-notif-danger" onclick="clearNotifications()">🗑 Vider</button>
+        <button class="btn-notif-test" onclick="createTestNotification()">🧪 Test notification</button>
+        <button class="btn-notif-browser" onclick="requestBrowserNotificationPermission()" id="btnBrowserNotif">
+          🔔 Activer notifications navigateur
+        </button>
+      </div>
+    </div>
+
+    <!-- Filtres par type -->
+    <div class="notif-filters-bar">
+      <span class="notif-filter-label">Type :</span>
+      <button class="btn-notif-filter active" data-filter-type="" onclick="setNotifFilter('type', '', this)">Tous</button>
+      <button class="btn-notif-filter" data-filter-type="system"      onclick="setNotifFilter('type', 'system', this)">Système</button>
+      <button class="btn-notif-filter" data-filter-type="device"      onclick="setNotifFilter('type', 'device', this)">Appareils</button>
+      <button class="btn-notif-filter" data-filter-type="media"       onclick="setNotifFilter('type', 'media', this)">Média</button>
+      <button class="btn-notif-filter" data-filter-type="scenario"    onclick="setNotifFilter('type', 'scenario', this)">Scénarios</button>
+      <button class="btn-notif-filter" data-filter-type="smartthings" onclick="setNotifFilter('type', 'smartthings', this)">SmartThings</button>
+      <button class="btn-notif-filter" data-filter-type="streaming"   onclick="setNotifFilter('type', 'streaming', this)">Streaming</button>
+      <button class="btn-notif-filter" data-filter-type="security"    onclick="setNotifFilter('type', 'security', this)">Sécurité</button>
+    </div>
+
+    <!-- Filtres par niveau -->
+    <div class="notif-filters-bar notif-level-bar">
+      <span class="notif-filter-label">Niveau :</span>
+      <button class="btn-notif-level active" data-filter-level="" onclick="setNotifFilter('level', '', this)">Tous</button>
+      <button class="btn-notif-level notif-level-info"     onclick="setNotifFilter('level', 'info', this)">Info</button>
+      <button class="btn-notif-level notif-level-success"  onclick="setNotifFilter('level', 'success', this)">Succès</button>
+      <button class="btn-notif-level notif-level-warning"  onclick="setNotifFilter('level', 'warning', this)">Avertissement</button>
+      <button class="btn-notif-level notif-level-error"    onclick="setNotifFilter('level', 'error', this)">Erreur</button>
+      <button class="btn-notif-level notif-level-security" onclick="setNotifFilter('level', 'security', this)">Sécurité</button>
+      <label class="notif-unread-toggle">
+        <input type="checkbox" id="notifUnreadOnly" onchange="loadNotifications()"> Non lues seulement
+      </label>
+    </div>
+
+    <!-- Statistiques -->
+    <div id="notifStatsPanel" class="notif-stats-panel" style="display:none">
+      <div id="notifStatsContent" class="notif-stats-grid"></div>
+    </div>
+
+    <!-- Liste des notifications -->
+    <div id="notifList" class="notif-list">
+      <p class="loading-placeholder">Chargement des notifications…</p>
+    </div>
+
+    <!-- Note sécurité -->
+    <div class="notif-security-note">
+      🔒 Notifications 100% locales — aucune donnée envoyée à un serveur cloud. Données sensibles masquées.
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULER (Phase 13) -->
+<section id="scheduler">
+  <div class="container">
+    <h2 class="section-title">Tâches planifiées</h2>
+    <p class="section-subtitle">Moteur local de tâches récurrentes — aucune action sensible automatique</p>
+
+    <!-- Statut moteur -->
+    <div class="sched-status-bar" id="schedStatusBar">
+      <span class="loading-placeholder">Chargement du scheduler…</span>
+    </div>
+
+    <!-- Actions -->
+    <div class="sched-actions-bar">
+      <button class="btn-sched-action" onclick="loadSchedulerStatus()">⟳ Actualiser</button>
+      <button class="btn-sched-action" onclick="loadSchedules()">📋 Tâches</button>
+      <button class="btn-sched-action" onclick="loadSchedulerHistory()">📜 Historique</button>
+      <button class="btn-sched-action" onclick="loadSchedulerActions()">⚙ Actions autorisées</button>
+      <button class="btn-sched-danger"  onclick="clearSchedulerHistory()">🗑 Vider historique</button>
+    </div>
+
+    <!-- Créer une tâche simple -->
+    <div class="sched-create-block">
+      <h4 class="sched-sub-title">+ Créer une tâche</h4>
+      <div class="sched-create-form">
+        <div class="sched-form-row">
+          <input type="text" id="schedNewName" class="sched-input" placeholder="Nom de la tâche" maxlength="100" />
+          <select id="schedNewAction" class="sched-select">
+            <option value="">— Choisir une action autorisée —</option>
+            <option value="system.healthCheck">system.healthCheck</option>
+            <option value="devices.refreshStatus">devices.refreshStatus</option>
+            <option value="dlna.discover">dlna.discover</option>
+            <option value="adb.readOnlyDiagnostics">adb.readOnlyDiagnostics</option>
+            <option value="media.scanLibrary">media.scanLibrary</option>
+            <option value="notifications.cleanup">notifications.cleanup</option>
+            <option value="notifications.summary">notifications.summary</option>
+            <option value="integrations.statusCheck">integrations.statusCheck</option>
+            <option value="scenarios.preview">scenarios.preview</option>
+            <option value="streaming.libraryStatus">streaming.libraryStatus</option>
+          </select>
+          <select id="schedNewType" class="sched-select">
+            <option value="manual">Manuel</option>
+            <option value="interval">Intervalle</option>
+            <option value="daily">Quotidien</option>
+          </select>
+          <input type="number" id="schedNewInterval" class="sched-input sched-input-sm"
+            placeholder="minutes" min="1" max="1440" value="30" />
+        </div>
+        <button class="btn-sched-create" onclick="createSchedule()">+ Créer</button>
+        <div id="schedCreateMsg" class="sched-create-msg" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- Liste des tâches -->
+    <div id="schedList" class="sched-list">
+      <p class="loading-placeholder">Chargement des tâches…</p>
+    </div>
+
+    <!-- Actions autorisées/bloquées -->
+    <div id="schedActionsPanel" style="display:none">
+      <h4 class="sched-sub-title">⚙ Actions autorisées</h4>
+      <div id="schedActionsContent"></div>
+    </div>
+
+    <!-- Historique -->
+    <div id="schedHistoryPanel" style="display:none">
+      <h4 class="sched-sub-title">📜 Historique récent</h4>
+      <div id="schedHistoryContent" class="sched-history-list"></div>
+    </div>
+
+    <!-- Note sécurité -->
+    <div class="sched-security-note">
+      🔒 Aucune action sensible n'est exécutée automatiquement.
+      Scènes SmartThings, commandes TV et streaming.play sont bloqués.
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Sallon<span>-ConnecT</span></div>
+  <p class="footer-text">Hub-Agent local · Phase 13 · 2026</p>
+  <div class="security-note">
+    🔒 Sécurité : ce projet n'utilise aucune donnée personnelle réelle
+    (pas d'IP, IMEI, mot de passe, numéro de téléphone). Tous les identifiants sont logiques et fictifs.
+  </div>
+</footer>
+
+<script src="assets/js/app.js"></script>
+</body>
+</html>

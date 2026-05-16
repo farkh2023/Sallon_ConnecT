@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sallon-ConnecT — Hub Intelligent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       VARIABLES & RESET
+    ============================================= */
+    :root {
+      --navy:   #0A2540;
+      --blue:   #2563EB;
+      --coral:  #FF6B6B;
+      --cream:  #F6F9FC;
+      --green:  #10B981;
+      --amber:  #F59E0B;
+      --purple: #7C3AED;
+      --dark:   #0D1B2A;
+      --text:   #1E293B;
+      --muted:  #64748B;
+      --border: rgba(37,99,235,.18);
+      --card-bg: rgba(255,255,255,.06);
+      --radius: 16px;
+      --shadow: 0 8px 32px rgba(0,0,0,.18);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--dark);
+      color: #e2e8f0;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    img { max-width: 100%; }
+    section { padding: 60px 24px; }
+    .container { max-width: 1280px; margin: 0 auto; }
+
+    /* =============================================
+       TYPOGRAPHY HELPERS
+    ============================================= */
+    .section-title {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 8px;
+    }
+    .section-subtitle {
+      color: var(--muted);
+      font-size: .95rem;
+      margin-bottom: 40px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .badge-blue  { background: rgba(37,99,235,.2); color: #93c5fd; border: 1px solid rgba(37,99,235,.35); }
+    .badge-green { background: rgba(16,185,129,.2); color: #6ee7b7; border: 1px solid rgba(16,185,129,.35); }
+    .badge-coral { background: rgba(255,107,107,.2); color: #fca5a5; border: 1px solid rgba(255,107,107,.35); }
+    .badge-amber { background: rgba(245,158,11,.2);  color: #fcd34d; border: 1px solid rgba(245,158,11,.35); }
+
+    /* =============================================
+       NAV
+    ============================================= */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,37,64,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-logo { font-weight: 800; font-size: 1.1rem; color: #f1f5f9; }
+    .nav-logo span { color: var(--blue); }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { font-size: .85rem; font-weight: 500; color: #94a3b8; transition: color .2s; }
+    .nav-links a:hover { color: #f1f5f9; }
+    @media(max-width:640px){ .nav-links { display: none; } }
+
+    /* =============================================
+       HERO
+    ============================================= */
+    #hero {
+      background: linear-gradient(135deg, #0A2540 0%, #0D1B2A 50%, #0A1628 100%);
+      position: relative; overflow: hidden; padding: 100px 24px 80px;
+      text-align: center;
+    }
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(37,99,235,.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge { margin-bottom: 24px; }
+    .hero-title {
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #f1f5f9 30%, #93c5fd 70%, var(--coral) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px; line-height: 1.15;
+    }
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: #94a3b8; max-width: 680px; margin: 0 auto 40px;
+    }
+    .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      padding: 12px 28px; border-radius: 999px;
+      font-size: .9rem; font-weight: 600;
+      cursor: pointer; border: none; transition: all .25s;
+    }
+    .btn-primary { background: var(--blue); color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,.4); }
+    .btn-outline { background: transparent; color: #e2e8f0; border: 1px solid rgba(255,255,255,.2); }
+    .btn-outline:hover { background: rgba(255,255,255,.08); transform: translateY(-2px); }
+    .hero-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+      max-width: 640px; margin: 60px auto 0;
+    }
+    @media(max-width:480px){ .hero-grid { grid-template-columns: 1fr 1fr; } }
+    .hero-stat {
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px;
+    }
+    .hero-stat strong { display: block; font-size: 1.6rem; font-weight: 800; color: var(--blue); }
+    .hero-stat span { font-size: .78rem; color: #64748b; }
+
+    /* =============================================
+       CARDS GRID BASE
+    ============================================= */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: transform .25s, box-shadow .25s, border-color .25s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      border-color: rgba(37,99,235,.4);
+    }
+
+    /* =============================================
+       DEVICES SECTION
+    ============================================= */
+    #devices { background: linear-gradient(180deg, #0D1B2A, #0A2540); }
+    .device-filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
+    .filter-btn {
+      padding: 6px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,.15);
+      background: transparent; color: #94a3b8; font-size: .8rem; cursor: pointer;
+      transition: all .2s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--blue); color: #fff; border-color: var(--blue);
+    }
+    .device-card { display: flex; flex-direction: column; gap: 12px; }
+    .device-icon { font-size: 2.2rem; }
+    .device-name { font-size: 1rem; font-weight: 700; color: #f1f5f9; }
+    .device-type { font-size: .78rem; color: var(--muted); }
+    .device-role { font-size: .82rem; color: #94a3b8; line-height: 1.5; flex: 1; }
+    .device-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .status-text { font-size: .78rem; font-weight: 600; }
+    .status-connected  { color: var(--green); } .status-connected  .status-dot { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .status-principal  { color: var(--blue);  } .status-principal  .status-dot { background: var(--blue);  box-shadow: 0 0 6px var(--blue);  }
+    .status-available  { color: var(--amber); } .status-available  .status-dot { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+    .status-waiting    { color: var(--muted); } .status-waiting    .status-dot { background: var(--muted); }
+    .btn-sm {
+      padding: 6px 14px; border-radius: 8px; font-size: .78rem;
+      font-weight: 600; cursor: pointer; border: 1px solid var(--blue);
+      background: transparent; color: var(--blue); transition: all .2s;
+    }
+    .btn-sm:hover { background: var(--blue); color: #fff; }
+
+    /* device detail modal */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
+      z-index: 200; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: #0e2038; border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px; max-width: 480px; width: 90%;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: rgba(255,255,255,.1); border: none; color: #e2e8f0;
+      width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+      font-size: 1rem; display: flex; align-items: center; justify-content: center;
+    }
+    .modal-close:hover { background: rgba(255,255,255,.2); }
+    .modal-title { font-size: 1.3rem; font-weight: 700; color: #f1f5f9; margin-bottom: 8px; }
+    .modal-body { color: #94a3b8; font-size: .9rem; line-height: 1.7; }
+    .modal-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .modal-row:last-child { border-bottom: none; }
+    .modal-label { color: #64748b; font-size: .82rem; }
+    .modal-val { color: #e2e8f0; font-size: .82rem; font-weight: 600; }
+
+    /* =============================================
+       AGENTS SECTION
+    ============================================= */
+    #agents { background: #0A2540; }
+    .progress-bar-wrap {
+      background: rgba(255,255,255,.08);
+      border-radius: 999px; height: 8px; margin-bottom: 32px; overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--blue), var(--coral));
+      border-radius: 999px;
+      transition: width .6s cubic-bezier(.4,0,.2,1);
+    }
+    .progress-label { font-size: .82rem; color: var(--muted); margin-bottom: 10px; }
+    .launch-all-wrap { display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; align-items: center; }
+    .btn-launch-all {
+      padding: 12px 32px; border-radius: 999px;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      color: #fff; font-weight: 700; border: none; cursor: pointer;
+      font-size: .95rem; transition: all .25s;
+    }
+    .btn-launch-all:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,.4); }
+    .btn-reset-agents {
+      padding: 12px 20px; border-radius: 999px;
+      background: transparent; color: #94a3b8;
+      border: 1px solid rgba(255,255,255,.2); cursor: pointer;
+      font-size: .85rem; transition: all .2s;
+    }
+    .btn-reset-agents:hover { background: rgba(255,255,255,.08); color: #e2e8f0; }
+    .agent-card { position: relative; }
+    .agent-icon { font-size: 2rem; margin-bottom: 12px; }
+    .agent-name { font-size: 1rem; font-weight: 700; color: #f1f5f9; margin-bottom: 4px; }
+    .agent-mission { font-size: .82rem; color: #94a3b8; line-height: 1.5; margin-bottom: 14px; flex: 1; }
+    .agent-status-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 999px; font-size: .75rem; font-weight: 600;
+      margin-bottom: 14px; transition: all .3s;
+    }
+    .agent-status-badge.ready    { background: rgba(100,116,139,.2); color: #94a3b8; border: 1px solid rgba(100,116,139,.3); }
+    .agent-status-badge.running  { background: rgba(245,158,11,.2);  color: #fcd34d; border: 1px solid rgba(245,158,11,.4); animation: pulse 1s infinite; }
+    .agent-status-badge.done     { background: rgba(16,185,129,.2);  color: #6ee7b7; border: 1px solid rgba(16,185,129,.4); }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+    .btn-exec {
+      width: 100%; padding: 10px; border-radius: 10px;
+      background: rgba(37,99,235,.2); border: 1px solid rgba(37,99,235,.4);
+      color: #93c5fd; font-weight: 600; font-size: .85rem;
+      cursor: pointer; transition: all .25s;
+    }
+    .btn-exec:hover:not(:disabled) { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .btn-exec:disabled { opacity: .5; cursor: not-allowed; }
+    .agent-output {
+      margin-top: 12px; padding: 10px 14px;
+      background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.2);
+      border-radius: 10px; font-size: .78rem; color: #6ee7b7;
+      display: none; line-height: 1.6;
+    }
+    .agent-output.visible { display: block; }
+
+    /* =============================================
+       FUSION SECTION
+    ============================================= */
+    #fusion { background: linear-gradient(180deg, #0A2540, #0D1B2A); }
+    .fusion-box {
+      background: rgba(16,185,129,.06);
+      border: 1px solid rgba(16,185,129,.25);
+      border-radius: 20px; padding: 36px;
+      display: none;
+    }
+    .fusion-box.visible { display: block; }
+    .fusion-title { font-size: 1.3rem; font-weight: 700; color: var(--green); margin-bottom: 20px; }
+    .fusion-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px;
+    }
+    .fusion-item {
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px; padding: 20px;
+    }
+    .fusion-item-label { font-size: .75rem; color: #64748b; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+    .fusion-item-val { font-size: 1rem; font-weight: 700; color: #f1f5f9; }
+    .fusion-pending {
+      text-align: center; color: #64748b; font-size: .9rem; padding: 40px 20px;
+    }
+    .fusion-next {
+      margin-top: 24px; padding: 16px 20px;
+      background: rgba(37,99,235,.1); border: 1px solid rgba(37,99,235,.25);
+      border-radius: 12px;
+    }
+    .fusion-next p { font-size: .88rem; color: #93c5fd; }
+    .fusion-next strong { color: #bfdbfe; }
+
+    /* =============================================
+       MULTIMEDIA SECTION
+    ============================================= */
+    #multimedia { background: #0D1B2A; }
+    .media-card { display: flex; flex-direction: column; gap: 10px; cursor: pointer; }
+    .media-icon { font-size: 2.4rem; }
+    .media-name { font-size: .95rem; font-weight: 700; color: #f1f5f9; }
+    .media-desc { font-size: .8rem; color: #64748b; flex: 1; }
+    .media-tag { font-size: .72rem; padding: 2px 10px; border-radius: 999px; font-weight: 600; display: inline-block; width: fit-content; }
+
+    /* =============================================
+       SCENARIOS SECTION
+    ============================================= */
+    #scenarios { background: linear-gradient(180deg, #0D1B2A, #0A2540); }
+    .scenario-card { cursor: pointer; }
+    .scenario-icon { font-size: 2rem; margin-bottom: 10px; }
+    .scenario-name { font-size: 1rem; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+    .scenario-desc { font-size: .8rem; color: #64748b; margin-bottom: 12px; line-height: 1.5; }
+    .scenario-meta { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .scenario-row { font-size: .78rem; color: #94a3b8; }
+    .scenario-row strong { color: #cbd5e1; }
+    .priority-badge { font-size: .7rem; padding: 2px 10px; border-radius: 999px; font-weight: 700; display: inline-block; }
+    .priority-high   { background: rgba(255,107,107,.2); color: #fca5a5; border: 1px solid rgba(255,107,107,.3); }
+    .priority-medium { background: rgba(245,158,11,.2);  color: #fcd34d; border: 1px solid rgba(245,158,11,.3); }
+    .priority-low    { background: rgba(100,116,139,.2); color: #94a3b8; border: 1px solid rgba(100,116,139,.3); }
+    .btn-activate {
+      width: 100%; padding: 9px; border-radius: 10px;
+      background: transparent; border: 1px solid rgba(255,255,255,.15);
+      color: #94a3b8; font-size: .82rem; cursor: pointer; transition: all .2s;
+    }
+    .btn-activate.active, .btn-activate:hover { background: var(--coral); border-color: var(--coral); color: #fff; }
+
+    /* =============================================
+       FOOTER
+    ============================================= */
+    footer {
+      background: #060f1a;
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding: 32px 24px; text-align: center;
+    }
+    .footer-logo { font-weight: 800; font-size: 1.1rem; margin-bottom: 8px; }
+    .footer-logo span { color: var(--blue); }
+    .footer-text { font-size: .8rem; color: #475569; }
+    .security-note {
+      margin-top: 16px; padding: 10px 16px;
+      background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.2);
+      border-radius: 8px; font-size: .75rem; color: #92400e; max-width: 640px; margin: 16px auto 0;
+      color: #fcd34d;
+    }
+  </style>
+</head>
+<body>
+
+<!-- =============================================
+     NAV
+============================================= -->
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">Sallon<span>-ConnecT</span></span>
+    <ul class="nav-links">
+      <li><a href="#devices">Appareils</a></li>
+      <li><a href="#agents">Agents</a></li>
+      <li><a href="#fusion">Synthèse</a></li>
+      <li><a href="#multimedia">Multimédia</a></li>
+      <li><a href="#scenarios">Scénarios</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- =============================================
+     HERO
+============================================= -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span class="badge badge-blue">Prototype Hub-Agent local</span>
+    </div>
+    <h1 class="hero-title">Sallon-ConnecT</h1>
+    <p class="hero-subtitle">
+      Hub intelligent pour centraliser mes appareils, services multimédias et agents IA
+    </p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="scrollTo('#agents')">Lancer les agents</button>
+      <button class="btn btn-outline" onclick="scrollTo('#devices')">Voir les appareils</button>
+    </div>
+    <div class="hero-grid">
+      <div class="hero-stat"><strong>5</strong><span>Appareils</span></div>
+      <div class="hero-stat"><strong>6</strong><span>Agents IA</span></div>
+      <div class="hero-stat"><strong>6</strong><span>Scénarios</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     DEVICES
+============================================= -->
+<section id="devices">
+  <div class="container">
+    <h2 class="section-title">Appareils connectés</h2>
+    <p class="section-subtitle">Inventaire logique du salon — aucune donnée personnelle réelle</p>
+
+    <div class="device-filters">
+      <button class="filter-btn active" onclick="filterDevices('all', this)">Tous</button>
+      <button class="filter-btn" onclick="filterDevices('ordinateur', this)">Ordinateurs</button>
+      <button class="filter-btn" onclick="filterDevices('tv', this)">TV</button>
+      <button class="filter-btn" onclick="filterDevices('mobile', this)">Mobile</button>
+      <button class="filter-btn" onclick="filterDevices('reseau', this)">Réseau</button>
+    </div>
+
+    <div class="cards-grid" id="devicesGrid">
+      <!-- generated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- modal device detail -->
+<div class="modal-overlay" id="deviceModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- =============================================
+     AGENTS
+============================================= -->
+<section id="agents">
+  <div class="container">
+    <h2 class="section-title">Hub-Agent Workflow</h2>
+    <p class="section-subtitle">Simulation d'un pipeline multi-agents — cliquez sur chaque agent ou lancez tout</p>
+
+    <div class="launch-all-wrap">
+      <button class="btn-launch-all" onclick="launchAllAgents()">▶ Lancer le workflow complet</button>
+      <button class="btn-reset-agents" onclick="resetAgents()">↺ Réinitialiser</button>
+      <span id="agentCountLabel" style="font-size:.82rem;color:#64748b;"></span>
+    </div>
+
+    <div class="progress-label">Progression du workflow : <span id="progressPct">0%</span></div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+
+    <div class="cards-grid" id="agentsGrid">
+      <!-- generated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     FUSION
+============================================= -->
+<section id="fusion">
+  <div class="container">
+    <h2 class="section-title">Livrable final fusionné</h2>
+    <p class="section-subtitle">Synthèse automatique générée quand tous les agents ont terminé</p>
+
+    <div id="fusionPending" class="fusion-pending">
+      ⏳ En attente de l'exécution de tous les agents…
+    </div>
+    <div class="fusion-box" id="fusionBox">
+      <div class="fusion-title">✅ Synthèse générée par le Hub-Agent</div>
+      <div class="fusion-grid" id="fusionGrid"><!-- generated by JS --></div>
+      <div class="fusion-next" id="fusionNext"></div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     MULTIMEDIA
+============================================= -->
+<section id="multimedia">
+  <div class="container">
+    <h2 class="section-title">Services multimédias</h2>
+    <p class="section-subtitle">Catalogue des services intégrables dans l'écosystème Sallon-ConnecT</p>
+    <div class="cards-grid" id="mediaGrid"><!-- generated by JS --></div>
+  </div>
+</section>
+
+<!-- =============================================
+     SCENARIOS
+============================================= -->
+<section id="scenarios">
+  <div class="container">
+    <h2 class="section-title">Scénarios intelligents</h2>
+    <p class="section-subtitle">Modes prédéfinis adaptés au contexte d'usage du salon</p>
+    <div class="cards-grid" id="scenariosGrid"><!-- generated by JS --></div>
+  </div>
+</section>
+
+<!-- =============================================
+     FOOTER
+============================================= -->
+<footer>
+  <div class="footer-logo">Sallon<span>-ConnecT</span></div>
+  <p class="footer-text">Prototype Hub-Agent local · Phase 1 · 2025</p>
+  <div class="security-note">
+    🔒 Sécurité : ce prototype n'utilise aucune donnée personnelle réelle (pas d'IP, IMEI, mot de passe, numéro de téléphone).
+    Tous les identifiants sont logiques et fictifs.
+  </div>
+</footer>
+
+<!-- =============================================
+     JAVASCRIPT
+============================================= -->
+<script>
+/* -----------------------------------------------
+   DATA — DEVICES
+----------------------------------------------- */
+const DEVICES = [
+  {
+    id: 'IA_ordinateur_BOM_WXX9',
+    name: 'PC Portable Huawei',
+    icon: '💻',
+    type: 'Ordinateur portable',
+    category: 'ordinateur',
+    role: 'Station de développement IA et agent principal d\'orchestration du hub.',
+    status: 'connected',
+    statusLabel: 'Connecté',
+    details: {
+      'ID logique': 'IA_ordinateur_BOM_WXX9',
+      'OS': 'Windows 11',
+      'Rôle hub': 'Orchestrateur principal',
+      'Connexion': 'Wi-Fi / Ethernet',
+      'Priorité': 'Haute',
+    }
+  },
+  {
+    id: 'Samsung_TV_7Series',
+    name: 'Smart TV Samsung 7 Series',
+    icon: '📺',
+    type: 'Télévision connectée',
+    category: 'tv',
+    role: 'Écran principal d\'affichage du tableau de bord Sallon-ConnecT.',
+    status: 'principal',
+    statusLabel: 'Principal',
+    details: {
+      'ID logique': 'Samsung_TV_7Series',
+      'Résolution': '4K UHD',
+      'OS TV': 'Tizen',
+      'Connexion': 'Wi-Fi',
+      'Priorité': 'Principale',
+    }
+  },
+  {
+    id: 'PC_Bureau',
+    name: 'PC de Bureau',
+    icon: '🖥️',
+    type: 'Ordinateur de bureau',
+    category: 'ordinateur',
+    role: 'Serveur local pour le streaming de médias et les traitements lourds.',
+    status: 'available',
+    statusLabel: 'Disponible',
+    details: {
+      'ID logique': 'PC_Bureau',
+      'OS': 'Windows 11',
+      'Rôle hub': 'Serveur de médias local',
+      'Connexion': 'Ethernet',
+      'Priorité': 'Moyenne',
+    }
+  },
+  {
+    id: 'Galaxy_S23_Ultra',
+    name: 'Galaxy S23 Ultra',
+    icon: '📱',
+    type: 'Smartphone',
+    category: 'mobile',
+    role: 'Source de galerie photos, contenu mobile et notifications du hub.',
+    status: 'connected',
+    statusLabel: 'Connecté',
+    details: {
+      'ID logique': 'Galaxy_S23_Ultra',
+      'OS': 'Android 14',
+      'Rôle hub': 'Source contenu mobile',
+      'Connexion': 'Wi-Fi / 5G',
+      'Priorité': 'Moyenne',
+    }
+  },
+  {
+    id: 'Box_SFR_Fibre',
+    name: 'Box SFR Fibre',
+    icon: '📡',
+    type: 'Routeur / Box Internet',
+    category: 'reseau',
+    role: 'Passerelle réseau domestique et point d\'accès Wi-Fi du salon.',
+    status: 'connected',
+    statusLabel: 'Connecté',
+    details: {
+      'ID logique': 'Box_SFR_Fibre',
+      'Type': 'Box fibre optique',
+      'Rôle hub': 'Passerelle réseau',
+      'Connexion': 'Fibre FTTH',
+      'Priorité': 'Critique',
+    }
+  },
+];
+
+/* -----------------------------------------------
+   DATA — AGENTS
+----------------------------------------------- */
+const AGENTS = [
+  {
+    id: 'agent_discovery',
+    icon: '🔍',
+    name: 'Agent 1 — Découverte réseau',
+    mission: 'Détecter les appareils du salon, vérifier leur disponibilité et cartographier le réseau local.',
+    output: 'Réseau scanné · 5 appareils détectés · Latence moy. : 4 ms · Box SFR OK · Tous les hôtes joignables.',
+  },
+  {
+    id: 'agent_inventory',
+    icon: '📋',
+    name: 'Agent 2 — Appareils & Inventaire',
+    mission: 'Organiser les appareils détectés par type, rôle et priorité dans l\'écosystème.',
+    output: '5 appareils catalogués · 2 ordinateurs, 1 TV, 1 mobile, 1 réseau · Priorités définies · Inventaire JSON généré.',
+  },
+  {
+    id: 'agent_tv',
+    icon: '📺',
+    name: 'Agent 3 — Affichage TV',
+    mission: 'Préparer l\'interface optimisée pour l\'écran principal Samsung TV 4K en mode paysage.',
+    output: 'Layout TV 4K préparé · Mode paysage · Police Inter 32px · Dashboard hub chargé sur Samsung TV 7 Series.',
+  },
+  {
+    id: 'agent_media',
+    icon: '🎬',
+    name: 'Agent 4 — Multimédia',
+    mission: 'Proposer les services multimédias disponibles : vidéo, musique, photos, YouTube, streaming local.',
+    output: '8 services indexés · YouTube OK · Galerie Galaxy S23 Ultra · Streaming PC Bureau · Musique locale détectée.',
+  },
+  {
+    id: 'agent_auto',
+    icon: '⚙️',
+    name: 'Agent 5 — Automatisation',
+    mission: 'Préparer les scénarios intelligents : mode cinéma, travail, famille, présentation, veille, diagnostic.',
+    output: '6 scénarios configurés · Mode cinéma prêt · Mode travail prêt · Scénarios enregistrés.',
+  },
+  {
+    id: 'agent_synthesis',
+    icon: '🧠',
+    name: 'Agent 6 — Synthèse finale',
+    mission: 'Fusionner les sorties de tous les agents dans un livrable de tableau de bord unique et cohérent.',
+    output: 'Fusion complète · Tableau de bord généré · Rapport exportable · Hub opérationnel.',
+  },
+];
+
+/* -----------------------------------------------
+   DATA — MULTIMEDIA
+----------------------------------------------- */
+const MEDIA_SERVICES = [
+  { icon: '▶️', name: 'YouTube / Vidéos', desc: 'Streaming YouTube et vidéos en ligne sur Smart TV Samsung.', tag: 'Streaming', tagColor: 'badge-coral' },
+  { icon: '🖼️', name: 'Galerie photos', desc: 'Synchronisation et affichage de la galerie du Galaxy S23 Ultra sur TV.', tag: 'Photo', tagColor: 'badge-blue' },
+  { icon: '🎵', name: 'Musique locale', desc: 'Lecture de fichiers audio stockés sur PC Bureau ou portable Huawei.', tag: 'Audio', tagColor: 'badge-green' },
+  { icon: '🎞️', name: 'Streaming local PC', desc: 'Diffusion de vidéos locales depuis le PC Bureau vers la Samsung TV.', tag: 'DLNA', tagColor: 'badge-amber' },
+  { icon: '👨‍👩‍👧', name: 'Présentation familiale', desc: 'Diaporama et partage de contenu en mode famille sur grand écran.', tag: 'Famille', tagColor: 'badge-coral' },
+  { icon: '🤖', name: 'Tableau de bord IA', desc: 'Affichage du hub-agent en temps réel sur l\'écran principal TV.', tag: 'IA', tagColor: 'badge-blue' },
+  { icon: '📰', name: 'Résumés de contenus', desc: 'Résumés IA de news, mails, rapports affichés en widget sur TV.', tag: 'IA', tagColor: 'badge-green' },
+  { icon: '🎙️', name: 'Commandes vocales', desc: 'Contrôle vocal du hub (Phase 6) — préparé dans ce prototype.', tag: 'Futur', tagColor: 'badge-amber' },
+];
+
+/* -----------------------------------------------
+   DATA — SCENARIOS
+----------------------------------------------- */
+const SCENARIOS = [
+  {
+    icon: '🎬', name: 'Mode Cinéma',
+    desc: 'Ambiance tamisée, son surround, contenus vidéo en plein écran.',
+    devices: 'Samsung TV + PC Bureau + Galaxy S23 Ultra',
+    result: 'Lumières réduites · Streaming actif · Mode DND téléphone',
+    priority: 'high', priorityLabel: 'Haute',
+  },
+  {
+    icon: '💼', name: 'Mode Travail',
+    desc: 'Affichage productivité, minimisation des distractions, focus mode.',
+    devices: 'PC Huawei + PC Bureau',
+    result: 'Notifications off · Mode focus · Dashboard pro sur TV',
+    priority: 'high', priorityLabel: 'Haute',
+  },
+  {
+    icon: '📊', name: 'Mode Présentation',
+    desc: 'Partage d\'écran sur TV pour réunions ou présentations professionnelles.',
+    devices: 'PC Huawei + Samsung TV',
+    result: 'Écran miroir TV · Mode plein écran · Pas de notifications',
+    priority: 'medium', priorityLabel: 'Moyenne',
+  },
+  {
+    icon: '👨‍👩‍👧', name: 'Mode Famille',
+    desc: 'Contenu adapté, galerie photos partagée, jeux et divertissement commun.',
+    devices: 'Samsung TV + Galaxy S23 Ultra',
+    result: 'Galerie partagée · Contrôle parental · Musique ambiante',
+    priority: 'medium', priorityLabel: 'Moyenne',
+  },
+  {
+    icon: '🌙', name: 'Mode Veille',
+    desc: 'Extinction progressive, sauvegarde des états, mise en veille des appareils.',
+    devices: 'Tous les appareils',
+    result: 'Économies d\'énergie · Statuts sauvegardés · Wake-on-LAN prêt',
+    priority: 'low', priorityLabel: 'Basse',
+  },
+  {
+    icon: '🔧', name: 'Mode Diagnostic',
+    desc: 'Scan réseau complet, vérification des performances, rapport de santé.',
+    devices: 'Box SFR + PC Huawei + PC Bureau',
+    result: 'Rapport réseau · Latences mesurées · Alertes anomalies',
+    priority: 'medium', priorityLabel: 'Moyenne',
+  },
+];
+
+/* -----------------------------------------------
+   STATE
+----------------------------------------------- */
+let agentStates = {};   // id => 'ready' | 'running' | 'done'
+let activeScenario = null;
+
+/* -----------------------------------------------
+   RENDER — DEVICES
+----------------------------------------------- */
+function renderDevices(filter = 'all') {
+  const grid = document.getElementById('devicesGrid');
+  const filtered = filter === 'all' ? DEVICES : DEVICES.filter(d => d.category === filter);
+  grid.innerHTML = filtered.map(d => `
+    <div class="card device-card" data-category="${d.category}">
+      <div class="device-icon">${d.icon}</div>
+      <div class="device-name">${d.name}</div>
+      <div class="device-type">${d.type}</div>
+      <div class="device-role">${d.role}</div>
+      <div class="device-footer">
+        <span class="status-${d.status}">
+          <span class="status-dot"></span>
+          <span class="status-text">${d.statusLabel}</span>
+        </span>
+        <button class="btn-sm" onclick="openModal('${d.id}')">Voir détails</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterDevices(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderDevices(cat);
+}
+
+function openModal(deviceId) {
+  const d = DEVICES.find(x => x.id === deviceId);
+  if (!d) return;
+  const rows = Object.entries(d.details).map(([k, v]) =>
+    `<div class="modal-row"><span class="modal-label">${k}</span><span class="modal-val">${v}</span></div>`
+  ).join('');
+  document.getElementById('modalContent').innerHTML = `
+    <div style="font-size:2.4rem;margin-bottom:12px">${d.icon}</div>
+    <div class="modal-title">${d.name}</div>
+    <p class="modal-body" style="margin-bottom:16px">${d.role}</p>
+    ${rows}
+  `;
+  document.getElementById('deviceModal').classList.add('open');
+}
+function closeModal() { document.getElementById('deviceModal').classList.remove('open'); }
+document.getElementById('deviceModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+
+/* -----------------------------------------------
+   RENDER — AGENTS
+----------------------------------------------- */
+function renderAgents() {
+  const grid = document.getElementById('agentsGrid');
+  grid.innerHTML = AGENTS.map(a => {
+    const state = agentStates[a.id] || 'ready';
+    const labels = { ready: '⚪ Prêt', running: '🔄 En cours…', done: '✅ Terminé' };
+    return `
+      <div class="card agent-card" id="card_${a.id}">
+        <div class="agent-icon">${a.icon}</div>
+        <div class="agent-name">${a.name}</div>
+        <span class="agent-status-badge ${state}">${labels[state]}</span>
+        <div class="agent-mission">${a.mission}</div>
+        <button class="btn-exec" id="btn_${a.id}"
+          onclick="execAgent('${a.id}')"
+          ${state === 'running' || state === 'done' ? 'disabled' : ''}>
+          ${state === 'done' ? '✓ Exécuté' : '▶ Exécuter l\'agent'}
+        </button>
+        <div class="agent-output ${state === 'done' ? 'visible' : ''}" id="out_${a.id}">
+          ${a.output}
+        </div>
+      </div>
+    `;
+  }).join('');
+  updateProgress();
+}
+
+function execAgent(id, delay = 0) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      agentStates[id] = 'running';
+      renderAgents();
+      setTimeout(() => {
+        agentStates[id] = 'done';
+        renderAgents();
+        checkFusion();
+        resolve();
+      }, 1400 + Math.random() * 600);
+    }, delay);
+  });
+}
+
+async function launchAllAgents() {
+  for (const a of AGENTS) {
+    if (agentStates[a.id] !== 'done') {
+      await execAgent(a.id);
+    }
+  }
+}
+
+function resetAgents() {
+  agentStates = {};
+  renderAgents();
+  document.getElementById('fusionBox').classList.remove('visible');
+  document.getElementById('fusionPending').style.display = 'block';
+}
+
+function updateProgress() {
+  const done = Object.values(agentStates).filter(s => s === 'done').length;
+  const pct = Math.round((done / AGENTS.length) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('agentCountLabel').textContent = `${done} / ${AGENTS.length} agents terminés`;
+}
+
+/* -----------------------------------------------
+   FUSION
+----------------------------------------------- */
+function checkFusion() {
+  const done = AGENTS.every(a => agentStates[a.id] === 'done');
+  document.getElementById('fusionPending').style.display = done ? 'none' : 'block';
+  const box = document.getElementById('fusionBox');
+  if (!done) { box.classList.remove('visible'); return; }
+  renderFusion();
+  box.classList.add('visible');
+}
+
+function renderFusion() {
+  const items = [
+    { label: 'Appareils détectés', val: '5 appareils' },
+    { label: 'Écran principal', val: 'Samsung TV 7 Series' },
+    { label: 'Services multimédias', val: '8 services disponibles' },
+    { label: 'Scénarios configurés', val: '6 scénarios prêts' },
+    { label: 'Agents exécutés', val: '6 / 6 terminés' },
+    { label: 'Statut réseau', val: 'Box SFR Fibre OK' },
+  ];
+  document.getElementById('fusionGrid').innerHTML = items.map(i => `
+    <div class="fusion-item">
+      <div class="fusion-item-label">${i.label}</div>
+      <div class="fusion-item-val">${i.val}</div>
+    </div>
+  `).join('');
+  document.getElementById('fusionNext').innerHTML = `
+    <p>
+      <strong>Prochaine étape recommandée :</strong><br>
+      Migrer vers une application React/Next.js avec gestion des appareils via JSON,
+      puis intégrer un scan réseau réel (mDNS / UPnP) pour obtenir les statuts en temps réel
+      de chaque appareil du salon.
+    </p>
+  `;
+}
+
+/* -----------------------------------------------
+   RENDER — MULTIMEDIA
+----------------------------------------------- */
+function renderMedia() {
+  document.getElementById('mediaGrid').innerHTML = MEDIA_SERVICES.map(m => `
+    <div class="card media-card">
+      <div class="media-icon">${m.icon}</div>
+      <div class="media-name">${m.name}</div>
+      <div class="media-desc">${m.desc}</div>
+      <span class="badge ${m.tagColor} media-tag">${m.tag}</span>
+    </div>
+  `).join('');
+}
+
+/* -----------------------------------------------
+   RENDER — SCENARIOS
+----------------------------------------------- */
+function renderScenarios() {
+  document.getElementById('scenariosGrid').innerHTML = SCENARIOS.map((s, i) => `
+    <div class="card scenario-card">
+      <div class="scenario-icon">${s.icon}</div>
+      <div class="scenario-name">${s.name}</div>
+      <div class="scenario-desc">${s.desc}</div>
+      <div class="scenario-meta">
+        <div class="scenario-row"><strong>Appareils :</strong> ${s.devices}</div>
+        <div class="scenario-row"><strong>Résultat :</strong> ${s.result}</div>
+      </div>
+      <span class="priority-badge priority-${s.priority}">Priorité ${s.priorityLabel}</span>
+      <br><br>
+      <button class="btn-activate ${activeScenario === i ? 'active' : ''}"
+        onclick="activateScenario(${i})">
+        ${activeScenario === i ? '✓ Actif' : '▶ Activer'}
+      </button>
+    </div>
+  `).join('');
+}
+
+function activateScenario(i) {
+  activeScenario = activeScenario === i ? null : i;
+  renderScenarios();
+}
+
+/* -----------------------------------------------
+   UTILS
+----------------------------------------------- */
+function scrollTo(selector) {
+  document.querySelector(selector)?.scrollIntoView({ behavior: 'smooth' });
+}
+
+/* -----------------------------------------------
+   INIT
+----------------------------------------------- */
+renderDevices();
+renderAgents();
+renderMedia();
+renderScenarios();
+</script>
+</body>
+</html>
