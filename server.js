@@ -37,6 +37,22 @@ const PORT = parseInt(process.env.PORT || '3000', 10);
 const ROOT = __dirname;
 
 /* -----------------------------------------------
+   CORS — Phase 14 : autorise le frontend Next.js (localhost:3001)
+----------------------------------------------- */
+const CORS_ORIGINS = ['http://localhost:3000', 'http://localhost:3001'];
+app.use((req, res, next) => {
+  const origin = req.headers.origin || '';
+  if (CORS_ORIGINS.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  }
+  if (req.method === 'OPTIONS') return res.sendStatus(204);
+  next();
+});
+
+/* -----------------------------------------------
    STATIC FILES — sert l'interface Phase 2 intacte
 ----------------------------------------------- */
 app.use(express.static(ROOT));

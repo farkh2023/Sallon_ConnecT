@@ -7,6 +7,10 @@
 secrets.json
 config.local.json
 
+frontend/.env.local
+frontend/.next/
+frontend/node_modules/
+
 # Dépendances
 node_modules/
 .pnp

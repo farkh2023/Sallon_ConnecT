@@ -550,6 +550,60 @@ curl http://localhost:3000/api/media/status
 
 ---
 
+## Phase 14 — Frontend React / Next.js
+
+Migration progressive du frontend vanilla vers React + Next.js TypeScript.  
+**L'ancien `index.html` est conservé et reste fonctionnel.** Les deux frontends coexistent.
+
+### Ports
+
+| Service           | Port | URL                   |
+|-------------------|------|-----------------------|
+| Backend Express   | 3000 | http://localhost:3000 |
+| Frontend Next.js  | 3001 | http://localhost:3001 |
+
+### Lancement
+
+```powershell
+# Backend seul (index.html accessible)
+npm start
+
+# Frontend Next.js seul
+cd frontend
+npm run dev -- --port 3001
+
+# Les deux en parallèle (depuis la racine)
+npm install   # installe concurrently
+npm run dev
+```
+
+### Configuration frontend
+
+```powershell
+# Copier .env.example → .env.local (déjà créé en développement)
+# frontend/.env.local
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
+```
+
+### Structure frontend
+
+```
+frontend/src/
+├── app/          — layout, page, globals.css
+├── components/   — AppShell, TopNav, panels par section
+├── lib/          — api.ts, types.ts, format.ts, safety.ts
+└── hooks/        — useApi, usePolling, useNotifications
+```
+
+### Avertissement sécurité
+
+- CORS limité à `http://localhost:3000` et `http://localhost:3001`
+- Aucun token ou données sensibles dans le frontend
+- Actions sensibles désactivées ou protégées par confirmation
+- Tout reste local — aucun cloud, aucun push externe
+
+---
+
 ## Phase 13 — Tâches planifiées (Scheduler)
 
 Moteur de scheduling local tick-based. Aucun cron système, aucun cloud, aucun push externe.  

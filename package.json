@@ -1,19 +1,27 @@
 {
   "name": "sallon-connect",
-  "version": "3.0.0",
+  "version": "14.0.0",
   "description": "Hub intelligent pour centraliser les appareils, services et agents IA du salon",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev":   "node --watch server.js"
+    "dev:backend": "node server.js",
+    "dev:frontend": "cd frontend && npm run dev -- --port 3001",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
   },
   "dependencies": {
-    "dotenv":   "^16.4.5",
-    "express":  "^4.18.3"
+    "concurrently": "^9.2.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3"
   },
   "engines": {
     "node": ">=18.0.0"
   },
-  "keywords": ["hub", "smart-home", "agents", "local"],
+  "keywords": [
+    "hub",
+    "smart-home",
+    "agents",
+    "local"
+  ],
   "license": "MIT"
 }
