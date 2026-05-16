@@ -550,6 +550,72 @@ curl http://localhost:3000/api/media/status
 
 ---
 
+## Phase 15 - PWA et mode TV avance
+
+La Phase 15 ajoute une couche PWA et un mode TV avance au frontend Next.js.
+L'ancien `index.html` et le backend Express restent inchanges.
+
+### Ports
+
+| Service           | Port | URL                   |
+|-------------------|------|-----------------------|
+| Backend Express   | 3000 | http://localhost:3000 |
+| Frontend Next.js  | 3001 | http://localhost:3001 |
+
+### Lancement
+
+```powershell
+# Backend + frontend
+npm run dev
+
+# Ou separement
+npm start
+cd frontend
+npm run dev -- --port 3001
+```
+
+### PWA
+
+- Manifest: `http://localhost:3001/manifest.webmanifest`
+- Page offline: `http://localhost:3001/offline`
+- Service worker: `frontend/public/sw.js`
+- En dev, activer explicitement avec `NEXT_PUBLIC_ENABLE_SW=true`
+
+Le service worker ne met jamais en cache `/api/*`, notifications, SmartThings, ADB, DLNA, streaming, scheduler ou runtime.
+
+### Mode TV
+
+Le bouton `Mode TV` affiche un dashboard grand ecran avec statuts backend, appareils, Smart TV, ADB, DLNA, SmartThings, streaming, notifications non lues, prochaines taches et dernier evenement securite.
+
+Raccourcis:
+
+| Touche | Action sure |
+|---|---|
+| `T` | Activer/desactiver mode TV |
+| `F` | Plein ecran |
+| `R` | Rafraichir les statuts |
+| `N` | Ouvrir notifications |
+| `S` | Ouvrir taches |
+| `Echap` | Quitter panneau ou plein ecran |
+| Fleches / `Entree` | Navigation et action sure dans la grille TV |
+
+### Installation PWA et offline
+
+Le bouton `Installer Sallon-ConnecT` apparait si le navigateur expose `beforeinstallprompt`.
+L'installation n'est jamais forcee. Le mode offline affiche une page locale claire mais ne stocke pas les donnees runtime.
+
+### Securite
+
+- Aucun token ou ID complet affiche.
+- Aucune IP complete ou chemin complet affiche.
+- Aucun stockage local de donnees API sensibles.
+- Aucune notification cloud.
+- Aucune commande TV, scene SmartThings, streaming ou scheduler sensible declenchee par raccourci.
+
+Documentation detaillee: `docs/PHASE15.md`.
+
+---
+
 ## Phase 14 — Frontend React / Next.js
 
 Migration progressive du frontend vanilla vers React + Next.js TypeScript.  

@@ -28,7 +28,13 @@ export function useNotifications(pollMs = 15000) {
     }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const id = window.setTimeout(() => {
+      void load();
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, [load]);
   usePolling(load, pollMs, true);
 
   const markRead = useCallback(async (id: string) => {

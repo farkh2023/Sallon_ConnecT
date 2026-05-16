@@ -148,3 +148,32 @@ export interface StreamingPolicy {
   dlnaStreamingEnabled: boolean;
   rendererAllowlistConfigured: boolean;
 }
+
+export type PwaInstallState = 'unsupported' | 'available' | 'prompting' | 'installed' | 'dismissed';
+
+export type BackendHealthStatus = 'unknown' | 'online' | 'offline' | 'degraded';
+
+export interface OfflineStatus {
+  online: boolean;
+  backendAvailable: boolean | null;
+  backendStatus: BackendHealthStatus;
+  lastCheckedAt: string | null;
+  message: string | null;
+}
+
+export interface TvModeState {
+  enabled: boolean;
+  fullscreen: boolean;
+  activePanel: 'dashboard' | 'notifications' | 'scheduler' | 'media' | null;
+  lastRefreshAt: string | null;
+}
+
+export interface TvQuickAction {
+  id: string;
+  label: string;
+  description?: string;
+  shortcut?: string;
+  safe: boolean;
+  disabled?: boolean;
+  onRun: () => void;
+}

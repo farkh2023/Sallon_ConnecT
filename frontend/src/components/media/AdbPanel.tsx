@@ -3,7 +3,6 @@
 import { useApi } from '@/hooks/useApi';
 import { Badge } from '@/components/ui/Badge';
 import { SafetyNotice } from '@/components/ui/SafetyNotice';
-import type { AdbStatus } from '@/lib/types';
 
 interface AdbStatusResp { status: string; enabled: boolean; readOnly: boolean; deviceConnected?: boolean }
 interface AdbDiagResp   { status: string; checks: Record<string, unknown> }

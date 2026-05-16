@@ -8,7 +8,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { SafetyNotice } from '@/components/ui/SafetyNotice';
 import { formatDate, formatScheduleExpr } from '@/lib/format';
 import { apiPost, handleApiError } from '@/lib/api';
-import type { Schedule, SchedulerStatus, ScheduleHistoryItem } from '@/lib/types';
+import type { Schedule, ScheduleHistoryItem } from '@/lib/types';
 import { useState } from 'react';
 
 interface StatusResp   { status: string; enabled: boolean; activeSchedules: number; totalSchedules: number; tickMs: number; nextScheduled: { name: string; at: string } | null }

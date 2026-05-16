@@ -35,7 +35,11 @@ export function useApi<T>(path: string, immediate = true): UseApiState<T> {
   }, [path]);
 
   useEffect(() => {
-    if (immediate) fetch();
+    if (!immediate || typeof window === 'undefined') return;
+    const id = window.setTimeout(() => {
+      void fetch();
+    }, 0);
+    return () => window.clearTimeout(id);
   }, [fetch, immediate]);
 
   return { data, loading, error, refresh: fetch };

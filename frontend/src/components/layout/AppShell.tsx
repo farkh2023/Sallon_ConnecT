@@ -1,109 +1,149 @@
 'use client';
 
 import { useNotifications } from '@/hooks/useNotifications';
+import { useTvMode } from '@/hooks/useTvMode';
 import { TopNav } from './TopNav';
 import { SectionHeader } from './SectionHeader';
-import { HeroPanel }          from '@/components/dashboard/HeroPanel';
-import { DevicesPanel }       from '@/components/devices/DevicesPanel';
-import { AgentsPanel }        from '@/components/agents/AgentsPanel';
-import { MediaPanel }         from '@/components/media/MediaPanel';
-import { AdbPanel }           from '@/components/media/AdbPanel';
-import { DlnaPanel }          from '@/components/media/DlnaPanel';
-import { SmartThingsPanel }   from '@/components/media/SmartThingsPanel';
-import { StreamingPanel }     from '@/components/media/StreamingPanel';
-import { ScenariosPanel }     from '@/components/scenarios/ScenariosPanel';
+import { HeroPanel } from '@/components/dashboard/HeroPanel';
+import { DevicesPanel } from '@/components/devices/DevicesPanel';
+import { AgentsPanel } from '@/components/agents/AgentsPanel';
+import { MediaPanel } from '@/components/media/MediaPanel';
+import { AdbPanel } from '@/components/media/AdbPanel';
+import { DlnaPanel } from '@/components/media/DlnaPanel';
+import { SmartThingsPanel } from '@/components/media/SmartThingsPanel';
+import { StreamingPanel } from '@/components/media/StreamingPanel';
+import { ScenariosPanel } from '@/components/scenarios/ScenariosPanel';
 import { NotificationsPanel } from '@/components/notifications/NotificationsPanel';
-import { SchedulerPanel }     from '@/components/scheduler/SchedulerPanel';
+import { SchedulerPanel } from '@/components/scheduler/SchedulerPanel';
+import { TvModeProvider } from '@/components/tv/TvModeProvider';
+import { TvDashboard } from '@/components/tv/TvDashboard';
 
 export function AppShell() {
+  return (
+    <TvModeProvider>
+      <AppShellContent />
+    </TvModeProvider>
+  );
+}
+
+function AppShellContent() {
   const { stats } = useNotifications(15_000);
-  const unread    = stats?.unread ?? 0;
+  const tv = useTvMode();
+  const unread = stats?.unread ?? 0;
+
+  const sectionClass = (panel: string) =>
+    tv.enabled && tv.activePanel === panel ? 'tv-active-section' : undefined;
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className={`flex min-h-screen flex-col ${tv.enabled ? 'tv-mode-shell' : ''}`}>
       <TopNav unread={unread} />
 
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8 space-y-16">
+      <main className="mx-auto w-full max-w-7xl flex-1 space-y-16 px-4 py-8">
+        {tv.enabled && <TvDashboard />}
 
-        {/* Hero */}
-        <section id="hero">
+        <section id="hero" className={sectionClass('dashboard')}>
           <HeroPanel />
         </section>
 
-        {/* Appareils */}
         <section id="appareils">
-          <SectionHeader icon="📡" title="Appareils" description="Statut réseau en temps réel de vos appareils configurés" />
+          <SectionHeader
+            icon="TV"
+            title="Appareils"
+            description="Statut reseau en temps reel de vos appareils configures"
+          />
           <DevicesPanel />
         </section>
 
-        {/* Agents */}
         <section id="agents">
-          <SectionHeader icon="🤖" title="Hub-Agent Workflow" description="Les 6 agents spécialisés du salon connecté" />
+          <SectionHeader
+            icon="AI"
+            title="Hub-Agent Workflow"
+            description="Les 6 agents specialises du salon connecte"
+          />
           <AgentsPanel />
         </section>
 
-        {/* Centre multimédia */}
-        <section id="media">
-          <SectionHeader icon="🎬" title="Centre multimédia" description="Services et intégrations locales" />
+        <section id="media" className={sectionClass('media')}>
+          <SectionHeader
+            icon="AV"
+            title="Centre multimedia"
+            description="Services et integrations locales"
+          />
           <div className="space-y-6">
             <div>
-              <p className="text-xs text-slate-500 mb-3 font-medium uppercase tracking-wider">Services</p>
+              <p className="mb-3 text-xs font-medium uppercase tracking-wider text-slate-500">
+                Services
+              </p>
               <MediaPanel />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <p className="text-xs text-slate-500 mb-3 font-medium uppercase tracking-wider">ADB Diagnostic</p>
+                <p className="mb-3 text-xs font-medium uppercase tracking-wider text-slate-500">
+                  ADB Diagnostic
+                </p>
                 <AdbPanel />
               </div>
               <div>
-                <p className="text-xs text-slate-500 mb-3 font-medium uppercase tracking-wider">DLNA / UPnP</p>
+                <p className="mb-3 text-xs font-medium uppercase tracking-wider text-slate-500">
+                  DLNA / UPnP
+                </p>
                 <DlnaPanel />
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <p className="text-xs text-slate-500 mb-3 font-medium uppercase tracking-wider">SmartThings Samsung TV</p>
+                <p className="mb-3 text-xs font-medium uppercase tracking-wider text-slate-500">
+                  SmartThings Samsung TV
+                </p>
                 <SmartThingsPanel />
               </div>
               <div>
-                <p className="text-xs text-slate-500 mb-3 font-medium uppercase tracking-wider">Streaming assisté</p>
+                <p className="mb-3 text-xs font-medium uppercase tracking-wider text-slate-500">
+                  Streaming assiste
+                </p>
                 <StreamingPanel />
               </div>
             </div>
           </div>
         </section>
 
-        {/* Scénarios */}
         <section id="scenarios">
-          <SectionHeader icon="🎭" title="Scénarios intelligents" description="Automatisations locales — mode simulation par défaut" />
+          <SectionHeader
+            icon="SC"
+            title="Scenarios intelligents"
+            description="Automatisations locales, mode simulation par defaut"
+          />
           <ScenariosPanel />
         </section>
 
-        {/* Notifications */}
-        <section id="notifications">
+        <section id="notifications" className={sectionClass('notifications')}>
           <SectionHeader
-            icon="🔔"
+            icon="NO"
             title="Notifications"
-            description="Centre de notifications local — aucun push cloud"
-            badge={unread > 0 ? (
-              <span className="bg-danger text-white text-[10px] font-bold rounded-full px-2 py-0.5 leading-none">
-                {unread}
-              </span>
-            ) : undefined}
+            description="Centre de notifications local, aucun push cloud"
+            badge={
+              unread > 0 ? (
+                <span className="rounded-full bg-danger px-2 py-0.5 text-[10px] font-bold leading-none text-white">
+                  {unread}
+                </span>
+              ) : undefined
+            }
           />
           <NotificationsPanel />
         </section>
 
-        {/* Tâches planifiées */}
-        <section id="taches">
-          <SectionHeader icon="📅" title="Tâches planifiées" description="Scheduler local — aucun cron système, aucun cloud" />
+        <section id="taches" className={sectionClass('scheduler')}>
+          <SectionHeader
+            icon="TS"
+            title="Taches planifiees"
+            description="Scheduler local, aucun cron systeme, aucun cloud"
+          />
           <SchedulerPanel />
         </section>
-
       </main>
 
-      <footer className="border-t border-white/[0.06] text-center py-4 text-xs text-slate-600">
-        Sallon-ConnecT Phase 14 — local, sécurisé, aucun cloud
+      <footer className="border-t border-white/[0.06] py-4 text-center text-xs text-slate-600">
+        Sallon-ConnecT Phase 15 - local, securise, aucun cloud
       </footer>
     </div>
   );
