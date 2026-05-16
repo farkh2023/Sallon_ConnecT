@@ -17,7 +17,8 @@ node_modules/
 .pnp.js
 
 # Build
-dist/
+dist/*
+!dist/.gitkeep
 build/
 .next/
 out/
@@ -36,6 +37,9 @@ desktop.ini
 # Logs
 *.log
 npm-debug.log*
+logs/*.log
+logs/*.txt
+!logs/.gitkeep
 
 # Données personnelles (Phase 3+)
 devices.local.json

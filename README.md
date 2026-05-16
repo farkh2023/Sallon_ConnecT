@@ -616,6 +616,81 @@ Documentation detaillee: `docs/PHASE15.md`.
 
 ---
 
+## Phase 16 - Packaging Windows local
+
+La Phase 16 ajoute un packaging Windows local pour lancer Sallon-ConnecT par double-clic, diagnostiquer l'etat du hub et creer une archive portable securisee.
+
+### Installation dependances
+
+```powershell
+scripts\windows\install-deps.bat
+```
+
+Ou:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\windows\install-deps.ps1
+```
+
+### Lancement Windows
+
+```powershell
+scripts\windows\start-sallon-connect.bat
+```
+
+Le script lance le backend Express sur `http://localhost:3000`, le frontend Next.js sur `http://localhost:3001`, conserve l'ancien frontend sur `http://localhost:3000` et ecrit les logs dans `logs/`.
+
+### Statut et arret
+
+```powershell
+scripts\windows\status-sallon-connect.bat
+scripts\windows\stop-sallon-connect.bat
+```
+
+### Dashboard
+
+```powershell
+scripts\windows\open-dashboard.bat
+```
+
+Le script ouvre `http://localhost:3001` si disponible, sinon `http://localhost:3000`.
+
+### Raccourci Bureau
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\windows\create-desktop-shortcut.ps1
+```
+
+Le raccourci `Sallon-ConnecT` lance `scripts\windows\start-sallon-connect.bat` sans privileges administrateur.
+
+### Build frontend
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\windows\build-frontend.ps1
+```
+
+### Diagnostic local
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\windows\diagnose.ps1
+```
+
+Le rapport est ecrit dans `logs/diagnostic-YYYYMMDD-HHMM.txt` sans afficher le contenu `.env`.
+
+### Package portable
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\windows\package-portable.ps1
+```
+
+Sortie: `dist/Sallon-ConnecT-Portable-YYYYMMDD-HHMM.zip`.
+
+L'archive exclut `.env`, `.env.local`, `frontend/.env.local`, `node_modules/`, `frontend/node_modules/`, `.next/`, `frontend/.next/`, `.git/`, `runtime/*.json`, `logs/*.log`, `logs/*.txt`, `*.pem` et `*.key`.
+
+Documentation detaillee: `docs/PHASE16.md`.
+
+---
+
 ## Phase 14 — Frontend React / Next.js
 
 Migration progressive du frontend vanilla vers React + Next.js TypeScript.  
