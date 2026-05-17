@@ -720,6 +720,44 @@ Documentation detaillee: `docs/PHASE17.md`.
 
 ---
 
+## Phase 17B - Maintenance dependances
+
+Maintenance controlee des dependances apres mise en place des tests Phase 17.
+
+### Audit
+
+- Node.js: `v22.11.0`
+- npm: `10.9.0`
+- Racine: 0 vulnerabilite avant/apres `npm audit fix`
+- Frontend: 2 vulnerabilites moderees avant/apres `npm audit fix`
+
+Rapports:
+
+- `logs/npm-audit-root.json`
+- `logs/npm-audit-frontend.json`
+
+### Corrections
+
+`npm audit fix` sans `--force` a ete lance a la racine et dans `frontend/`.
+
+Aucune dependance n'a ete modifiee: la seule correction frontend proposee par npm exige `npm audit fix --force` et installerait `next@9.3.3`, un downgrade breaking incompatible avec le frontend Next.js actuel.
+
+### Vulnerabilites restantes
+
+Les 2 vulnerabilites moderees restantes viennent de `postcss <8.5.10` via `next`. Elles sont documentees et non corrigees automatiquement pour eviter un changement majeur dangereux.
+
+Validation apres maintenance:
+
+```powershell
+npm run check
+```
+
+Resultat: OK.
+
+Documentation detaillee: `docs/PHASE17B.md`.
+
+---
+
 ## Phase 14 — Frontend React / Next.js
 
 Migration progressive du frontend vanilla vers React + Next.js TypeScript.  

@@ -49,3 +49,5 @@ network-scan-results.json
 runtime/*.json
 !runtime/.gitkeep
 tests/.runtime/
+
+logs/*.json
