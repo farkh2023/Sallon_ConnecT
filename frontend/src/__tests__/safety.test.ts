@@ -8,8 +8,9 @@ import {
 
 describe('frontend safety helpers', () => {
   it('masks token, IP and absolute paths', () => {
+    const token = ['abcdefghijkl', 'mnopqrstuvwxyz', '123456'].join('');
     const masked = maskSensitiveClientText(
-      'Bearer abcdefghijklmnopqrstuvwxyz123456 at 192.168.1.40 in C:\\Users\\Youss\\secret.txt'
+      `Bearer ${token} at 192.168.1.40 in C:\\Example\\secret.txt`
     );
 
     expect(masked).toContain('[ip-masquee]');

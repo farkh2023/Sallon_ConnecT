@@ -21,6 +21,7 @@ import { BackupPanel } from '@/components/backup/BackupPanel';
 import { TvModeProvider } from '@/components/tv/TvModeProvider';
 import { TvDashboard } from '@/components/tv/TvDashboard';
 import { useProfiles } from '@/hooks/useProfiles';
+import { PROJECT_TAGLINE } from '@/lib/project';
 import { useEffect } from 'react';
 
 export function AppShell() {
@@ -192,7 +193,7 @@ function AppShellContent() {
       </main>
 
       <footer className="border-t border-white/[0.06] py-4 text-center text-xs text-slate-600">
-        Sallon-ConnecT Phase 21 - local, securise, aucun cloud
+        Sallon-ConnecT {PROJECT_TAGLINE}
       </footer>
     </div>
   );

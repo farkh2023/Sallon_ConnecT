@@ -53,7 +53,7 @@ server/src/services/
 |---------------|---------------|------------------------------------------------|
 | ADB (mobile)  | ○ Désactivé   | `ADB_ENABLED=true` + `ADB_PATH=<chemin adb>`   |
 | DLNA / UPnP   | ○ Désactivé   | `DLNA_ENABLED=true`                            |
-| SmartThings   | ○ Désactivé   | `SMARTTHINGS_ENABLED=true` + `SMARTTHINGS_TOKEN=<token>` |
+| SmartThings   | ○ Désactivé   | `SMARTTHINGS_ENABLED=true` + `SMARTTHINGS_TOKEN dans .env` |
 
 ## Règles de sécurité
 
@@ -81,7 +81,7 @@ server/src/services/
 ## Comment activer SmartThings (Phase 5)
 
 1. Créer un Personal Access Token sur https://account.smartthings.com/tokens
-2. Dans `.env` : `SMARTTHINGS_ENABLED=true` et `SMARTTHINGS_TOKEN=<votre token>`
+2. Dans `.env` : `SMARTTHINGS_ENABLED=true` et `SMARTTHINGS_TOKEN`
 3. Implémenter `smartThingsConnector.runPreview()` pour contrôler la Samsung TV
 
 ## Limites actuelles

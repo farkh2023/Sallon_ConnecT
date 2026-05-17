@@ -1,151 +1,184 @@
-# prepare-release.ps1 — Sallon-ConnecT Phase 22
-# Valide que le projet est pret pour une release locale et une publication GitHub.
-# Ne pousse RIEN automatiquement.
+# prepare-release.ps1 - Sallon-ConnecT Phase 22
+# Execute les controles locaux avant commit/release. Ne pousse rien vers GitHub.
 
 param(
-    [switch]$SkipHealth,
-    [switch]$Quiet
+  [switch]$SkipHealth,
+  [switch]$Quiet
 )
 
 Set-StrictMode -Off
 $ErrorActionPreference = 'Continue'
 
-$Timestamp = Get-Date -Format 'yyyyMMdd-HHmm'
-$LogDir    = Join-Path $PSScriptRoot '..\..\logs'
-$LogFile   = Join-Path $LogDir "release-prep-$Timestamp.txt"
-
-if (-not (Test-Path $LogDir)) { New-Item -ItemType Directory -Path $LogDir -Force | Out-Null }
-
-$Root    = Resolve-Path (Join-Path $PSScriptRoot '..\..')
-$Results = [System.Collections.Generic.List[string]]::new()
-$Failed  = 0
-
-function Log([string]$Text) {
-    $Results.Add($Text)
-    if (-not $Quiet) { Write-Host $Text }
-}
-
-function Step([string]$Name) { Log ""; Log "── $Name ──" }
-function Pass([string]$Msg)  { Log "  [PASS] $Msg" }
-function Fail([string]$Msg)  { $script:Failed++; Log "  [FAIL] $Msg" }
-function Skip([string]$Msg)  { Log "  [SKIP] $Msg" }
-function Info([string]$Msg)  { Log "  [INFO] $Msg" }
-
-Log "======================================================="
-Log " Sallon-ConnecT — Prepare Release v0.1.0"
-Log " Date : $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
-Log " Racine : $Root"
-Log "======================================================="
-
+$Root = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 Set-Location $Root
 
-# ── npm run check ─────────────────────────────────────────────────
-Step "npm run check (lint + tests + build)"
-$checkResult = npm run check 2>&1
-if ($LASTEXITCODE -eq 0) {
-    Pass "npm run check reussi"
-} else {
-    Fail "npm run check echoue — corriger avant release"
-    $checkResult | Select-Object -Last 10 | ForEach-Object { Log "    $_" }
+$Timestamp = Get-Date -Format 'yyyyMMdd-HHmm'
+$LogDir = Join-Path $Root 'logs'
+$ReportName = "release-prep-$Timestamp.txt"
+$LogFile = Join-Path $LogDir $ReportName
+$RelativeReport = "logs\$ReportName"
+
+if (-not (Test-Path $LogDir)) {
+  New-Item -ItemType Directory -Path $LogDir -Force | Out-Null
 }
 
-# ── npm run health ────────────────────────────────────────────────
-Step "npm run health (non bloquant)"
+$Lines = [System.Collections.Generic.List[string]]::new()
+$Failed = 0
+$Warnings = 0
+$NpmCommand = if ($env:OS -eq 'Windows_NT') { 'npm.cmd' } else { 'npm' }
+
+function Sanitize-Line([string]$Text) {
+  if ($null -eq $Text) { return '' }
+  $Value = $Text -replace [regex]::Escape($Root.Path), '<repo>'
+  $Value = $Value -replace 'C:\\Users\\[^\\\s]+\\', '<user-home>\'
+  $MacHomeRegex = '/' + 'Users' + '/[^/\s]+/'
+  $Value = $Value -replace $MacHomeRegex, '<user-home>/'
+  return $Value
+}
+
+function Log([string]$Text) {
+  $Safe = Sanitize-Line $Text
+  $Lines.Add($Safe)
+  if (-not $Quiet) { Write-Host $Safe }
+}
+
+function Section([string]$Name) {
+  Log ''
+  Log "-- $Name --"
+}
+
+function Pass([string]$Message) {
+  Log "  [PASS] $Message"
+}
+
+function Warn([string]$Message) {
+  $script:Warnings += 1
+  Log "  [WARN] $Message"
+}
+
+function Fail([string]$Message) {
+  $script:Failed += 1
+  Log "  [FAIL] $Message"
+}
+
+function Run-RequiredCommand([string]$Name, [string]$Command, [string[]]$Arguments) {
+  Section $Name
+  $Output = & $Command @Arguments 2>&1
+  $Code = $LASTEXITCODE
+
+  if ($Code -eq 0) {
+    Pass "$Name reussi"
+  } else {
+    Fail "$Name echoue (code $Code)"
+    $Output | Select-Object -Last 20 | ForEach-Object { Log "    $_" }
+  }
+}
+
+Log '======================================================='
+Log ' Sallon-ConnecT - Prepare Release v0.1.0'
+Log " Date : $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
+Log ' Racine : <repo>'
+Log '======================================================='
+
+Run-RequiredCommand 'npm run check' $NpmCommand @('run', 'check')
+
+Section 'npm run health'
 if ($SkipHealth) {
-    Skip "health check ignore (--SkipHealth)"
+  Warn 'health check ignore par option'
 } else {
-    $healthResult = npm run health 2>&1
-    if ($LASTEXITCODE -eq 0) {
-        Pass "Backend repond (health ok)"
-    } else {
-        Log "  [WARN]  Backend non actif — health check ignore (non bloquant)"
-    }
+  $HealthOutput = & $NpmCommand @('run', 'health') 2>&1
+  $HealthCode = $LASTEXITCODE
+  if ($HealthCode -eq 0) {
+    Pass 'Backend actif et health check OK'
+  } else {
+    Warn 'Backend non actif ou endpoint health indisponible - non bloquant si npm run check passe'
+    $HealthOutput | Select-Object -Last 5 | ForEach-Object { Log "    $_" }
+  }
 }
 
-# ── Preflight GitHub ──────────────────────────────────────────────
-Step "Preflight GitHub"
-$preflightScript = Join-Path $PSScriptRoot 'preflight-github.ps1'
-if (Test-Path $preflightScript) {
-    powershell -ExecutionPolicy Bypass -File $preflightScript -Quiet
-    if ($LASTEXITCODE -eq 0) {
-        Pass "Preflight GitHub OK"
-    } else {
-        Fail "Preflight GitHub detecte des problemes — corriger avant publication"
-    }
+Section 'Preflight GitHub'
+$PreflightScript = Join-Path $PSScriptRoot 'preflight-github.ps1'
+if (Test-Path $PreflightScript) {
+  powershell -ExecutionPolicy Bypass -File $PreflightScript -Quiet
+  if ($LASTEXITCODE -eq 0) {
+    Pass 'Preflight GitHub OK'
+  } else {
+    Fail 'Preflight GitHub a detecte un probleme bloquant'
+  }
 } else {
-    Fail "preflight-github.ps1 introuvable"
+  Fail 'scripts/release/preflight-github.ps1 absent'
 }
 
-# ── Docs principales ──────────────────────────────────────────────
-Step "Documentation principale"
-$Docs = @('README.md', 'CHANGELOG.md', 'ROADMAP.md', 'SECURITY.md',
-          'CONTRIBUTING.md', 'VERSION', 'docs/ARCHITECTURE.md',
-          'docs/LOCAL_SETUP.md', 'docs/RELEASE_CHECKLIST.md')
-foreach ($doc in $Docs) {
-    if (Test-Path $doc) { Pass "Present : $doc" } else { Fail "Absent  : $doc" }
+Section 'Documentation principale'
+$Docs = @(
+  'README.md',
+  'CHANGELOG.md',
+  'ROADMAP.md',
+  'SECURITY.md',
+  'CONTRIBUTING.md',
+  'VERSION',
+  'docs/ARCHITECTURE.md',
+  'docs/SECURITY_MODEL.md',
+  'docs/LOCAL_SETUP.md',
+  'docs/RELEASE_CHECKLIST.md',
+  'docs/VERSIONING.md'
+)
+
+foreach ($Doc in $Docs) {
+  if (Test-Path $Doc) { Pass "Present : $Doc" } else { Fail "Absent : $Doc" }
 }
 
-# ── ZIP portable ──────────────────────────────────────────────────
-Step "Package portable (optionnel)"
-$zips = Get-ChildItem 'dist' -Filter '*.zip' -ErrorAction SilentlyContinue
-if ($zips) {
-    $latest = $zips | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-    $ageDays = ((Get-Date) - $latest.LastWriteTime).TotalDays
-    if ($ageDays -lt 7) {
-        Pass "ZIP portable recent : $($latest.Name) ($([math]::Round($ageDays,1)) jours)"
-    } else {
-        Log "  [WARN]  ZIP portable present mais age de $([math]::Round($ageDays,0)) jours — reconstruire ?"
-    }
-} else {
-    Skip "Aucun ZIP portable dans dist/ (normal si non packagé)"
-}
-
-# ── Version ───────────────────────────────────────────────────────
-Step "Version"
+Section 'Version'
 if (Test-Path 'VERSION') {
-    $ver = (Get-Content 'VERSION').Trim()
-    Pass "VERSION : $ver"
-    $pkgVer = (node -e "process.stdout.write(require('./package.json').version)" 2>$null)
-    if ($pkgVer -eq $ver) {
-        Pass "package.json version ($pkgVer) = VERSION ($ver)"
-    } else {
-        Log "  [WARN]  package.json version ($pkgVer) != VERSION ($ver)"
-    }
+  $Version = (Get-Content 'VERSION' -Raw).Trim()
+  if ($Version -eq '0.1.0') { Pass 'VERSION = 0.1.0' } else { Fail "VERSION inattendu : $Version" }
+
+  $PackageVersion = node -e "process.stdout.write(require('./package.json').version)" 2>$null
+  if ($PackageVersion -eq $Version) { Pass 'package.json coherent avec VERSION' } else { Fail 'package.json incoherent avec VERSION' }
+
+  $FrontendVersion = node -e "process.stdout.write(require('./frontend/package.json').version)" 2>$null
+  if ($FrontendVersion -eq $Version) { Pass 'frontend/package.json coherent avec VERSION' } else { Warn 'frontend/package.json version differente de VERSION' }
 } else {
-    Fail "Fichier VERSION absent"
+  Fail 'VERSION absent'
 }
 
-# ── Git status ────────────────────────────────────────────────────
-Step "Git status"
-$gitStatus = git status --porcelain 2>$null
-if (-not $gitStatus) {
-    Pass "Depot propre — rien a commiter"
+Section 'Package portable'
+$PortableZips = @(Get-ChildItem 'dist' -Filter '*.zip' -ErrorAction SilentlyContinue)
+if ($PortableZips.Count -gt 0) {
+  $LatestZip = $PortableZips | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+  Pass "ZIP portable present : $($LatestZip.Name)"
 } else {
-    Log "  [WARN]  Fichiers non commites detectes :"
-    $gitStatus | Select-Object -First 10 | ForEach-Object { Log "    $_" }
+  Warn 'Aucun ZIP portable dans dist - normal si le packaging manuel n a pas ete lance'
 }
 
-# ── Résumé ────────────────────────────────────────────────────────
-Log ""
-Log "======================================================="
-Log " RÉSUMÉ RELEASE"
-Log "======================================================="
+Section 'Git status'
+$GitStatus = @(git status --porcelain 2>$null)
+if ($GitStatus.Count -eq 0) {
+  Pass 'Depot propre'
+} else {
+  Warn "$($GitStatus.Count) changement(s) locaux a commiter"
+  $GitStatus | Select-Object -First 20 | ForEach-Object { Log "    $_" }
+}
 
+Log ''
+Log '======================================================='
+Log ' RESUME RELEASE'
+Log '======================================================='
 if ($Failed -eq 0) {
-    Log "  RESULTAT : OK — Projet pret pour release"
+  Log "  RESULTAT : OK - $Warnings warning(s) non bloquant(s)"
 } else {
-    Log "  RESULTAT : ECHEC — $Failed verification(s) en echec"
+  Log "  RESULTAT : ECHEC - $Failed verification(s) en echec"
 }
-Log "  Rapport  : $LogFile"
-Log ""
-Log "  Commandes recommandees pour publication GitHub :"
-Log "    git status"
-Log "    git add ."
-Log "    git commit -m ""Prepare v0.1.0 GitHub release"""
-Log "    git tag v0.1.0"
-Log "    # git push origin main --tags  <-- A executer manuellement"
-Log "======================================================="
+Log "  Rapport  : $RelativeReport"
+Log ''
+Log '  Commandes Git recommandees apres validation :'
+Log '    git status'
+Log '    git add .'
+Log '    git commit -m "Prepare v0.1.0 GitHub release"'
+Log '    git tag v0.1.0'
+Log '======================================================='
 
-$Results | Set-Content -Path $LogFile -Encoding utf8
+$Lines | Set-Content -Path $LogFile -Encoding utf8
 
-if ($Failed -gt 0) { exit 1 } else { exit 0 }
+if ($Failed -gt 0) { exit 1 }
+exit 0

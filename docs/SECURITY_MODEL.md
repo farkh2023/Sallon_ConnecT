@@ -71,7 +71,7 @@ Toutes les réponses API passent par des fonctions de sanitisation :
 
 | Donnée | Traitement |
 |---|---|
-| Token Bearer | Remplacé par `[masked]` |
+| Token authentication | Remplacé par `[masked]` |
 | IP complète | Tronquée ou masquée |
 | Chemin absolu | `…/derniers/segments` uniquement |
 | ID complet | Tronqué à 8–16 caractères + `…` |

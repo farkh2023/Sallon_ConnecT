@@ -126,7 +126,7 @@ Le dossier `runtime/` contient les fichiers d'état non versionnés :
 
 ## PWA
 
-- Manifest PWA : `frontend/public/manifest.json`
+- Manifest PWA : `frontend/public/manifest.webmanifest`
 - Service Worker : `frontend/public/sw.js`
 - Mode offline : page dédiée `/offline`
 - Installation possible sur Windows/Android

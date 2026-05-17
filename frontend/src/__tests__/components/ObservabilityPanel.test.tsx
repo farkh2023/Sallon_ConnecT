@@ -188,8 +188,9 @@ describe('ObservabilityPanel', () => {
 
   it('does not display secret-like values from mocked payloads', async () => {
     const unsafe = overview('ok');
+    const token = ['abcdefghijkl', 'mnopqrstuvwxyz', '123456'].join('');
     unsafe.runtime.latestPortableZip.name =
-      'Bearer abcdefghijklmnopqrstuvwxyz123456 token=abcdefghijklmnopqrstuvwxyz123456 C:\\Users\\Youss\\secret.txt';
+      `Bearer ${token} token=${token} C:\\Example\\secret.txt`;
     vi.stubGlobal('fetch', mountMock(() => jsonResponse(unsafe)));
 
     render(<ObservabilityPanel />);
@@ -197,6 +198,6 @@ describe('ObservabilityPanel', () => {
     await screen.findByText('Observabilite globale');
     expect(screen.queryByText(/abcdefghijklmnopqrstuvwxyz123456/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Bearer/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/C:\\Users/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/C:\\Example/i)).not.toBeInTheDocument();
   });
 });

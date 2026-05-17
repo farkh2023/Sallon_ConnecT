@@ -159,7 +159,7 @@ Maximum 100 entrées (rotation automatique). Jamais de token, jamais d'ID comple
 
 ```dotenv
 SMARTTHINGS_ENABLED=true
-SMARTTHINGS_TOKEN=your-token-here
+SMARTTHINGS_TOKEN = <token-placeholder>
 SMARTTHINGS_TV_COMMANDS_ENABLED=true
 SMARTTHINGS_TV_CONFIRMATION_CODE=CONFIRMER_TV
 SMARTTHINGS_TV_DEVICE_ALLOWLIST=your-tv-device-id

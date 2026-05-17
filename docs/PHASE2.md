@@ -95,7 +95,7 @@ Ouvrir `data/agents.json` et ajouter :
 
 ```powershell
 # Python (recommandé)
-cd C:\Users\Youss\Sallon_ConnecT
+cd <repo>
 python -m http.server 8080
 # Ouvrir http://localhost:8080
 

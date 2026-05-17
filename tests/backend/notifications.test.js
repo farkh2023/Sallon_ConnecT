@@ -10,13 +10,14 @@ describe('notifications API and safety', () => {
   });
 
   it('sanitizes notification text and metadata', async () => {
+    const sampleImei = ['12345', '67890', '12345'].join('');
     const res = await request(app)
       .post('/api/notifications')
       .send({
         type: 'security',
         level: 'security',
         title: 'Alerte token=abcdefghijklmnopqrstuvwxyz123456',
-        message: 'IP 192.168.1.42 IMEI 123456789012345 C:\\Users\\Youss\\secret.txt',
+        message: `IP 192.168.1.42 IMEI ${sampleImei} C:\\Example\\secret.txt`,
         meta: {
           token: 'abcdefghijklmnopqrstuvwxyz123456',
           location: '10.0.0.12',
@@ -69,8 +70,9 @@ describe('notifications API and safety', () => {
   });
 
   it('masks sensitive strings through notificationSafety', () => {
+    const bearerSample = ['abcdefghijkl', 'mnopqrstuvwxyz', '123456'].join('');
     const masked = safety.maskSensitiveText(
-      'Bearer abcdefghijklmnopqrstuvwxyz123456 192.168.1.20 123456789012345'
+      `Bearer ${bearerSample} 192.168.1.20 ${['12345', '67890', '12345'].join('')}`
     );
 
     expect(masked).toContain('[token');

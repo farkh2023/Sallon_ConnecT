@@ -55,7 +55,7 @@ server.js (Express)
 
 ```powershell
 # 1. Installer les dépendances
-cd C:\Users\Youss\Sallon_ConnecT
+cd <repo>
 npm install
 
 # 2. Configurer les appareils (optionnel)

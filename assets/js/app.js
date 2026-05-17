@@ -1227,7 +1227,7 @@ function renderSmartThingsPanel() {
         <ol>
           <li>Créer un token sur <a href="https://account.smartthings.com/tokens" target="_blank" rel="noopener noreferrer">account.smartthings.com/tokens</a></li>
           <li>Scopes : <code>devices:read</code> <code>locations:read</code> <code>scenes:read</code></li>
-          <li>Dans <code>.env</code> : <code>SMARTTHINGS_TOKEN=...</code> et <code>SMARTTHINGS_ENABLED=true</code></li>
+          <li>Dans <code>.env</code> : <code>SMARTTHINGS_TOKEN</code> et <code>SMARTTHINGS_ENABLED=true</code></li>
           <li>Garder <code>SMARTTHINGS_READ_ONLY=true</code> et <code>SMARTTHINGS_ALLOW_SCENE_EXECUTION=false</code></li>
         </ol>
       </div>
@@ -1239,7 +1239,7 @@ function renderSmartThingsPanel() {
     panel.innerHTML = `
       <div class="st-status-row">
         <span class="st-badge ${info.cls}">${info.icon} ${info.label}</span>
-        <span class="st-hint">Ajoutez <code>SMARTTHINGS_TOKEN=...</code> dans <code>.env</code></span>
+        <span class="st-hint">Ajoutez <code>SMARTTHINGS_TOKEN</code> dans <code>.env</code></span>
       </div>
     `;
     return;

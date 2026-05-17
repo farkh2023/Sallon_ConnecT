@@ -4,7 +4,7 @@
 
 | Outil | Version minimale | Vérification |
 |---|---|---|
-| Node.js | 22.x | `node --version` |
+| Node.js | 22.13+ | `node --version` |
 | npm | 10.x | `npm --version` |
 | PowerShell | 5.1+ | `$PSVersionTable.PSVersion` |
 | Git | 2.x | `git --version` |
@@ -113,11 +113,11 @@ npm run dev
 
 Un autre processus utilise le port. Changer le port dans `.env` :
 ```
-PORT=3001
+PORT=3002
 ```
 Et ajuster `frontend/.env.local` :
 ```
-NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3002
 ```
 
 ### Les intégrations ne répondent pas
@@ -151,7 +151,7 @@ copy frontend\.env.example frontend\.env.local
 
 | Variable | Description | Valeur typique |
 |---|---|---|
-| `NEXT_PUBLIC_API_URL` | URL du backend | `http://localhost:3000` |
+| `NEXT_PUBLIC_API_BASE_URL` | URL du backend | `http://localhost:3000` |
 
 ---
 

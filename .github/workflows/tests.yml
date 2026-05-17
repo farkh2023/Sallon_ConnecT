@@ -45,6 +45,9 @@ jobs:
       - name: Frontend tests
         run: npm run test:frontend
 
+      - name: Packaging tests
+        run: npm run test:packaging
+
       - name: PowerShell syntax tests
         run: npm run test:windows
 

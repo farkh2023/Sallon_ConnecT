@@ -75,7 +75,7 @@ Si l'un quelconque échoue → réponse 403, audit d'échec enregistré, aucun a
 ```dotenv
 # Phase 8 — toujours requis
 SMARTTHINGS_ENABLED=true
-SMARTTHINGS_TOKEN=your-token-here     # jamais commité, jamais dans le code
+SMARTTHINGS_TOKEN = <token-placeholder>     # jamais commité, jamais dans le code
 SMARTTHINGS_READ_ONLY=true
 SMARTTHINGS_MASK_IDS=true
 

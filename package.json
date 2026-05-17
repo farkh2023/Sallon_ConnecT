@@ -1,6 +1,7 @@
 {
   "name": "sallon-connect",
-  "version": "14.0.0",
+  "version": "0.1.0",
+  "private": true,
   "description": "Hub intelligent pour centraliser les appareils, services et agents IA du salon",
   "main": "server.js",
   "scripts": {
@@ -27,7 +28,7 @@
     "express": "^4.18.3"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.13.0"
   },
   "keywords": [
     "hub",

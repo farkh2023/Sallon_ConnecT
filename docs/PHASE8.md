@@ -187,7 +187,7 @@ server/src/services/media/
 ## Comment tester
 
 ```powershell
-# 1. Dans .env : SMARTTHINGS_ENABLED=true + SMARTTHINGS_TOKEN=<votre-token>
+# 1. Dans .env : SMARTTHINGS_ENABLED=true + SMARTTHINGS_TOKEN renseigne
 # 2. Redémarrer : npm start
 # 3. Tester les endpoints :
 

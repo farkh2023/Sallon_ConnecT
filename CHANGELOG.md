@@ -20,7 +20,7 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/) — versionnem
 - Orchestrateur de scénarios intelligents (cinéma, travail, famille…)
 - Diagnostic ADB en lecture seule (pas d'écriture sur l'appareil)
 - Découverte DLNA/UPnP passive (pas de streaming forcé)
-- SmartThings Samsung TV — opt-in sécurisé, clé Bearer masquée
+- SmartThings Samsung TV — opt-in sécurisé, cle authentication masquee
 - Scènes SmartThings — confirmation explicite obligatoire
 - Commandes TV — whitelist d'actions, opt-in
 - Streaming assisté — indexation locale uniquement

@@ -4,6 +4,8 @@
 .env.production
 *.key
 *.pem
+*.p12
+*.crt
 secrets.json
 config.local.json
 
@@ -18,6 +20,7 @@ node_modules/
 
 # Build
 dist/*
+dist/*.zip
 !dist/.gitkeep
 build/
 .next/
@@ -52,6 +55,11 @@ tests/.runtime/*
 !tests/.runtime/.gitkeep
 
 logs/*.json
+
+# Prompts de travail locaux - non destines au depot public
+prompts/*.md
+Prompt_*.md
+Phase_*.md
 
 # Sauvegardes locales — ne pas versionner
 backups/*.zip

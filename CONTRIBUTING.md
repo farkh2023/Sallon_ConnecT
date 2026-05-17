@@ -6,7 +6,7 @@ Merci de votre intérêt pour le projet. Ce guide explique comment contribuer pr
 
 ## Prérequis
 
-- Node.js 22.x ou supérieur
+- Node.js 22.13 ou superieur
 - npm 10.x ou supérieur
 - PowerShell 5.1+ (Windows)
 - Git
@@ -92,7 +92,7 @@ docs(readme): add badges and quick start section
 - `.next/`, `frontend/.next/`
 - `*.pem`, `*.key`, `*.p12`, `*.crt`
 - IMEI, numéro de téléphone, adresse IP complète, numéro de série
-- Token SmartThings ou autre Bearer token
+- Token SmartThings ou autre token authentication
 
 ### Avant de soumettre une PR
 

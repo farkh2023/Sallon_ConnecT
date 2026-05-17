@@ -7,6 +7,7 @@ import { FullscreenButton } from '@/components/tv/FullscreenButton';
 import { useTvMode } from '@/hooks/useTvMode';
 import { ProfileSwitcher } from '@/components/profiles/ProfileSwitcher';
 import type { UserProfile } from '@/lib/types';
+import { PROJECT_PHASE_LABEL } from '@/lib/project';
 
 interface NavLink {
   href: string;
@@ -83,7 +84,7 @@ export function TopNav({ unread = 0, profiles = [], activeProfile = null, onActi
               onActivate={onActivateProfile}
             />
           )}
-          <span className="hidden text-xs text-slate-600 sm:inline">Phase 21</span>
+          <span className="hidden text-xs text-slate-600 sm:inline">{PROJECT_PHASE_LABEL}</span>
         </div>
       </div>
     </nav>

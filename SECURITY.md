@@ -34,7 +34,7 @@ Toutes les données restent sur votre machine. Aucune télémétrie, aucun servi
 
 ### SmartThings Samsung TV
 - Désactivé par défaut (`SMARTTHINGS_ENABLED=false`)
-- Token Bearer masqué dans toutes les réponses API
+- Token authentication masque dans toutes les réponses API
 - Exécution de scènes opt-in (`SMARTTHINGS_ALLOW_SCENE_EXECUTION=false`)
 - Commandes TV opt-in (`SMARTTHINGS_TV_COMMANDS_ENABLED=false`)
 

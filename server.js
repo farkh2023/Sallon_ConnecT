@@ -1,6 +1,6 @@
 'use strict';
 /* =============================================
-   Sallon-ConnecT — server.js (Phase 13)
+   Sallon-ConnecT — server.js (Phase 22)
    Backend léger : API REST + détection réseau réelle
    Usage : node server.js
 ============================================= */
@@ -144,7 +144,7 @@ async function checkDevice(device) {
 app.get('/api/health', (_req, res) => {
   res.json({
     status:    'ok',
-    phase:     18,
+    phase:     22,
     server:    'Sallon-ConnecT Hub',
     timestamp: new Date().toISOString(),
   });
@@ -277,7 +277,7 @@ function startServer() {
   return app.listen(PORT, () => {
   console.log('');
   console.log('  ╔══════════════════════════════════════╗');
-  console.log('  ║   Sallon-ConnecT Hub — Phase 13      ║');
+  console.log('  ║   Sallon-ConnecT Hub — Phase 22      ║');
   console.log('  ╚══════════════════════════════════════╝');
   console.log('');
   console.log(`  Interface : http://localhost:${PORT}`);
@@ -309,8 +309,8 @@ function startServer() {
   notifEngine.notify({
     type: 'system', level: 'success',
     title: 'Serveur démarré',
-    message: `Sallon-ConnecT Phase 18 - port ${PORT}`,
-    meta: { phase: 18, port: PORT },
+    message: `Sallon-ConnecT Phase 22 - port ${PORT}`,
+    meta: { phase: 22, port: PORT },
   });
   console.log('  Copier .env.example → .env pour configurer les connecteurs');
   console.log('');
