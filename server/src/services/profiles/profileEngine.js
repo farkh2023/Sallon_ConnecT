@@ -6,8 +6,8 @@ const profileStore = require('./profileStore');
 const { getDefaultPermissions } = require('./profilePermissions');
 const { maskProfileSensitiveData } = require('./profileSafety');
 
-const AUDIT_ENABLED = process.env.PROFILES_AUDIT_ENABLED !== 'false';
-const AUDIT_PATH = path.resolve(process.env.PROFILES_AUDIT_PATH || 'runtime/profile-audit.json');
+function isAuditEnabled() { return process.env.PROFILES_AUDIT_ENABLED !== 'false'; }
+function getAuditPath() { return path.resolve(process.env.PROFILES_AUDIT_PATH || 'runtime/profile-audit.json'); }
 const MAX_AUDIT = 200;
 
 const DEFAULT_PROFILES_SPEC = [
@@ -133,8 +133,9 @@ function createDefaultProfiles() {
   }));
   profileStore.saveProfiles(profiles);
   try {
-    fs.mkdirSync(path.dirname(AUDIT_PATH), { recursive: true });
-    fs.writeFileSync(AUDIT_PATH, JSON.stringify([], null, 2), 'utf8');
+    const auditPath = getAuditPath();
+    fs.mkdirSync(path.dirname(auditPath), { recursive: true });
+    fs.writeFileSync(auditPath, JSON.stringify([], null, 2), 'utf8');
   } catch { /* ignore */ }
   return profiles;
 }
@@ -191,8 +192,9 @@ function getProfileDashboardConfig(id) {
 
 function loadAudit() {
   try {
-    if (!fs.existsSync(AUDIT_PATH)) return [];
-    const raw = fs.readFileSync(AUDIT_PATH, 'utf8');
+    const auditPath = getAuditPath();
+    if (!fs.existsSync(auditPath)) return [];
+    const raw = fs.readFileSync(auditPath, 'utf8');
     return JSON.parse(raw) || [];
   } catch {
     return [];
@@ -200,8 +202,9 @@ function loadAudit() {
 }
 
 function auditProfileEvent(eventData) {
-  if (!AUDIT_ENABLED) return;
+  if (!isAuditEnabled()) return;
   try {
+    const auditPath = getAuditPath();
     const entries = loadAudit();
     const entry = {
       at: new Date().toISOString(),
@@ -212,8 +215,8 @@ function auditProfileEvent(eventData) {
     };
     entries.unshift(entry);
     const trimmed = entries.slice(0, MAX_AUDIT);
-    fs.mkdirSync(path.dirname(AUDIT_PATH), { recursive: true });
-    fs.writeFileSync(AUDIT_PATH, JSON.stringify(trimmed, null, 2), 'utf8');
+    fs.mkdirSync(path.dirname(auditPath), { recursive: true });
+    fs.writeFileSync(auditPath, JSON.stringify(trimmed, null, 2), 'utf8');
   } catch { /* ignore */ }
 }
 
@@ -223,7 +226,7 @@ function getAudit() {
 
 function clearAudit() {
   try {
-    fs.writeFileSync(AUDIT_PATH, JSON.stringify([], null, 2), 'utf8');
+    fs.writeFileSync(getAuditPath(), JSON.stringify([], null, 2), 'utf8');
   } catch { /* ignore */ }
   return { cleared: true };
 }

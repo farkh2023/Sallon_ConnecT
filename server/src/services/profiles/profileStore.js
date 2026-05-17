@@ -5,11 +5,11 @@ const path = require('path');
 const { sanitizeProfile, sanitizeProfileForResponse, maskProfileSensitiveData } = require('./profileSafety');
 const { getDefaultPermissions } = require('./profilePermissions');
 
-const ENABLED = process.env.PROFILES_ENABLED !== 'false';
-const STORE_PATH = path.resolve(process.env.PROFILES_STORE_PATH || 'runtime/user-profiles.json');
-const ACTIVE_PATH = path.resolve(process.env.PROFILES_ACTIVE_PATH || 'runtime/active-profile.json');
-const MAX_ITEMS = Math.min(parseInt(process.env.PROFILES_MAX_ITEMS || '10', 10), 20);
-const DEFAULT_ID = process.env.PROFILES_DEFAULT_PROFILE_ID || 'main';
+function isEnabled() { return process.env.PROFILES_ENABLED !== 'false'; }
+function getStorePath() { return path.resolve(process.env.PROFILES_STORE_PATH || 'runtime/user-profiles.json'); }
+function getActivePath() { return path.resolve(process.env.PROFILES_ACTIVE_PATH || 'runtime/active-profile.json'); }
+function getMaxItems() { return Math.min(parseInt(process.env.PROFILES_MAX_ITEMS || '10', 10), 20); }
+function getDefaultId() { return process.env.PROFILES_DEFAULT_PROFILE_ID || 'main'; }
 
 function ensureFile(filePath, defaultContent) {
   try {
@@ -22,8 +22,9 @@ function ensureFile(filePath, defaultContent) {
 
 function loadProfiles() {
   try {
-    ensureFile(STORE_PATH, []);
-    const raw = fs.readFileSync(STORE_PATH, 'utf8');
+    const storePath = getStorePath();
+    ensureFile(storePath, []);
+    const raw = fs.readFileSync(storePath, 'utf8');
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
   } catch {
@@ -32,10 +33,11 @@ function loadProfiles() {
 }
 
 function saveProfiles(items) {
-  if (!ENABLED) return;
+  if (!isEnabled()) return;
   try {
-    fs.mkdirSync(path.dirname(STORE_PATH), { recursive: true });
-    fs.writeFileSync(STORE_PATH, JSON.stringify(items, null, 2), 'utf8');
+    const storePath = getStorePath();
+    fs.mkdirSync(path.dirname(storePath), { recursive: true });
+    fs.writeFileSync(storePath, JSON.stringify(items, null, 2), 'utf8');
   } catch { /* ignore */ }
 }
 
@@ -46,8 +48,9 @@ function getProfile(id) {
 
 function createProfile(input) {
   const profiles = loadProfiles();
-  if (profiles.length >= MAX_ITEMS) {
-    throw new Error(`Nombre maximum de profils atteint (${MAX_ITEMS}).`);
+  const maxItems = getMaxItems();
+  if (profiles.length >= maxItems) {
+    throw new Error(`Nombre maximum de profils atteint (${maxItems}).`);
   }
   const sanitized = sanitizeProfile(input);
   if (!sanitized.name) throw new Error('Nom de profil requis.');
@@ -112,7 +115,7 @@ function updateProfile(id, patch) {
 }
 
 function deleteProfile(id) {
-  if (id === DEFAULT_ID || id === 'main') {
+  if (id === getDefaultId() || id === 'main') {
     throw new Error('Le profil principal ne peut pas être supprimé.');
   }
   const profiles = loadProfiles();
@@ -124,7 +127,7 @@ function deleteProfile(id) {
 
   const active = getActiveProfile();
   if (active && active.id === id) {
-    setActiveProfile(DEFAULT_ID);
+    setActiveProfile(getDefaultId());
   }
 
   return { deleted: true };
@@ -132,13 +135,15 @@ function deleteProfile(id) {
 
 function getActiveProfile() {
   try {
-    ensureFile(ACTIVE_PATH, { id: DEFAULT_ID });
-    const raw = fs.readFileSync(ACTIVE_PATH, 'utf8');
+    const activePath = getActivePath();
+    const defaultId = getDefaultId();
+    ensureFile(activePath, { id: defaultId });
+    const raw = fs.readFileSync(activePath, 'utf8');
     const parsed = JSON.parse(raw);
-    const id = parsed && parsed.id ? String(parsed.id) : DEFAULT_ID;
+    const id = parsed && parsed.id ? String(parsed.id) : defaultId;
     return getProfile(id);
   } catch {
-    return getProfile(DEFAULT_ID);
+    return getProfile(getDefaultId());
   }
 }
 
@@ -146,8 +151,9 @@ function setActiveProfile(id) {
   const profile = getProfile(id);
   if (!profile) throw new Error('Profil introuvable.');
   try {
-    fs.mkdirSync(path.dirname(ACTIVE_PATH), { recursive: true });
-    fs.writeFileSync(ACTIVE_PATH, JSON.stringify({ id, activatedAt: new Date().toISOString() }, null, 2), 'utf8');
+    const activePath = getActivePath();
+    fs.mkdirSync(path.dirname(activePath), { recursive: true });
+    fs.writeFileSync(activePath, JSON.stringify({ id, activatedAt: new Date().toISOString() }, null, 2), 'utf8');
   } catch { /* ignore */ }
   return profile;
 }
@@ -155,7 +161,7 @@ function setActiveProfile(id) {
 function resetProfiles() {
   saveProfiles([]);
   try {
-    fs.writeFileSync(ACTIVE_PATH, JSON.stringify({ id: DEFAULT_ID }, null, 2), 'utf8');
+    fs.writeFileSync(getActivePath(), JSON.stringify({ id: getDefaultId() }, null, 2), 'utf8');
   } catch { /* ignore */ }
 }
 
@@ -174,7 +180,7 @@ function getProfileStats() {
     activeProfileName: active ? maskProfileSensitiveData(active.name || '') : null,
     activeProfileType: active ? active.type : null,
     byType,
-    maxProfiles: MAX_ITEMS,
+    maxProfiles: getMaxItems(),
   };
 }
 

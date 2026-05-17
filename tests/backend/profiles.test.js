@@ -1,3 +1,12 @@
+const { setRuntimeEnvForSuite, restoreRuntimeEnv, resetTestRuntimeDir, cleanupTestRuntimeDir } = require('../helpers/runtimeTestUtils');
+
+// Redirect profile runtime files to test-isolated directory BEFORE any requests
+const _origEnv = setRuntimeEnvForSuite('profiles', {
+  PROFILES_STORE_PATH: 'user-profiles.json',
+  PROFILES_ACTIVE_PATH: 'active-profile.json',
+  PROFILES_AUDIT_PATH: 'profile-audit.json',
+});
+
 const request = require('supertest');
 const { app } = require('../../server');
 const { expectNoSensitiveLeak } = require('../helpers/sensitive');
@@ -10,6 +19,17 @@ function expectNoProfileLeak(body) {
   expect(text).not.toMatch(/[A-Za-z]:\\[^\s"]{20,}/);
   expect(text).not.toMatch(/\/home\/[^\s"]{10,}/);
 }
+
+beforeAll(() => {
+  // Ensure fresh isolated runtime dir for this suite
+  resetTestRuntimeDir('profiles');
+});
+
+afterAll(() => {
+  // Clean up test runtime dir and restore original env vars
+  cleanupTestRuntimeDir('profiles');
+  restoreRuntimeEnv(_origEnv);
+});
 
 describe('profiles API', () => {
   it('GET /api/profiles/safety returns localOnly true', async () => {
@@ -144,5 +164,22 @@ describe('profiles API', () => {
     const text = JSON.stringify(res.body);
     expect(text).not.toMatch(/token/i);
     expect(text).not.toMatch(/password/i);
+  });
+
+  it('creating a profile in this suite does not pollute other test suites (isolation check)', async () => {
+    // Create a temp profile
+    const createRes = await request(app)
+      .post('/api/profiles')
+      .send({ name: 'Isolation Test Profile', type: 'diagnostic' })
+      .expect(201);
+    const newId = createRes.body.id;
+
+    // Confirm it exists in this suite's store
+    const listRes = await request(app).get('/api/profiles').expect(200);
+    const found = listRes.body.profiles.some(p => p.id === newId);
+    expect(found).toBe(true);
+
+    // Reset active profile to main so next tests are consistent
+    await request(app).post('/api/profiles/main/activate');
   });
 });
