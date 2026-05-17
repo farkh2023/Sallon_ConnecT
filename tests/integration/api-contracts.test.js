@@ -10,6 +10,8 @@ const endpoints = [
   '/api/dlna/safety',
   '/api/smartthings/safety',
   '/api/streaming/policy',
+  '/api/observability/safety',
+  '/api/observability/overview',
 ];
 
 describe('API contracts', () => {

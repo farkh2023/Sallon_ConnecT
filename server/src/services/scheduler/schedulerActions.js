@@ -145,6 +145,12 @@ async function notificationsSummary() {
   }
 }
 
+/* -- observability.snapshot ---------------------------------------- */
+async function observabilitySnapshot() {
+  const { collectSnapshotSummary } = require('../observability/overviewCollector');
+  return collectSnapshotSummary();
+}
+
 /* ── integrations.statusCheck ────────────── */
 async function integrationsStatusCheck() {
   const results = {};
@@ -220,6 +226,7 @@ const ACTION_MAP = {
   'media.scanLibrary':        mediaScanLibrary,
   'notifications.cleanup':    notificationsCleanup,
   'notifications.summary':    notificationsSummary,
+  'observability.snapshot':   observabilitySnapshot,
   'integrations.statusCheck': integrationsStatusCheck,
   'scenarios.preview':        scenariosPreview,
   'streaming.libraryStatus':  streamingLibraryStatus,

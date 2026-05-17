@@ -31,6 +31,8 @@ const notificationsRoutes = require('./server/src/routes/notifications');
 const notifEngine         = require('./server/src/services/notifications/notificationEngine');
 /* Phase 13 — Scheduler de tâches planifiées */
 const schedulerRoutes     = require('./server/src/routes/scheduler');
+/* Phase 18 - Observability locale */
+const observabilityRoutes = require('./server/src/routes/observability');
 
 const app  = express();
 const PORT = parseInt(process.env.PORT || '3000', 10);
@@ -136,7 +138,7 @@ async function checkDevice(device) {
 app.get('/api/health', (_req, res) => {
   res.json({
     status:    'ok',
-    phase:     3,
+    phase:     18,
     server:    'Sallon-ConnecT Hub',
     timestamp: new Date().toISOString(),
   });
@@ -241,6 +243,11 @@ app.use('/api/notifications', notificationsRoutes);
 app.use('/api/scheduler', schedulerRoutes);
 
 /* -----------------------------------------------
+   ROUTES PHASE 18 - Observability locale
+----------------------------------------------- */
+app.use('/api/observability', observabilityRoutes);
+
+/* -----------------------------------------------
    FALLBACK — toute route non-API renvoie index.html
 ----------------------------------------------- */
 app.get('*', (_req, res) => {
@@ -278,6 +285,7 @@ function startServer() {
   console.log(`  Notifs     : http://localhost:${PORT}/api/notifications`);
   console.log(`  Notifs stats: http://localhost:${PORT}/api/notifications/stats`);
   console.log(`  Scheduler  : http://localhost:${PORT}/api/scheduler/status`);
+  console.log(`  Observab.  : http://localhost:${PORT}/api/observability/overview`);
   console.log(`  Tâches     : http://localhost:${PORT}/api/scheduler/schedules`);
   console.log('');
 
@@ -285,8 +293,8 @@ function startServer() {
   notifEngine.notify({
     type: 'system', level: 'success',
     title: 'Serveur démarré',
-    message: `Sallon-ConnecT Phase 13 — port ${PORT}`,
-    meta: { phase: 13, port: PORT },
+    message: `Sallon-ConnecT Phase 18 - port ${PORT}`,
+    meta: { phase: 18, port: PORT },
   });
   console.log('  Copier .env.example → .env pour configurer les connecteurs');
   console.log('');

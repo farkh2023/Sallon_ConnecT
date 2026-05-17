@@ -15,6 +15,7 @@ import { StreamingPanel } from '@/components/media/StreamingPanel';
 import { ScenariosPanel } from '@/components/scenarios/ScenariosPanel';
 import { NotificationsPanel } from '@/components/notifications/NotificationsPanel';
 import { SchedulerPanel } from '@/components/scheduler/SchedulerPanel';
+import { ObservabilityPanel } from '@/components/observability/ObservabilityPanel';
 import { TvModeProvider } from '@/components/tv/TvModeProvider';
 import { TvDashboard } from '@/components/tv/TvDashboard';
 
@@ -132,6 +133,15 @@ function AppShellContent() {
           <NotificationsPanel />
         </section>
 
+        <section id="observabilite" className={sectionClass('observability')}>
+          <SectionHeader
+            icon="OB"
+            title="Observabilite"
+            description="Tableau local de health, securite, runtime, logs et tests"
+          />
+          <ObservabilityPanel />
+        </section>
+
         <section id="taches" className={sectionClass('scheduler')}>
           <SectionHeader
             icon="TS"
@@ -143,7 +153,7 @@ function AppShellContent() {
       </main>
 
       <footer className="border-t border-white/[0.06] py-4 text-center text-xs text-slate-600">
-        Sallon-ConnecT Phase 15 - local, securise, aucun cloud
+        Sallon-ConnecT Phase 18 - local, securise, aucun cloud
       </footer>
     </div>
   );

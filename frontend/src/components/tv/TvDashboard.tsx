@@ -123,7 +123,7 @@ export function TvDashboard() {
             Tableau de bord grand ecran
           </h2>
           <p className="mt-2 max-w-3xl text-sm text-slate-400">
-            Navigation clavier et telecommande: T, F, R, N, S, Echap, fleches et Entree.
+            Navigation clavier et telecommande: T, F, R, H, N, S, Echap, fleches et Entree.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">

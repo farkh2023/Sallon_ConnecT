@@ -29,6 +29,7 @@ const ALLOWED_ACTIONS = [
   'media.scanLibrary',
   'notifications.cleanup',
   'notifications.summary',
+  'observability.snapshot',
   'scenarios.preview',
   'integrations.statusCheck',
   'streaming.libraryStatus',

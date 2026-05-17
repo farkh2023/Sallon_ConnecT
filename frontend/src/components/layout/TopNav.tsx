@@ -18,6 +18,7 @@ const NAV_LINKS: NavLink[] = [
   { href: '#media', label: 'Medias' },
   { href: '#scenarios', label: 'Scenarios' },
   { href: '#notifications', label: 'Notifs' },
+  { href: '#observabilite', label: 'Observabilite' },
   { href: '#taches', label: 'Taches' },
 ];
 
@@ -68,7 +69,7 @@ export function TopNav({ unread = 0 }: TopNavProps) {
           </button>
           <FullscreenButton compact />
           <InstallPrompt />
-          <span className="hidden text-xs text-slate-600 sm:inline">Phase 15</span>
+          <span className="hidden text-xs text-slate-600 sm:inline">Phase 18</span>
         </div>
       </div>
     </nav>

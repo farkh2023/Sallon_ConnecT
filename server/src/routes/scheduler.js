@@ -172,6 +172,7 @@ function _actionDesc(a) {
     'media.scanLibrary':        'Scan de la médiathèque locale autorisée',
     'notifications.cleanup':    'Nettoie les notifications anciennes',
     'notifications.summary':    'Résumé périodique des notifications',
+    'observability.snapshot':   'Capture un resume observability local et non sensible',
     'scenarios.preview':        'Aperçu des scénarios disponibles',
     'integrations.statusCheck': 'Vérifie l\'état de toutes les intégrations',
     'streaming.libraryStatus':  'Statut de la médiathèque streaming',

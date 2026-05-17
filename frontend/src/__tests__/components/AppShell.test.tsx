@@ -21,6 +21,7 @@ vi.mock('@/components/media/StreamingPanel', () => ({ StreamingPanel: () => <div
 vi.mock('@/components/scenarios/ScenariosPanel', () => ({ ScenariosPanel: () => <div>Scenarios panel</div> }));
 vi.mock('@/components/notifications/NotificationsPanel', () => ({ NotificationsPanel: () => <div>Notifications panel</div> }));
 vi.mock('@/components/scheduler/SchedulerPanel', () => ({ SchedulerPanel: () => <div>Scheduler panel</div> }));
+vi.mock('@/components/observability/ObservabilityPanel', () => ({ ObservabilityPanel: () => <div>Observability panel</div> }));
 vi.mock('@/components/tv/TvDashboard', () => ({ TvDashboard: () => <div>TV dashboard</div> }));
 
 describe('AppShell', () => {
@@ -33,6 +34,7 @@ describe('AppShell', () => {
     expect(screen.getByText('Centre multimedia')).toBeInTheDocument();
     expect(screen.getByText('Scenarios intelligents')).toBeInTheDocument();
     expect(screen.getByText('Notifications')).toBeInTheDocument();
+    expect(screen.getByText('Observabilite')).toBeInTheDocument();
     expect(screen.getByText('Taches planifiees')).toBeInTheDocument();
   });
 });

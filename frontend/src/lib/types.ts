@@ -164,7 +164,7 @@ export interface OfflineStatus {
 export interface TvModeState {
   enabled: boolean;
   fullscreen: boolean;
-  activePanel: 'dashboard' | 'notifications' | 'scheduler' | 'media' | null;
+  activePanel: 'dashboard' | 'notifications' | 'scheduler' | 'media' | 'observability' | null;
   lastRefreshAt: string | null;
 }
 
@@ -176,4 +176,106 @@ export interface TvQuickAction {
   safe: boolean;
   disabled?: boolean;
   onRun: () => void;
+}
+
+export type ObservabilityStatus = 'ok' | 'warning' | 'error';
+
+export interface ObservabilityDirectorySummary {
+  name: string;
+  exists: boolean;
+  fileCount: number;
+  jsonFileCount: number;
+  gitkeepPresent: boolean;
+  totalSize: string;
+}
+
+export interface ObservabilityPortableZip {
+  present: boolean;
+  name: string | null;
+  size: string | null;
+  modifiedAt: string | null;
+}
+
+export interface ObservabilityOverview {
+  status: ObservabilityStatus;
+  phase: number;
+  backend: {
+    status: string;
+    uptimeSeconds: number;
+    nodeVersion: string;
+    memoryUsed: string;
+    memoryTotal: string;
+    port: number;
+    apiHealthAvailable: boolean;
+    localOnly: boolean;
+  };
+  frontend: {
+    status: string;
+    expectedHost: string;
+    expectedPort: number;
+    expectedUrl: string;
+    apiCacheDisabled: boolean;
+  };
+  integrations: Record<string, unknown>;
+  scheduler: {
+    status: string;
+    enabled: boolean;
+    totalSchedules: number;
+    activeSchedules: number;
+    allowedActions: number;
+    blockedActions: number;
+    snapshotAllowed: boolean;
+    sensitiveActionsBlocked: boolean;
+  };
+  notifications: {
+    status: string;
+    enabled: boolean;
+    total: number;
+    unread: number;
+    lastNotificationAt: string | null;
+  };
+  security: {
+    status: ObservabilityStatus;
+    summary: {
+      total: number;
+      ok: number;
+      warning: number;
+    };
+    localOnly: boolean;
+    secretsMasked: boolean;
+    sensitiveActionsBlocked: boolean;
+  };
+  runtime: {
+    status: ObservabilityStatus;
+    runtimeJsonFiles: number;
+    directories: Record<string, ObservabilityDirectorySummary>;
+    latestPortableZip: ObservabilityPortableZip;
+    contentHidden: boolean;
+  };
+  tests: {
+    status: ObservabilityStatus;
+    scripts: Record<string, boolean>;
+    missingScripts: string[];
+    missingFiles: string[];
+    apiRunsTests: boolean;
+  };
+  logs: {
+    status: ObservabilityStatus;
+    count: number;
+    files: Array<{
+      name: string;
+      size: string;
+      modifiedAt: string;
+    }>;
+    contentHidden: boolean;
+  };
+  safety: {
+    localOnly: boolean;
+    secretsMasked: boolean;
+    noCloudTelemetry: boolean;
+    sensitiveActionsBlocked: boolean;
+    apiCacheDisabled: boolean;
+    runtimeContentHidden: boolean;
+  };
+  lastUpdatedAt: string;
 }

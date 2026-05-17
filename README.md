@@ -758,6 +758,66 @@ Documentation detaillee: `docs/PHASE17B.md`.
 
 ---
 
+## Phase 18 - Observabilite globale
+
+La Phase 18 ajoute un tableau d'observabilite local dans le frontend Next.js et une API backend dediee. L'objectif est de suivre l'etat global sans exposer de secret, chemin complet, IP complete, ID complet, contenu runtime ou log brut.
+
+### Endpoints observability
+
+```powershell
+curl http://localhost:3000/api/observability/overview
+curl http://localhost:3000/api/observability/health
+curl http://localhost:3000/api/observability/security
+curl http://localhost:3000/api/observability/runtime
+curl http://localhost:3000/api/observability/tests
+curl http://localhost:3000/api/observability/logs
+curl http://localhost:3000/api/observability/safety
+```
+
+### Interface
+
+- Section Next.js: `Observabilite`
+- Raccourci clavier: `H`
+- Bouton: `Actualiser`
+- Donnees affichees: backend, frontend attendu, integrations, securite, runtime, logs, tests, scheduler, notifications et dernier refresh.
+
+### Scheduler et notifications
+
+Action sure ajoutee:
+
+```text
+observability.snapshot
+```
+
+Elle collecte un resume non sensible, l'ajoute a l'historique scheduler et ne lance aucun test ni action sensible. Une notification locale est creee seulement si l'etat global passe a `warning` ou `error`, avec deduplication anti-spam.
+
+### Securite
+
+- API observability en `Cache-Control: no-store`
+- Tout reste local, aucune telemetrie cloud
+- Runtime et logs jamais exposes en contenu brut
+- Service worker ne cache pas `/api/*`
+- SmartThings, commandes TV, ADB, DLNA et streaming restent sous les gardes existants
+
+### Tests
+
+```powershell
+npm run test:backend
+npm run test:frontend
+npm run build:frontend
+npm run check
+```
+
+Script optionnel:
+
+```powershell
+npm run health
+```
+
+Documentation detaillee: `docs/PHASE18.md`.
+
+---
+
 ## Phase 14 — Frontend React / Next.js
 
 Migration progressive du frontend vanilla vers React + Next.js TypeScript.  

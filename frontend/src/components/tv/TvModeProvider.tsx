@@ -33,6 +33,10 @@ export function TvModeProvider({ children }: { children: ReactNode }) {
         tv.setActivePanel('notifications');
         scrollToSection('notifications');
       },
+      h: () => {
+        tv.setActivePanel('observability');
+        scrollToSection('observabilite');
+      },
       s: () => {
         tv.setActivePanel('scheduler');
         scrollToSection('taches');
