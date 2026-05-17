@@ -96,7 +96,8 @@ Guide complet : [docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md).
 | `npm run test:packaging` | Validation ZIP portable |
 | `npm run test:windows` | Validation syntaxe PowerShell |
 | `npm run build:frontend` | Build Next.js |
-| `npm run check` | Lint, tests, packaging, PowerShell et build |
+| `npm run check:docs` | Verifie les liens locaux de documentation |
+| `npm run check` | Documentation, lint, tests, packaging, PowerShell et build |
 
 ## Commandes De Test
 
@@ -107,6 +108,7 @@ npm run test:frontend
 npm run test:packaging
 npm run test:windows
 npm run build:frontend
+npm run check:docs
 npm run health
 ```
 
@@ -147,6 +149,7 @@ Details : [SECURITY.md](SECURITY.md) et [docs/SECURITY_MODEL.md](docs/SECURITY_M
 
 | Document | Role |
 |---|---|
+| [docs/INDEX.md](docs/INDEX.md) | Index complet utilisateur et technique |
 | [CHANGELOG.md](CHANGELOG.md) | Historique v0.1.0 |
 | [ROADMAP.md](ROADMAP.md) | Phases 23+ |
 | [SECURITY.md](SECURITY.md) | Politique de securite |
@@ -156,6 +159,22 @@ Details : [SECURITY.md](SECURITY.md) et [docs/SECURITY_MODEL.md](docs/SECURITY_M
 | [docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md) | Installation locale |
 | [docs/RELEASE_CHECKLIST.md](docs/RELEASE_CHECKLIST.md) | Checklist release |
 | [docs/VERSIONING.md](docs/VERSIONING.md) | SemVer et tags |
+
+## Documentation utilisateur
+
+| Guide | Role |
+|---|---|
+| [Quick Start Windows](docs/user/QUICK_START_WINDOWS.md) | Installer, lancer, ouvrir, arreter et packager |
+| [User Guide](docs/user/USER_GUIDE.md) | Comprendre les sections du dashboard |
+| [Mode TV](docs/user/TV_MODE_GUIDE.md) | Utiliser le mode TV et les raccourcis |
+| [PWA](docs/user/PWA_INSTALL_GUIDE.md) | Installer depuis Chrome ou Edge |
+| [Backup / Restore](docs/user/BACKUP_RESTORE_GUIDE.md) | Sauvegarder, verifier, dry-run et restaurer |
+| [Profils](docs/user/PROFILES_GUIDE.md) | Changer de profil et comprendre les permissions |
+| [Notifications](docs/user/NOTIFICATIONS_GUIDE.md) | Lire, filtrer et nettoyer les notifications |
+| [Scheduler](docs/user/SCHEDULER_GUIDE.md) | Utiliser les taches locales sures |
+| [Observabilite](docs/user/OBSERVABILITY_GUIDE.md) | Lire les indicateurs, snapshots et exports |
+| [Troubleshooting](docs/user/TROUBLESHOOTING.md) | Resoudre les problemes courants |
+| [FAQ](docs/user/FAQ.md) | Reponses rapides |
 
 ## Avertissement Donnees Sensibles
 
