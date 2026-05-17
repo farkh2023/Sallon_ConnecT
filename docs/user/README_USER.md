@@ -28,6 +28,7 @@ La plateforme est prevue pour fonctionner sur votre machine et votre reseau loca
 | [Quick Start Windows](QUICK_START_WINDOWS.md) | Installer et demarrer rapidement |
 | [Guide utilisateur](USER_GUIDE.md) | Comprendre les sections du dashboard |
 | [Mode TV](TV_MODE_GUIDE.md) | Utiliser l'affichage plein ecran |
+| [Assistant vocal](VOICE_ASSISTANT_GUIDE.md) | Utiliser les commandes vocales locales |
 | [Installation PWA](PWA_INSTALL_GUIDE.md) | Installer depuis Chrome ou Edge |
 | [Sauvegarde / restauration](BACKUP_RESTORE_GUIDE.md) | Creer, verifier et restaurer une sauvegarde |
 | [Profils](PROFILES_GUIDE.md) | Comprendre les profils et permissions |

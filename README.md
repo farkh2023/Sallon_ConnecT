@@ -167,6 +167,7 @@ Details : [SECURITY.md](SECURITY.md) et [docs/SECURITY_MODEL.md](docs/SECURITY_M
 | [Quick Start Windows](docs/user/QUICK_START_WINDOWS.md) | Installer, lancer, ouvrir, arreter et packager |
 | [User Guide](docs/user/USER_GUIDE.md) | Comprendre les sections du dashboard |
 | [Mode TV](docs/user/TV_MODE_GUIDE.md) | Utiliser le mode TV et les raccourcis |
+| [Assistant vocal](docs/user/VOICE_ASSISTANT_GUIDE.md) | Commandes vocales locales et fallback texte |
 | [PWA](docs/user/PWA_INSTALL_GUIDE.md) | Installer depuis Chrome ou Edge |
 | [Backup / Restore](docs/user/BACKUP_RESTORE_GUIDE.md) | Sauvegarder, verifier, dry-run et restaurer |
 | [Profils](docs/user/PROFILES_GUIDE.md) | Changer de profil et comprendre les permissions |

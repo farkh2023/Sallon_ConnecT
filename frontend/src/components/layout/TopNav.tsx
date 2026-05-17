@@ -32,9 +32,18 @@ interface TopNavProps {
   profiles?: UserProfile[];
   activeProfile?: UserProfile | null;
   onActivateProfile?: (id: string) => void;
+  voicePanelOpen?: boolean;
+  onToggleVoicePanel?: () => void;
 }
 
-export function TopNav({ unread = 0, profiles = [], activeProfile = null, onActivateProfile }: TopNavProps) {
+export function TopNav({
+  unread = 0,
+  profiles = [],
+  activeProfile = null,
+  onActivateProfile,
+  voicePanelOpen = false,
+  onToggleVoicePanel,
+}: TopNavProps) {
   const tv = useTvMode();
 
   return (
@@ -63,6 +72,20 @@ export function TopNav({ unread = 0, profiles = [], activeProfile = null, onActi
 
         <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
           <OfflineStatus />
+          {onToggleVoicePanel && (
+            <button
+              type="button"
+              aria-pressed={voicePanelOpen}
+              onClick={onToggleVoicePanel}
+              className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral ${
+                voicePanelOpen
+                  ? 'border-emerald-400/40 bg-emerald-400/15 text-emerald-300'
+                  : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10'
+              }`}
+            >
+              Assistant vocal
+            </button>
+          )}
           <button
             type="button"
             aria-pressed={tv.enabled}

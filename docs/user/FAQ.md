@@ -24,6 +24,14 @@ Oui. Vous pouvez utiliser le dashboard pour consulter les statuts, notifications
 
 Non. Le Mode TV change l'affichage. Il ne lance pas de commande sensible.
 
+## Est-ce que l'assistant vocal utilise un cloud ?
+
+Non. Il utilise uniquement les APIs disponibles dans le navigateur et un fallback texte. Aucune API cloud n'est appelee par Sallon-ConnecT pour l'assistant vocal.
+
+## Est-ce que l'assistant vocal peut lancer une action sensible ?
+
+Non. Les commandes TV, scenes SmartThings, streaming, restauration backup, suppression d'audit, vidage notifications et changement de profil sont bloques.
+
 ## Ou sont stockees les donnees ?
 
 Les donnees versionnees sont dans `data/`. Les etats locaux sont dans `runtime/`. Les logs et rapports sont dans `logs/`. Les sauvegardes sont dans `backups/`. Les dossiers locaux sensibles sont ignores par Git.

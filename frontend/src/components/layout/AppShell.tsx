@@ -20,9 +20,11 @@ import { ProfilesPanel } from '@/components/profiles/ProfilesPanel';
 import { BackupPanel } from '@/components/backup/BackupPanel';
 import { TvModeProvider } from '@/components/tv/TvModeProvider';
 import { TvDashboard } from '@/components/tv/TvDashboard';
+import { VoiceAssistantPanel } from '@/components/voice/VoiceAssistantPanel';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useProfiles } from '@/hooks/useProfiles';
 import { PROJECT_TAGLINE } from '@/lib/project';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export function AppShell() {
   return (
@@ -36,6 +38,7 @@ function AppShellContent() {
   const { stats } = useNotifications(15_000);
   const tv = useTvMode();
   const unread = stats?.unread ?? 0;
+  const [voicePanelOpen, setVoicePanelOpen] = useState(false);
   const { profiles, activeProfile, loadProfiles, loadActiveProfile, activateProfile } = useProfiles();
 
   useEffect(() => {
@@ -52,6 +55,14 @@ function AppShellContent() {
   const sectionClass = (panel: string) =>
     tv.enabled && tv.activePanel === panel ? 'tv-active-section' : undefined;
 
+  const voiceShortcutHandlers = useMemo(
+    () => ({
+      v: () => setVoicePanelOpen((current) => !current),
+    }),
+    []
+  );
+  useKeyboardShortcuts(voiceShortcutHandlers);
+
   return (
     <div className={`flex min-h-screen flex-col ${tv.enabled ? 'tv-mode-shell' : ''}`}>
       <TopNav
@@ -59,7 +70,10 @@ function AppShellContent() {
         profiles={profiles}
         activeProfile={activeProfile}
         onActivateProfile={id => void handleActivateProfile(id)}
+        voicePanelOpen={voicePanelOpen}
+        onToggleVoicePanel={() => setVoicePanelOpen((current) => !current)}
       />
+      <VoiceAssistantPanel open={voicePanelOpen} onClose={() => setVoicePanelOpen(false)} />
 
       <main className="mx-auto w-full max-w-7xl flex-1 space-y-16 px-4 py-8">
         {tv.enabled && <TvDashboard />}

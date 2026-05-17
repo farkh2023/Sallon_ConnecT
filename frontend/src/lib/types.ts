@@ -521,3 +521,59 @@ export interface BackupSafety {
   dryRunRequired: boolean;
   forbiddenPaths: string[];
 }
+
+// Phase 24 - Assistant vocal local
+export type VoiceCommandIntent =
+  | 'navigate'
+  | 'refresh'
+  | 'openPanel'
+  | 'readStatus'
+  | 'toggleTvMode'
+  | 'toggleFullscreen'
+  | 'showNotifications'
+  | 'showScheduler'
+  | 'showObservability'
+  | 'help'
+  | 'smartthingsScene'
+  | 'tvCommand'
+  | 'streamingPlay'
+  | 'backupRestore'
+  | 'auditClear'
+  | 'profileChange';
+
+export type VoicePermissionState = 'unknown' | 'prompt' | 'granted' | 'denied' | 'unsupported';
+
+export interface VoiceCommand {
+  transcript: string;
+  intent: VoiceCommandIntent;
+  label: string;
+  targetSection?: string;
+  activePanel?: TvModeState['activePanel'];
+  sensitive: boolean;
+  confidence: number;
+}
+
+export interface VoiceCommandResult {
+  ok: boolean;
+  intent: VoiceCommandIntent;
+  message: string;
+  blocked: boolean;
+  transcript: string;
+  targetSection?: string;
+}
+
+export interface VoiceTranscriptEntry {
+  id: string;
+  at: string;
+  transcript: string;
+  result: VoiceCommandResult;
+}
+
+export interface VoiceAssistantState {
+  isSupported: boolean;
+  isListening: boolean;
+  permissionState: VoicePermissionState;
+  transcript: string;
+  transcriptHistory: VoiceTranscriptEntry[];
+  lastResult: VoiceCommandResult | null;
+}
