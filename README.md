@@ -195,6 +195,30 @@ Details : [SECURITY.md](SECURITY.md) et [docs/SECURITY_MODEL.md](docs/SECURITY_M
 | [Troubleshooting](docs/user/TROUBLESHOOTING.md) | Resoudre les problemes courants |
 | [FAQ](docs/user/FAQ.md) | Reponses rapides |
 
+## Release v0.1.0
+
+La version v0.1.0 est le premier prototype local complet de Sallon-ConnecT.
+
+**Notes de release :** [docs/releases/v0.1.0.md](docs/releases/v0.1.0.md)
+
+**Artefacts de distribution :**
+
+| Artefact | Emplacement |
+|---|---|
+| ZIP portable Windows | `dist/Sallon-ConnecT-Portable-*.zip` |
+| Checksums SHA256 | `dist/Sallon-ConnecT-v0.1.0-checksums.txt` |
+
+Les artefacts `dist/` sont locaux et ne sont pas inclus dans Git.
+
+Les fichiers `.env`, `frontend/.env.local`, `runtime/*.json`, `logs/` et `node_modules` ne sont jamais inclus dans le ZIP ni dans Git.
+
+**Preparation de la release :**
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\release\build-release-artifacts.ps1
+powershell -ExecutionPolicy Bypass -File scripts\release\final-release-check.ps1
+```
+
 ## Avertissement Donnees Sensibles
 
 Ne jamais publier de secret, token SmartThings, identifiant materiel reel, numero personnel, chemin personnel, IP complete ou fichier runtime local. Le depot doit rester reproductible a partir des fichiers exemples et des installations npm.
