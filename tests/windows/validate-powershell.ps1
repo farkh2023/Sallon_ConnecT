@@ -2,7 +2,7 @@ $ErrorActionPreference = 'Stop'
 
 $root = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $scriptsDir = Join-Path $root 'scripts\windows'
-$scripts = @(Get-ChildItem -Path $scriptsDir -Filter '*.ps1' -File)
+$scripts = @(Get-ChildItem -Path $scriptsDir -Filter '*.ps1' -File -Recurse)
 
 if ($scripts.Count -eq 0) {
   throw 'Aucun script PowerShell trouve dans scripts/windows.'

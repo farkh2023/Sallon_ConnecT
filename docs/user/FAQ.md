@@ -32,6 +32,24 @@ Non. Il utilise uniquement les APIs disponibles dans le navigateur et un fallbac
 
 Non. Les commandes TV, scenes SmartThings, streaming, restauration backup, suppression d'audit, vidage notifications et changement de profil sont bloques.
 
+## Est-ce que l'installateur Windows cree un MSI ?
+
+Non. La Phase 25 fournit des scripts PowerShell et `.bat` locaux. Aucun MSI ni service Windows n'est cree automatiquement.
+
+## Est-ce que l'installateur ecrase mon `.env` ?
+
+Non. Si `.env` ou `frontend/.env.local` existe deja, le script le conserve. Les fichiers sont crees depuis les exemples uniquement s'ils sont absents.
+
+## Comment reparer une installation locale ?
+
+Utilisez :
+
+```powershell
+scripts\windows\install\repair-sallon-connect.bat
+```
+
+La reparation recree les dossiers et raccourcis manquants sans supprimer vos donnees.
+
 ## Ou sont stockees les donnees ?
 
 Les donnees versionnees sont dans `data/`. Les etats locaux sont dans `runtime/`. Les logs et rapports sont dans `logs/`. Les sauvegardes sont dans `backups/`. Les dossiers locaux sensibles sont ignores par Git.

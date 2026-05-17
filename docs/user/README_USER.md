@@ -29,6 +29,7 @@ La plateforme est prevue pour fonctionner sur votre machine et votre reseau loca
 | [Guide utilisateur](USER_GUIDE.md) | Comprendre les sections du dashboard |
 | [Mode TV](TV_MODE_GUIDE.md) | Utiliser l'affichage plein ecran |
 | [Assistant vocal](VOICE_ASSISTANT_GUIDE.md) | Utiliser les commandes vocales locales |
+| [Installateur Windows](INSTALLER_WINDOWS_GUIDE.md) | Installer, reparer et desinstaller doucement |
 | [Installation PWA](PWA_INSTALL_GUIDE.md) | Installer depuis Chrome ou Edge |
 | [Sauvegarde / restauration](BACKUP_RESTORE_GUIDE.md) | Creer, verifier et restaurer une sauvegarde |
 | [Profils](PROFILES_GUIDE.md) | Comprendre les profils et permissions |

@@ -47,8 +47,9 @@ const forbidden = [
   /(^|\/)node_modules(\/|$)/,
   /(^|\/)\.next(\/|$)/,
   /^runtime\/.*\.json$/,
+  /^backups\/.*\.(zip|json)$/,
   /^logs\/.*\.(log|txt)$/,
-  /\.(pem|key)$/,
+  /\.(pem|key|p12|crt)$/,
 ];
 
 const required = [
@@ -56,8 +57,13 @@ const required = [
   '.env.example',
   'frontend/.env.example',
   'scripts/windows/start-sallon-connect.bat',
+  'scripts/windows/install/install-sallon-connect.bat',
+  'scripts/windows/install/check-prerequisites.ps1',
+  'docs/user/INSTALLER_WINDOWS_GUIDE.md',
   'runtime/.gitkeep',
   'logs/.gitkeep',
+  'backups/.gitkeep',
+  'dist/.gitkeep',
 ];
 
 const zipName = ensureZip();

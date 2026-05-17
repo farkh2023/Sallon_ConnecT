@@ -16,7 +16,7 @@ New-Item -Path $StageApp -ItemType Directory -Force | Out-Null
 
 $excludedDirs = @('.git', 'node_modules', '.next', 'logs', 'dist')
 $excludedFiles = @('.env', '.env.local', '.env.production', 'secrets.json', 'config.local.json')
-$excludedExtensions = @('.pem', '.key')
+$excludedExtensions = @('.pem', '.key', '.p12', '.crt')
 
 function Should-Exclude {
   param(
@@ -33,6 +33,9 @@ function Should-Exclude {
   $leaf = Split-Path $normalized -Leaf
   if ($excludedFiles -contains $leaf) { return $true }
   if (-not $IsDirectory -and $normalized -like 'runtime/*.json') { return $true }
+  if (-not $IsDirectory -and $normalized -like 'backups/*.zip') { return $true }
+  if (-not $IsDirectory -and $normalized -like 'backups/*.json') { return $true }
+  if (-not $IsDirectory -and $normalized -match '^logs/.*\.(json|txt|log)$') { return $true }
   if (-not $IsDirectory -and $normalized -match '(^|/).*(token|secret|credential|private).*$') { return $true }
 
   $extension = [System.IO.Path]::GetExtension($leaf)
@@ -94,12 +97,28 @@ foreach ($file in $files) {
 
 New-Item -Path (Join-Path $StageApp 'runtime') -ItemType Directory -Force | Out-Null
 New-Item -Path (Join-Path $StageApp 'logs') -ItemType Directory -Force | Out-Null
+New-Item -Path (Join-Path $StageApp 'backups') -ItemType Directory -Force | Out-Null
+New-Item -Path (Join-Path $StageApp 'dist') -ItemType Directory -Force | Out-Null
 New-Item -Path (Join-Path $StageApp 'runtime/.gitkeep') -ItemType File -Force | Out-Null
 New-Item -Path (Join-Path $StageApp 'logs/.gitkeep') -ItemType File -Force | Out-Null
+New-Item -Path (Join-Path $StageApp 'backups/.gitkeep') -ItemType File -Force | Out-Null
+New-Item -Path (Join-Path $StageApp 'dist/.gitkeep') -ItemType File -Force | Out-Null
+
+$requiredPortableItems = @(
+  'scripts/windows/install/install-sallon-connect.bat',
+  'scripts/windows/install/check-prerequisites.ps1',
+  'docs/user/INSTALLER_WINDOWS_GUIDE.md'
+)
+
+foreach ($item in $requiredPortableItems) {
+  if (-not (Test-Path (Join-Path $StageApp $item))) {
+    throw "Element portable manquant: $item"
+  }
+}
 
 if (Test-Path $ZipPath) { Remove-Item -LiteralPath $ZipPath -Force }
 Compress-Archive -Path (Join-Path $StageApp '*') -DestinationPath $ZipPath -CompressionLevel Optimal
 Remove-Item -LiteralPath $StageRoot -Recurse -Force
 
 Write-Host "Archive creee: dist/$(Split-Path $ZipPath -Leaf)" -ForegroundColor Green
-Write-Host "Exclusions appliquees: .env, .env.local, node_modules, .next, runtime/*.json, logs, .git, *.pem, *.key."
+Write-Host "Exclusions appliquees: .env, .env.local, node_modules, .next, runtime/*.json, backups/*.zip, logs, .git, *.pem, *.key."

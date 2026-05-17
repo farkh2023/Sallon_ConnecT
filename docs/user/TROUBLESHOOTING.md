@@ -66,6 +66,35 @@ Solution :
 - Fermer et rouvrir le terminal.
 - Verifier `node --version`.
 
+## Installateur Windows bloque sur les pre-requis
+
+Solutions :
+
+- Lancer `powershell -ExecutionPolicy Bypass -File scripts\windows\install\check-prerequisites.ps1`.
+- Installer Node.js si Node ou npm est absent.
+- Fermer et rouvrir PowerShell apres installation de Node.js.
+- Verifier que vous pouvez ecrire dans le dossier projet.
+
+## Raccourcis Windows absents
+
+Solutions :
+
+- Relancer `scripts\windows\install\repair-sallon-connect.bat`.
+- Ou creer seulement les raccourcis :
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\windows\create-desktop-shortcut.ps1
+powershell -ExecutionPolicy Bypass -File scripts\windows\install\create-start-menu-shortcut.ps1
+```
+
+## Reparer sans relancer le build
+
+Solution :
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\windows\install\repair-sallon-connect.ps1 -SkipBuild -SkipInstallDeps -NoShortcut
+```
+
 ## La PWA ne s'installe pas
 
 Solutions :

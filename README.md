@@ -25,7 +25,7 @@ Le projet est local-first : aucune telemetrie, aucun cloud obligatoire, aucun se
 | Observability | Health, runtime, logs, snapshots, graphes |
 | Profils | Owner, family, guest, TV, diagnostic |
 | Backup / restore | ZIP local, manifest SHA256, dry-run et rollback |
-| Packaging Windows | Scripts de lancement, diagnostic et ZIP portable |
+| Packaging Windows | Installation guidee, scripts de lancement, diagnostic et ZIP portable |
 
 ## Architecture Rapide
 
@@ -40,6 +40,7 @@ Sallon-ConnecT/
   backups/                   Sauvegardes locales ignorees par Git
   logs/                      Rapports locaux ignores par Git
   scripts/windows/           Utilitaires Windows
+  scripts/windows/install/   Installateur local guide
   scripts/release/           Preflight et preparation release
 ```
 
@@ -82,6 +83,19 @@ URLs locales :
 
 Guide complet : [docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md).
 
+## Installation Windows guidee
+
+La Phase 25 ajoute un installateur local guide. Il ne cree pas encore de MSI, ne demande pas de droits administrateur par defaut et ne remplace pas les fichiers `.env` existants.
+
+```powershell
+scripts\windows\install\install-sallon-connect.bat
+scripts\windows\install\first-run-wizard.bat
+scripts\windows\install\repair-sallon-connect.bat
+scripts\windows\install\uninstall-sallon-connect.bat
+```
+
+Guide : [docs/user/INSTALLER_WINDOWS_GUIDE.md](docs/user/INSTALLER_WINDOWS_GUIDE.md).
+
 ## Scripts Utiles
 
 | Script | Role |
@@ -98,6 +112,8 @@ Guide complet : [docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md).
 | `npm run build:frontend` | Build Next.js |
 | `npm run check:docs` | Verifie les liens locaux de documentation |
 | `npm run check` | Documentation, lint, tests, packaging, PowerShell et build |
+| `scripts\windows\install\install-sallon-connect.bat` | Installation Windows guidee |
+| `scripts\windows\install\repair-sallon-connect.bat` | Reparation locale conservative |
 
 ## Commandes De Test
 
@@ -143,7 +159,8 @@ Details : [SECURITY.md](SECURITY.md) et [docs/SECURITY_MODEL.md](docs/SECURITY_M
 | 12-15 | Notifications, scheduler, frontend Next.js, PWA, mode TV |
 | 16-19 | Packaging Windows, tests, observability, snapshots, graphes |
 | 20-21B | Profils locaux, sauvegarde/restauration, isolation runtime tests |
-| 22 | Documentation GitHub, preflight release, hygiene depot |
+| 22-24 | Documentation GitHub, documentation utilisateur finale, assistant vocal local |
+| 25 | Installateur Windows local guide |
 
 ## Documentation
 
@@ -168,6 +185,7 @@ Details : [SECURITY.md](SECURITY.md) et [docs/SECURITY_MODEL.md](docs/SECURITY_M
 | [User Guide](docs/user/USER_GUIDE.md) | Comprendre les sections du dashboard |
 | [Mode TV](docs/user/TV_MODE_GUIDE.md) | Utiliser le mode TV et les raccourcis |
 | [Assistant vocal](docs/user/VOICE_ASSISTANT_GUIDE.md) | Commandes vocales locales et fallback texte |
+| [Installateur Windows](docs/user/INSTALLER_WINDOWS_GUIDE.md) | Installation guidee, reparation et desinstallation douce |
 | [PWA](docs/user/PWA_INSTALL_GUIDE.md) | Installer depuis Chrome ou Edge |
 | [Backup / Restore](docs/user/BACKUP_RESTORE_GUIDE.md) | Sauvegarder, verifier, dry-run et restaurer |
 | [Profils](docs/user/PROFILES_GUIDE.md) | Changer de profil et comprendre les permissions |

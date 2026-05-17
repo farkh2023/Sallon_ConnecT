@@ -7,6 +7,7 @@
 - [Guide utilisateur](user/USER_GUIDE.md)
 - [Mode TV](user/TV_MODE_GUIDE.md)
 - [Assistant vocal](user/VOICE_ASSISTANT_GUIDE.md)
+- [Installateur Windows](user/INSTALLER_WINDOWS_GUIDE.md)
 - [Installation PWA](user/PWA_INSTALL_GUIDE.md)
 - [Sauvegarde / restauration](user/BACKUP_RESTORE_GUIDE.md)
 - [Profils](user/PROFILES_GUIDE.md)
@@ -50,3 +51,4 @@
 - [Phase 21](PHASE21.md)
 - [Phase 21B](PHASE21B.md)
 - [Phase 24](PHASE24.md)
+- [Phase 25](PHASE25.md)
