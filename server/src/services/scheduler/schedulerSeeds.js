@@ -15,6 +15,19 @@ function seedDefaultSchedules() {
       source: 'seed',
     });
   } catch { /* Silencieux */ }
+
+  try {
+    const existingBackup = store.listSchedules({ actionType: 'backup.createSafe' });
+    if (existingBackup.length > 0) return;
+    store.createSchedule({
+      name: 'Sauvegarde locale sure',
+      description: 'Sauvegarde locale securisee hebdomadaire. Desactivee par defaut.',
+      actionType: 'backup.createSafe',
+      enabled: false,
+      schedule: { type: 'weekly', day: 'sunday', time: '22:00' },
+      source: 'seed',
+    });
+  } catch { /* Silencieux */ }
 }
 
 seedDefaultSchedules();

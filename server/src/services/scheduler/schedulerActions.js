@@ -223,6 +223,42 @@ async function streamingLibraryStatus() {
   }
 }
 
+/* -- backup.createSafe / verifyLatest / pruneOld ------------------- */
+async function backupCreateSafe() {
+  try {
+    const { createBackup } = require('../backup/backupEngine');
+    const result = await createBackup({ includeRuntimeSafe: true, includeAudits: false, includeLogs: false, reason: 'Sauvegarde planifiée' });
+    return { status: 'ok', backupId: result.backupId, fileCount: result.manifestSummary ? result.manifestSummary.fileCount : undefined };
+  } catch (err) {
+    return { status: 'error', message: err.message || 'Erreur sauvegarde planifiée.' };
+  }
+}
+
+async function backupVerifyLatest() {
+  try {
+    const { listBackups, getBackupPath } = require('../backup/backupStore');
+    const { verifyBackup } = require('../backup/backupEngine');
+    const backups = listBackups();
+    if (!backups.length) return { status: 'ok', message: 'Aucune sauvegarde à vérifier.' };
+    const latest = backups[0];
+    const zipPath = getBackupPath(latest.backupId);
+    if (!zipPath) return { status: 'error', message: 'Sauvegarde introuvable.' };
+    const result = verifyBackup(zipPath);
+    return { status: result.valid ? 'ok' : 'error', issues: result.issues };
+  } catch (err) {
+    return { status: 'error', message: err.message || 'Erreur vérification sauvegarde.' };
+  }
+}
+
+function backupPruneOld() {
+  try {
+    const { pruneOldBackups } = require('../backup/backupStore');
+    return { status: 'ok', ...pruneOldBackups() };
+  } catch (err) {
+    return { status: 'error', message: err.message || 'Erreur nettoyage sauvegardes.' };
+  }
+}
+
 /* ── Dispatch ─────────────────────────────── */
 const ACTION_MAP = {
   'system.healthCheck':       healthCheck,
@@ -236,6 +272,9 @@ const ACTION_MAP = {
   'integrations.statusCheck': integrationsStatusCheck,
   'scenarios.preview':        scenariosPreview,
   'streaming.libraryStatus':  streamingLibraryStatus,
+  'backup.createSafe':        backupCreateSafe,
+  'backup.verifyLatest':      backupVerifyLatest,
+  'backup.pruneOld':          backupPruneOld,
 };
 
 async function executeAction(actionType) {

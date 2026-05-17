@@ -18,6 +18,9 @@ const BLOCKED_ACTIONS = [
   'adb.pull',
   'adb.push',
   'network.aggressiveScan',
+  'backup.restore',
+  'backup.includeSecrets',
+  'backup.includeRawLogs',
 ];
 
 /* ── Actions autorisées ───────────────────── */
@@ -33,6 +36,9 @@ const ALLOWED_ACTIONS = [
   'scenarios.preview',
   'integrations.statusCheck',
   'streaming.libraryStatus',
+  'backup.createSafe',
+  'backup.verifyLatest',
+  'backup.pruneOld',
 ];
 
 const VALID_SCHEDULE_TYPES = ['interval', 'daily', 'weekly', 'manual'];

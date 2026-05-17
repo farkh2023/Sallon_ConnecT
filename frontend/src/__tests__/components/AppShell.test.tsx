@@ -6,6 +6,18 @@ vi.mock('@/hooks/useNotifications', () => ({
   useNotifications: () => ({ stats: { unread: 0 } }),
 }));
 
+vi.mock('@/hooks/useProfiles', () => ({
+  useProfiles: () => ({
+    profiles: [], activeProfile: null, loading: false, error: null,
+    loadProfiles: async () => {}, loadActiveProfile: async () => {},
+    activateProfile: async () => {},
+    createProfile: async () => {}, updateProfile: async () => {},
+    deleteProfile: async () => {}, loadAudit: async () => {},
+    clearAudit: async () => {}, checkAction: async () => ({ allowed: true }),
+    audit: [], profileStats: null, loadProfileStats: async () => {},
+  }),
+}));
+
 vi.mock('@/components/layout/TopNav', () => ({
   TopNav: () => <nav>TopNav</nav>,
 }));
@@ -22,6 +34,8 @@ vi.mock('@/components/scenarios/ScenariosPanel', () => ({ ScenariosPanel: () => 
 vi.mock('@/components/notifications/NotificationsPanel', () => ({ NotificationsPanel: () => <div>Notifications panel</div> }));
 vi.mock('@/components/scheduler/SchedulerPanel', () => ({ SchedulerPanel: () => <div>Scheduler panel</div> }));
 vi.mock('@/components/observability/ObservabilityPanel', () => ({ ObservabilityPanel: () => <div>Observability panel</div> }));
+vi.mock('@/components/profiles/ProfilesPanel', () => ({ ProfilesPanel: () => <div>Profiles panel</div> }));
+vi.mock('@/components/backup/BackupPanel', () => ({ BackupPanel: () => <div>Backup panel</div> }));
 vi.mock('@/components/tv/TvDashboard', () => ({ TvDashboard: () => <div>TV dashboard</div> }));
 
 describe('AppShell', () => {

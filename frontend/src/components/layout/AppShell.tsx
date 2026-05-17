@@ -17,6 +17,7 @@ import { NotificationsPanel } from '@/components/notifications/NotificationsPane
 import { SchedulerPanel } from '@/components/scheduler/SchedulerPanel';
 import { ObservabilityPanel } from '@/components/observability/ObservabilityPanel';
 import { ProfilesPanel } from '@/components/profiles/ProfilesPanel';
+import { BackupPanel } from '@/components/backup/BackupPanel';
 import { TvModeProvider } from '@/components/tv/TvModeProvider';
 import { TvDashboard } from '@/components/tv/TvDashboard';
 import { useProfiles } from '@/hooks/useProfiles';
@@ -179,10 +180,19 @@ function AppShellContent() {
           />
           <ProfilesPanel />
         </section>
+
+        <section id="sauvegarde">
+          <SectionHeader
+            icon="BK"
+            title="Sauvegarde locale"
+            description="Sauvegarde et restauration locale sécurisée — aucune donnée cloud"
+          />
+          <BackupPanel />
+        </section>
       </main>
 
       <footer className="border-t border-white/[0.06] py-4 text-center text-xs text-slate-600">
-        Sallon-ConnecT Phase 20 - local, securise, aucun cloud
+        Sallon-ConnecT Phase 21 - local, securise, aucun cloud
       </footer>
     </div>
   );

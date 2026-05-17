@@ -1017,7 +1017,41 @@ Pour configurer les appareils : `copy .env.example .env` puis renseigner les hos
 - Intégration YouTube API
 - Streaming local DLNA vers Samsung TV
 
-### Phase 20 — Profils utilisateurs locaux ✅ (actuelle)
+### Phase 21 — Sauvegarde locale sécurisée ✅ (actuelle)
+- ZIP local avec manifest SHA256, sans aucun secret ni chemin absolu
+- Dry-run obligatoire avant toute restauration réelle
+- Rollback automatique créé avant chaque restauration
+- Code de confirmation explicite requis (`CONFIRMER_BACKUP`)
+- Exclusions : .env, node_modules, .git, *.pem, logs bruts
+- 12 endpoints `/api/backup/*` — 100% local, aucun cloud
+- Permissions profil : owner toutes, diagnostic view+create, family/guest/tv aucune
+
+**Endpoints backup :**
+```bash
+curl http://localhost:3000/api/backup/status
+curl http://localhost:3000/api/backup/safety
+curl -X POST http://localhost:3000/api/backup/create ^
+  -H "Content-Type: application/json" ^
+  -d "{\"includeRuntimeSafe\":true,\"includeAudits\":false,\"includeLogs\":false,\"reason\":\"Sauvegarde manuelle\"}"
+curl http://localhost:3000/api/backup/backups
+curl http://localhost:3000/api/backup/backups/BACKUP_ID/manifest
+curl -X POST http://localhost:3000/api/backup/backups/BACKUP_ID/verify
+curl -X POST http://localhost:3000/api/backup/backups/BACKUP_ID/restore/dry-run
+curl -X POST http://localhost:3000/api/backup/backups/BACKUP_ID/restore ^
+  -H "Content-Type: application/json" ^
+  -d "{\"confirmationCode\":\"CONFIRMER_BACKUP\",\"reason\":\"Test restauration\"}"
+curl http://localhost:3000/api/backup/audit
+```
+
+> ⚠️ Restauration : toujours effectuer un dry-run d'abord. La restauration sans dry-run préalable est refusée.
+
+**Tests :**
+```bash
+npm run test:backend -- --testPathPattern=backup
+npm run test:frontend -- BackupPanel
+```
+
+### Phase 20 — Profils utilisateurs locaux ✅
 - 5 profils par défaut : Propriétaire (owner), Famille, Invité, TV, Diagnostic
 - Permissions locales par profil (12 actions, dont 7 sensibles)
 - Sections visibles configurables par profil
@@ -1178,4 +1212,4 @@ curl -X DELETE http://localhost:3000/api/observability/snapshots
 
 ---
 
-*Sallon-ConnecT — Hub personnel · Phase 20 · 2026*
+*Sallon-ConnecT — Hub personnel · Phase 21 · 2026*

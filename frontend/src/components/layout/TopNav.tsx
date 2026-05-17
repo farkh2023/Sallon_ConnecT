@@ -23,6 +23,7 @@ const NAV_LINKS: NavLink[] = [
   { href: '#observabilite', label: 'Observabilite' },
   { href: '#taches', label: 'Taches' },
   { href: '#profils', label: 'Profils' },
+  { href: '#sauvegarde', label: 'Sauvegarde' },
 ];
 
 interface TopNavProps {
@@ -82,7 +83,7 @@ export function TopNav({ unread = 0, profiles = [], activeProfile = null, onActi
               onActivate={onActivateProfile}
             />
           )}
-          <span className="hidden text-xs text-slate-600 sm:inline">Phase 20</span>
+          <span className="hidden text-xs text-slate-600 sm:inline">Phase 21</span>
         </div>
       </div>
     </nav>

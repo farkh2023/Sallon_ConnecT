@@ -51,3 +51,9 @@ runtime/*.json
 tests/.runtime/
 
 logs/*.json
+
+# Sauvegardes locales — ne pas versionner
+backups/*.zip
+backups/*.json
+!backups/.gitkeep
+runtime/backup-audit.json

@@ -408,6 +408,11 @@ export interface ProfilePermissions {
   executeTvCommands: boolean;
   startStreaming: boolean;
   clearAudits: boolean;
+  viewBackups: boolean;
+  createBackups: boolean;
+  restoreBackups: boolean;
+  deleteBackups: boolean;
+  viewBackupAudit: boolean;
 }
 
 export interface ProfileSafety {
@@ -439,4 +444,80 @@ export interface ProfileAuditEntry {
 export interface ProfileActionCheckResult {
   allowed: boolean;
   reason: string;
+}
+
+// ── Phase 21 — Backup types ──────────────────────────────────────
+
+export interface BackupStatus {
+  enabled: boolean;
+  backupDirMasked: string;
+  maxItems: number;
+  rollbackEnabled: boolean;
+  dryRunRequired: boolean;
+  confirmationRequired: boolean;
+  count: number;
+  latest: { backupId: string; createdAt: string } | null;
+}
+
+export interface BackupItem {
+  backupId: string;
+  fileName: string;
+  filePath: string;
+  createdAt: string;
+  summary: {
+    fileCount: number;
+    totalSizeBucket: string;
+    runtimeIncluded: boolean;
+    auditsIncluded: boolean;
+    logsIncluded: boolean;
+  } | null;
+  checksumPresent: boolean;
+}
+
+export interface BackupManifest {
+  backupId?: string;
+  createdAt?: string;
+  project?: string;
+  phase?: number;
+  mode?: string;
+  profile?: string;
+  options?: { includeRuntimeSafe: boolean; includeAudits: boolean; includeLogs: boolean };
+  summary?: { fileCount: number; totalSizeBucket: string; runtimeIncluded: boolean; auditsIncluded: boolean; logsIncluded: boolean };
+  files?: { path?: string; sizeBucket?: string; checksum?: string }[];
+  security?: Record<string, boolean>;
+  backupChecksum?: string;
+}
+
+export interface BackupAuditEntry {
+  at: string;
+  event: string;
+  backupId?: string;
+  status?: string;
+  reason?: string;
+  fileCount?: number;
+  sizeBucket?: string;
+}
+
+export interface BackupDryRunResult {
+  backupId: string;
+  dryRun: true;
+  willRestore: string[];
+  conflicts: string[];
+  newFiles: string[];
+  modified: string[];
+  risks: string[];
+  confirmationRequired: boolean;
+  rollbackWillBeCreated: boolean;
+  manifest?: BackupManifest;
+  error?: string;
+}
+
+export interface BackupSafety {
+  localOnly: boolean;
+  cloudSync: boolean;
+  envExcluded: boolean;
+  secretsExcluded: boolean;
+  rollbackEnabled: boolean;
+  dryRunRequired: boolean;
+  forbiddenPaths: string[];
 }

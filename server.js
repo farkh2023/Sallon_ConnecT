@@ -35,6 +35,8 @@ const schedulerRoutes     = require('./server/src/routes/scheduler');
 const observabilityRoutes = require('./server/src/routes/observability');
 /* Phase 20 - Profils utilisateurs locaux */
 const profilesRoutes = require('./server/src/routes/profiles');
+/* Phase 21 - Sauvegarde locale sécurisée */
+const backupRoutes = require('./server/src/routes/backup');
 /* Phase 18B - Seeds tâches planifiées par défaut */
 require('./server/src/services/scheduler/schedulerSeeds');
 
@@ -255,6 +257,11 @@ app.use('/api/observability', observabilityRoutes);
    ROUTES PHASE 20 - Profils utilisateurs locaux
 ----------------------------------------------- */
 app.use('/api/profiles', profilesRoutes);
+
+/* -----------------------------------------------
+   ROUTES PHASE 21 - Sauvegarde locale sécurisée
+----------------------------------------------- */
+app.use('/api/backup', backupRoutes);
 
 /* -----------------------------------------------
    FALLBACK — toute route non-API renvoie index.html
