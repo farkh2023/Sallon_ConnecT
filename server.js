@@ -250,7 +250,8 @@ app.get('*', (_req, res) => {
 /* -----------------------------------------------
    DÉMARRAGE
 ----------------------------------------------- */
-app.listen(PORT, () => {
+function startServer() {
+  return app.listen(PORT, () => {
   console.log('');
   console.log('  ╔══════════════════════════════════════╗');
   console.log('  ║   Sallon-ConnecT Hub — Phase 13      ║');
@@ -289,4 +290,11 @@ app.listen(PORT, () => {
   });
   console.log('  Copier .env.example → .env pour configurer les connecteurs');
   console.log('');
-});
+  });
+}
+
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = { app, startServer };

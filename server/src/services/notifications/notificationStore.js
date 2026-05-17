@@ -8,7 +8,7 @@
 const fs   = require('fs');
 const path = require('path');
 
-const STORE_PATH = path.resolve('runtime/notifications.json');
+const STORE_PATH = path.resolve(process.env.NOTIFICATIONS_STORE_PATH || 'runtime/notifications.json');
 const MAX_ITEMS  = parseInt(process.env.NOTIFICATIONS_MAX_ITEMS || '200', 10);
 const AUTO_CLEANUP_DAYS = parseInt(process.env.NOTIFICATIONS_AUTO_CLEANUP_DAYS || '30', 10);
 

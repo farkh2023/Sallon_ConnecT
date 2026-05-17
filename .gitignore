@@ -48,3 +48,4 @@ network-scan-results.json
 # Runtime local - ne pas versionner les historiques et audits
 runtime/*.json
 !runtime/.gitkeep
+tests/.runtime/

@@ -691,6 +691,35 @@ Documentation detaillee: `docs/PHASE16.md`.
 
 ---
 
+## Phase 17 - Tests automatises
+
+La Phase 17 ajoute une suite de tests locale pour securiser le backend, le frontend, les gardes de securite, le packaging Windows et la syntaxe PowerShell.
+
+### Commandes
+
+```powershell
+npm test
+npm run test:backend
+npm run test:frontend
+npm run test:packaging
+npm run test:windows
+npm run check
+```
+
+### Couverture
+
+- Backend: Jest + Supertest pour `/api/health`, notifications, scheduler et contrats API.
+- Securite: tests des gardes SmartThings, commandes TV, streaming, ADB, DLNA et service worker.
+- Frontend: Vitest + React Testing Library avec `fetch` mocke, sans backend reel.
+- Packaging: inspection du ZIP portable et exclusions sensibles.
+- Windows: parsing AST des scripts `scripts/windows/*.ps1`.
+
+Les tests ne lancent aucune commande ADB reelle, aucune decouverte DLNA agressive, aucun appel SmartThings reel, aucune commande TV, aucune scene et aucun streaming reel.
+
+Documentation detaillee: `docs/PHASE17.md`.
+
+---
+
 ## Phase 14 — Frontend React / Next.js
 
 Migration progressive du frontend vanilla vers React + Next.js TypeScript.  

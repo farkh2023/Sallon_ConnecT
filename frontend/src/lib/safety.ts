@@ -1,4 +1,5 @@
 const SENSITIVE_KEYS = /token|password|secret|key|imei|serial|phone|mac/i;
+const BEARER_TOKEN = /\bBearer\s+[a-z0-9._~+/=-]{12,}\b/gi;
 const TOKEN_LIKE = /\b(?:bearer\s+)?[a-z0-9._-]{24,}\b/gi;
 const UUID_LIKE = /\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b/gi;
 const IPV4_LIKE = /\b(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)\b/g;
@@ -32,6 +33,7 @@ export function maskSensitiveClientText(value: unknown): string {
   if (value == null) return '';
 
   return String(value)
+    .replace(BEARER_TOKEN, 'Bearer [token-masque]')
     .replace(IPV4_LIKE, '[ip-masquee]')
     .replace(WINDOWS_PATH, '[chemin-masque]')
     .replace(POSIX_PATH, ' [chemin-masque]')
@@ -53,6 +55,7 @@ export function isSafeDisplayText(value: unknown): boolean {
     !hasPattern(WINDOWS_PATH, text) &&
     !hasPattern(POSIX_PATH, text) &&
     !hasPattern(UUID_LIKE, text) &&
+    !hasPattern(BEARER_TOKEN, text) &&
     !hasPattern(TOKEN_LIKE, text)
   );
 }

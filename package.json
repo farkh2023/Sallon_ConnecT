@@ -7,7 +7,17 @@
     "start": "node server.js",
     "dev:backend": "node server.js",
     "dev:frontend": "cd frontend && npm run dev -- --port 3001",
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "test": "npm run test:backend && npm run test:frontend && npm run test:packaging",
+    "test:backend": "jest --runInBand",
+    "test:frontend": "cd frontend && npm test",
+    "test:packaging": "node tests/packaging/portable-zip.test.js",
+    "test:windows": "powershell -ExecutionPolicy Bypass -File tests/windows/validate-powershell.ps1",
+    "lint": "npm run lint:frontend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "build": "npm run build:frontend",
+    "build:frontend": "cd frontend && npm run build",
+    "check": "npm run lint && npm run test && npm run test:windows && npm run build"
   },
   "dependencies": {
     "concurrently": "^9.2.1",
@@ -23,5 +33,9 @@
     "agents",
     "local"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
+  }
 }

@@ -1,0 +1,52 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: windows-latest
+    env:
+      NODE_ENV: test
+      SMARTTHINGS_ENABLED: "false"
+      SMARTTHINGS_TOKEN: ""
+      SMARTTHINGS_ALLOW_SCENE_EXECUTION: "false"
+      SMARTTHINGS_TV_COMMANDS_ENABLED: "false"
+      ADB_ENABLED: "false"
+      DLNA_ENABLED: "false"
+      MEDIA_STREAMING_ENABLED: "false"
+      SCHEDULER_AUTO_START: "false"
+      NEXT_PUBLIC_API_BASE_URL: "http://localhost:3000"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - name: Install backend dependencies
+        run: npm ci
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Backend tests
+        run: npm run test:backend
+
+      - name: Frontend tests
+        run: npm run test:frontend
+
+      - name: PowerShell syntax tests
+        run: npm run test:windows
+
+      - name: Frontend build
+        run: npm run build:frontend
