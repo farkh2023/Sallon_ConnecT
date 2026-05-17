@@ -46,7 +46,7 @@ function makeTimeline(count = 3): SnapshotTimelineResponse {
   };
 }
 
-const noop = async (_filters?: SnapshotChartFilters) => {};
+const noop = async (_f?: SnapshotChartFilters) => {};
 
 describe('ObservabilityCharts', () => {
   it('shows empty state when timeline is null', () => {

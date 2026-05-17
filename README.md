@@ -1017,7 +1017,36 @@ Pour configurer les appareils : `copy .env.example .env` puis renseigner les hos
 - Intégration YouTube API
 - Streaming local DLNA vers Samsung TV
 
-### Phase 19 — Graphes temporels observabilité ✅ (actuelle)
+### Phase 20 — Profils utilisateurs locaux ✅ (actuelle)
+- 5 profils par défaut : Propriétaire (owner), Famille, Invité, TV, Diagnostic
+- Permissions locales par profil (12 actions, dont 7 sensibles)
+- Sections visibles configurables par profil
+- Basculement rapide dans la TopNav (ProfileSwitcher)
+- Audit local des changements de profil
+- Mode lecture seule et masquage panneaux sensibles
+- 12 endpoints `/api/profiles/*` — 100% local, aucun cloud
+
+**Endpoints profils :**
+```bash
+curl http://localhost:3000/api/profiles
+curl http://localhost:3000/api/profiles/active
+curl http://localhost:3000/api/profiles/safety
+curl -X POST http://localhost:3000/api/profiles/guest/activate
+curl -X POST http://localhost:3000/api/profiles/guest/check-action ^
+  -H "Content-Type: application/json" ^
+  -d "{\"actionType\":\"smartthings.scene.execute\"}"
+curl http://localhost:3000/api/profiles/audit
+```
+
+**Tests :**
+```bash
+npm run test:backend -- --testPathPattern=profiles
+npm run test:frontend -- ProfilesPanel
+```
+
+> ⚠️ Sécurité : les permissions profil améliorent l'UX mais ne remplacent pas les garde-fous backend (allowlist, confirmation, audit, .env).
+
+### Phase 19 — Graphes temporels observabilité ✅
 - Visualisation graphique de l'historique des snapshots avec Recharts
 - Endpoint timeline `/api/observability/snapshots/timeline` avec filtres (limit/status/source/from/to)
 - 7 scores normalisés (0–1) : statut, mémoire, notifications, sécurité, intégrations, scheduler, runtime
@@ -1149,4 +1178,4 @@ curl -X DELETE http://localhost:3000/api/observability/snapshots
 
 ---
 
-*Sallon-ConnecT — Hub personnel · Phase 19 · 2026*
+*Sallon-ConnecT — Hub personnel · Phase 20 · 2026*

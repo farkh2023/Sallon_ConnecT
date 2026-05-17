@@ -379,3 +379,64 @@ export interface ObservabilityOverview {
   };
   lastUpdatedAt: string;
 }
+
+/* ── Phase 20 — Profils utilisateurs locaux ─────────────────────── */
+
+export type ProfileType = 'owner' | 'family' | 'guest' | 'tv' | 'diagnostic';
+
+export interface ProfilePreferences {
+  theme: 'dark' | 'light' | 'system';
+  accentColor: 'blue' | 'green' | 'orange' | 'purple' | 'red' | 'slate';
+  defaultView: 'dashboard' | 'media' | 'notifications' | 'observability';
+  tvModeDefault: boolean;
+  compactMode: boolean;
+  language: 'fr' | 'en';
+  refreshIntervalSeconds: number;
+  visibleSections: string[];
+}
+
+export interface ProfilePermissions {
+  viewDevices: boolean;
+  viewMedia: boolean;
+  viewNotifications: boolean;
+  viewScheduler: boolean;
+  viewObservability: boolean;
+  runSafeDiagnostics: boolean;
+  runSchedulerManual: boolean;
+  manageProfiles: boolean;
+  executeSmartThingsScenes: boolean;
+  executeTvCommands: boolean;
+  startStreaming: boolean;
+  clearAudits: boolean;
+}
+
+export interface ProfileSafety {
+  sensitiveActionsRequireConfirmation: boolean;
+  hideSensitivePanels: boolean;
+  readOnlyMode: boolean;
+}
+
+export interface UserProfile {
+  id?: string;
+  name: string;
+  type: ProfileType;
+  enabled: boolean;
+  createdAt: string;
+  updatedAt: string;
+  preferences: ProfilePreferences;
+  permissions: ProfilePermissions;
+  safety: ProfileSafety;
+}
+
+export interface ProfileAuditEntry {
+  at: string;
+  event: string;
+  profileId?: string;
+  profileName?: string;
+  profileType?: string;
+}
+
+export interface ProfileActionCheckResult {
+  allowed: boolean;
+  reason: string;
+}

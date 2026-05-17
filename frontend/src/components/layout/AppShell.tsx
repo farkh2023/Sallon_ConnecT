@@ -16,8 +16,11 @@ import { ScenariosPanel } from '@/components/scenarios/ScenariosPanel';
 import { NotificationsPanel } from '@/components/notifications/NotificationsPanel';
 import { SchedulerPanel } from '@/components/scheduler/SchedulerPanel';
 import { ObservabilityPanel } from '@/components/observability/ObservabilityPanel';
+import { ProfilesPanel } from '@/components/profiles/ProfilesPanel';
 import { TvModeProvider } from '@/components/tv/TvModeProvider';
 import { TvDashboard } from '@/components/tv/TvDashboard';
+import { useProfiles } from '@/hooks/useProfiles';
+import { useEffect } from 'react';
 
 export function AppShell() {
   return (
@@ -31,13 +34,30 @@ function AppShellContent() {
   const { stats } = useNotifications(15_000);
   const tv = useTvMode();
   const unread = stats?.unread ?? 0;
+  const { profiles, activeProfile, loadProfiles, loadActiveProfile, activateProfile } = useProfiles();
+
+  useEffect(() => {
+    void loadProfiles();
+    void loadActiveProfile();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleActivateProfile = async (id: string) => {
+    await activateProfile(id);
+    await loadActiveProfile();
+  };
 
   const sectionClass = (panel: string) =>
     tv.enabled && tv.activePanel === panel ? 'tv-active-section' : undefined;
 
   return (
     <div className={`flex min-h-screen flex-col ${tv.enabled ? 'tv-mode-shell' : ''}`}>
-      <TopNav unread={unread} />
+      <TopNav
+        unread={unread}
+        profiles={profiles}
+        activeProfile={activeProfile}
+        onActivateProfile={id => void handleActivateProfile(id)}
+      />
 
       <main className="mx-auto w-full max-w-7xl flex-1 space-y-16 px-4 py-8">
         {tv.enabled && <TvDashboard />}
@@ -150,10 +170,19 @@ function AppShellContent() {
           />
           <SchedulerPanel />
         </section>
+
+        <section id="profils">
+          <SectionHeader
+            icon="PR"
+            title="Profils locaux"
+            description="Personnalisation et permissions par profil — 100% local, aucun cloud"
+          />
+          <ProfilesPanel />
+        </section>
       </main>
 
       <footer className="border-t border-white/[0.06] py-4 text-center text-xs text-slate-600">
-        Sallon-ConnecT Phase 18 - local, securise, aucun cloud
+        Sallon-ConnecT Phase 20 - local, securise, aucun cloud
       </footer>
     </div>
   );

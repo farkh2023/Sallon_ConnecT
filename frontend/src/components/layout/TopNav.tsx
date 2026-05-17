@@ -5,6 +5,8 @@ import { InstallPrompt } from '@/components/pwa/InstallPrompt';
 import { OfflineStatus } from '@/components/pwa/OfflineStatus';
 import { FullscreenButton } from '@/components/tv/FullscreenButton';
 import { useTvMode } from '@/hooks/useTvMode';
+import { ProfileSwitcher } from '@/components/profiles/ProfileSwitcher';
+import type { UserProfile } from '@/lib/types';
 
 interface NavLink {
   href: string;
@@ -20,13 +22,17 @@ const NAV_LINKS: NavLink[] = [
   { href: '#notifications', label: 'Notifs' },
   { href: '#observabilite', label: 'Observabilite' },
   { href: '#taches', label: 'Taches' },
+  { href: '#profils', label: 'Profils' },
 ];
 
 interface TopNavProps {
   unread?: number;
+  profiles?: UserProfile[];
+  activeProfile?: UserProfile | null;
+  onActivateProfile?: (id: string) => void;
 }
 
-export function TopNav({ unread = 0 }: TopNavProps) {
+export function TopNav({ unread = 0, profiles = [], activeProfile = null, onActivateProfile }: TopNavProps) {
   const tv = useTvMode();
 
   return (
@@ -69,7 +75,14 @@ export function TopNav({ unread = 0 }: TopNavProps) {
           </button>
           <FullscreenButton compact />
           <InstallPrompt />
-          <span className="hidden text-xs text-slate-600 sm:inline">Phase 18</span>
+          {profiles.length > 0 && onActivateProfile && (
+            <ProfileSwitcher
+              profiles={profiles}
+              activeProfile={activeProfile}
+              onActivate={onActivateProfile}
+            />
+          )}
+          <span className="hidden text-xs text-slate-600 sm:inline">Phase 20</span>
         </div>
       </div>
     </nav>

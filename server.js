@@ -33,6 +33,8 @@ const notifEngine         = require('./server/src/services/notifications/notific
 const schedulerRoutes     = require('./server/src/routes/scheduler');
 /* Phase 18 - Observability locale */
 const observabilityRoutes = require('./server/src/routes/observability');
+/* Phase 20 - Profils utilisateurs locaux */
+const profilesRoutes = require('./server/src/routes/profiles');
 /* Phase 18B - Seeds tâches planifiées par défaut */
 require('./server/src/services/scheduler/schedulerSeeds');
 
@@ -248,6 +250,11 @@ app.use('/api/scheduler', schedulerRoutes);
    ROUTES PHASE 18 - Observability locale
 ----------------------------------------------- */
 app.use('/api/observability', observabilityRoutes);
+
+/* -----------------------------------------------
+   ROUTES PHASE 20 - Profils utilisateurs locaux
+----------------------------------------------- */
+app.use('/api/profiles', profilesRoutes);
 
 /* -----------------------------------------------
    FALLBACK — toute route non-API renvoie index.html
