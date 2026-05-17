@@ -147,8 +147,14 @@ async function notificationsSummary() {
 
 /* -- observability.snapshot ---------------------------------------- */
 async function observabilitySnapshot() {
-  const { collectSnapshotSummary } = require('../observability/overviewCollector');
-  return collectSnapshotSummary();
+  const snapshotEngine = require('../observability/snapshotEngine');
+  const snapshot = snapshotEngine.createSnapshot('scheduler');
+  return {
+    status:  snapshot.status || 'ok',
+    message: `Snapshot observabilite : ${snapshot.status || 'ok'}`,
+    snapshotId: snapshot.id ? String(snapshot.id).slice(0, 16) : undefined,
+    phase:   18,
+  };
 }
 
 /* ── integrations.statusCheck ────────────── */

@@ -12,6 +12,11 @@ const {
   collectSafety,
 } = require('../services/observability/overviewCollector');
 const { sanitizeForResponse } = require('../services/observability/sanitizer');
+const snapshotEngine = require('../services/observability/snapshotEngine');
+const snapshotStore = require('../services/observability/snapshotStore');
+const { buildSafeSnapshotError } = require('../services/observability/snapshotSafety');
+
+const SNAPSHOTS_MAX_ITEMS = parseInt(process.env.OBSERVABILITY_SNAPSHOTS_MAX_ITEMS || '200', 10);
 
 router.use((_req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -56,6 +61,76 @@ router.get('/logs', (_req, res) => {
 
 router.get('/safety', (_req, res) => {
   sendCollected(res, collectSafety);
+});
+
+/* ── Phase 18B — Snapshots ───────────────── */
+
+router.get('/snapshots/latest', (_req, res) => {
+  try {
+    const snapshot = snapshotStore.getLatestSnapshot();
+    if (!snapshot) return res.status(404).json({ status: 'not_found', message: 'No snapshot yet.' });
+    res.json(sanitizeForResponse(snapshot));
+  } catch {
+    res.status(500).json(buildSafeSnapshotError());
+  }
+});
+
+router.get('/snapshots/stats', (_req, res) => {
+  try {
+    res.json(sanitizeForResponse(snapshotStore.getSnapshotStats()));
+  } catch {
+    res.status(500).json(buildSafeSnapshotError());
+  }
+});
+
+router.get('/snapshots/trends', (_req, res) => {
+  try {
+    res.json(sanitizeForResponse(snapshotEngine.computeTrends()));
+  } catch {
+    res.status(500).json(buildSafeSnapshotError());
+  }
+});
+
+router.get('/snapshots/safety', (_req, res) => {
+  res.json({
+    localOnly: true,
+    runtimeContentHidden: true,
+    logsContentHidden: true,
+    secretsMasked: true,
+    maxItems: SNAPSHOTS_MAX_ITEMS,
+    storagePathMasked: true,
+  });
+});
+
+router.get('/snapshots', (req, res) => {
+  try {
+    const filters = {};
+    if (req.query.source) filters.source = String(req.query.source);
+    if (req.query.status) filters.status = String(req.query.status);
+    if (req.query.limit) filters.limit = String(req.query.limit);
+    const items = snapshotStore.listSnapshots(filters);
+    res.json(sanitizeForResponse({ snapshots: items, total: items.length }));
+  } catch {
+    res.status(500).json(buildSafeSnapshotError());
+  }
+});
+
+router.post('/snapshots', (_req, res) => {
+  try {
+    const snapshot = snapshotEngine.createSnapshot('manual');
+    res.status(201).json(sanitizeForResponse(snapshot));
+  } catch {
+    res.status(500).json(buildSafeSnapshotError());
+  }
+});
+
+router.delete('/snapshots', (_req, res) => {
+  try {
+    const result = snapshotStore.clearSnapshots();
+    res.json({ status: 'ok', ...result });
+  } catch {
+    res.status(500).json(buildSafeSnapshotError());
+  }
 });
 
 module.exports = router;

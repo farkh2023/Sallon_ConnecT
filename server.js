@@ -33,6 +33,8 @@ const notifEngine         = require('./server/src/services/notifications/notific
 const schedulerRoutes     = require('./server/src/routes/scheduler');
 /* Phase 18 - Observability locale */
 const observabilityRoutes = require('./server/src/routes/observability');
+/* Phase 18B - Seeds tâches planifiées par défaut */
+require('./server/src/services/scheduler/schedulerSeeds');
 
 const app  = express();
 const PORT = parseInt(process.env.PORT || '3000', 10);

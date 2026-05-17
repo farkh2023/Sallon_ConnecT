@@ -180,6 +180,72 @@ export interface TvQuickAction {
 
 export type ObservabilityStatus = 'ok' | 'warning' | 'error';
 
+export type SnapshotSource = 'manual' | 'scheduler' | 'startup';
+
+export interface ObservabilitySnapshot {
+  id?: string;
+  createdAt: string;
+  source: SnapshotSource;
+  status: ObservabilityStatus;
+  phase: number;
+  backend: {
+    ok: boolean;
+    uptimeBucket: 'short' | 'medium' | 'long';
+    memoryBucket: 'low' | 'medium' | 'high';
+  };
+  frontend: {
+    expectedPort: number;
+    configured: boolean;
+  };
+  integrations: {
+    adb: 'disabled' | 'available' | 'warning' | 'error';
+    dlna: 'disabled' | 'available' | 'warning' | 'error';
+    smartThings: 'disabled' | 'available' | 'warning' | 'error';
+    streaming: 'disabled' | 'available' | 'warning' | 'error';
+  };
+  scheduler: {
+    running: boolean;
+    activeSchedules: number;
+  };
+  notifications: {
+    totalBucket: 'none' | 'low' | 'medium' | 'high';
+    unreadBucket: 'none' | 'low' | 'medium' | 'high';
+    securityEventsBucket: 'none' | 'low' | 'medium' | 'high';
+  };
+  security: {
+    secretsProtected: boolean;
+    runtimeHidden: boolean;
+    apiCacheDisabled: boolean;
+    sensitiveActionsBlocked: boolean;
+  };
+  runtime: {
+    runtimeFilesBucket: 'none' | 'low' | 'medium' | 'high';
+    logsBucket: 'none' | 'low' | 'medium' | 'high';
+    portableZipPresent: boolean;
+  };
+}
+
+export interface SnapshotStats {
+  total: number;
+  okCount: number;
+  warningCount: number;
+  errorCount: number;
+  lastStatus: ObservabilityStatus | null;
+  lastCreatedAt: string | null;
+  statusChanges: number;
+  mostCommonStatus: string | null;
+}
+
+export interface SnapshotTrends {
+  statusTrend: 'stable' | 'improving' | 'degrading';
+  warningFrequency: number;
+  errorFrequency: number;
+  memoryTrend: 'stable' | 'increasing' | 'decreasing';
+  notificationTrend: 'stable' | 'increasing' | 'decreasing';
+  schedulerTrend: 'stable' | 'intermittent';
+  integrationTrend: 'stable' | 'improving' | 'degrading';
+}
+
 export interface ObservabilityDirectorySummary {
   name: string;
   exists: boolean;

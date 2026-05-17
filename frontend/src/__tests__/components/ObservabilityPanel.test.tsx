@@ -12,6 +12,17 @@ function jsonResponse(body: unknown) {
   );
 }
 
+const EMPTY_SNAPSHOTS = { snapshots: [], total: 0 };
+const EMPTY_STATS = { total: 0, okCount: 0, warningCount: 0, errorCount: 0, lastStatus: null, lastCreatedAt: null, statusChanges: 0, mostCommonStatus: null };
+const EMPTY_TRENDS = { statusTrend: 'stable', warningFrequency: 0, errorFrequency: 0, memoryTrend: 'stable', notificationTrend: 'stable', schedulerTrend: 'stable', integrationTrend: 'stable' };
+
+function overviewMock(status = 'ok') {
+  return () => jsonResponse(overview(status as ObservabilityStatus));
+}
+function snapshotsMock() { return () => jsonResponse(EMPTY_SNAPSHOTS); }
+function statsMock() { return () => jsonResponse(EMPTY_STATS); }
+function trendsMock() { return () => jsonResponse(EMPTY_TRENDS); }
+
 function overview(status: ObservabilityStatus = 'ok'): ObservabilityOverview {
   return {
     status,
@@ -112,6 +123,16 @@ function overview(status: ObservabilityStatus = 'ok'): ObservabilityOverview {
   };
 }
 
+// On mount the component makes 4 fetch calls in order:
+// 1: loadSnapshots, 2: loadSnapshotStats, 3: loadSnapshotTrends, 4: refresh(overview)
+function mountMock(...overrides: Array<() => Promise<Response>>) {
+  return vi.fn()
+    .mockImplementationOnce(snapshotsMock())
+    .mockImplementationOnce(statsMock())
+    .mockImplementationOnce(trendsMock())
+    .mockImplementation(overrides[0] ?? overviewMock('ok'));
+}
+
 describe('ObservabilityPanel', () => {
   it('renders loading state', async () => {
     vi.stubGlobal('fetch', vi.fn(() => new Promise(() => undefined)));
@@ -122,7 +143,7 @@ describe('ObservabilityPanel', () => {
   });
 
   it('renders status ok from mocked API response', async () => {
-    vi.stubGlobal('fetch', vi.fn(() => jsonResponse(overview('ok'))));
+    vi.stubGlobal('fetch', mountMock(overviewMock('ok')));
 
     render(<ObservabilityPanel />);
 
@@ -134,7 +155,7 @@ describe('ObservabilityPanel', () => {
   });
 
   it.each(['warning', 'error'] as ObservabilityStatus[])('renders status %s', async (status) => {
-    vi.stubGlobal('fetch', vi.fn(() => jsonResponse(overview(status))));
+    vi.stubGlobal('fetch', mountMock(overviewMock(status)));
 
     render(<ObservabilityPanel />);
 
@@ -144,25 +165,27 @@ describe('ObservabilityPanel', () => {
   });
 
   it('refreshes when the button is clicked', async () => {
-    const fetchMock = vi
-      .fn()
-      .mockImplementationOnce(() => jsonResponse(overview('ok')))
-      .mockImplementationOnce(() => jsonResponse(overview('warning')));
+    const fetchMock = vi.fn()
+      .mockImplementationOnce(snapshotsMock())
+      .mockImplementationOnce(statsMock())
+      .mockImplementationOnce(trendsMock())
+      .mockImplementationOnce(overviewMock('ok'))
+      .mockImplementationOnce(overviewMock('warning'));
     vi.stubGlobal('fetch', fetchMock);
 
     render(<ObservabilityPanel />);
 
     await screen.findByText('Observabilite globale');
-    fireEvent.click(screen.getByRole('button', { name: /Actualiser/i }));
+    fireEvent.click(screen.getAllByRole('button', { name: /Actualiser/i })[0]);
 
-    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(5));
   });
 
   it('does not display secret-like values from mocked payloads', async () => {
     const unsafe = overview('ok');
     unsafe.runtime.latestPortableZip.name =
       'Bearer abcdefghijklmnopqrstuvwxyz123456 token=abcdefghijklmnopqrstuvwxyz123456 C:\\Users\\Youss\\secret.txt';
-    vi.stubGlobal('fetch', vi.fn(() => jsonResponse(unsafe)));
+    vi.stubGlobal('fetch', mountMock(() => jsonResponse(unsafe)));
 
     render(<ObservabilityPanel />);
 

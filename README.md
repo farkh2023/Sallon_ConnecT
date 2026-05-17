@@ -1017,6 +1017,27 @@ Pour configurer les appareils : `copy .env.example .env` puis renseigner les hos
 - Intégration YouTube API
 - Streaming local DLNA vers Samsung TV
 
+### Phase 18B — Historique snapshots observabilité ✅ (actuelle)
+- Snapshots compacts de l'état système (buckets non sensibles)
+- 7 endpoints `/api/observability/snapshots/*`
+- Action scheduler `observability.snapshot` (quotidien 21:00, désactivé par défaut)
+- Notifications locales si warning/error (déduplication Phase 12)
+- Frontend : SnapshotHistory, SnapshotStats, SnapshotTrends
+- Aucun secret, log brut, IP ou chemin absolu stocké
+
+**Commandes de test :**
+```bash
+curl http://localhost:3000/api/observability/snapshots/safety
+curl -X POST http://localhost:3000/api/observability/snapshots
+curl http://localhost:3000/api/observability/snapshots
+curl http://localhost:3000/api/observability/snapshots/latest
+curl http://localhost:3000/api/observability/snapshots/stats
+curl http://localhost:3000/api/observability/snapshots/trends
+curl -X DELETE http://localhost:3000/api/observability/snapshots
+```
+
+> ⚠️ Sécurité : les snapshots ne contiennent que des résumés (buckets). Aucune valeur sensible n'est stockée dans `runtime/observability-snapshots.json`.
+
 ### Phase 12 — Notifications locales ✅ (actuelle)
 - Centre de notifications local (100% local, jamais cloud)
 - 9 types d'événements, 5 niveaux (info/success/warning/error/security)
@@ -1104,4 +1125,4 @@ Pour configurer les appareils : `copy .env.example .env` puis renseigner les hos
 
 ---
 
-*Sallon-ConnecT — Hub personnel · Phase 12 · 2026*
+*Sallon-ConnecT — Hub personnel · Phase 18B · 2026*

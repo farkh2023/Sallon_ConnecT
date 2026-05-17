@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { Button } from '@/components/ui/Button';
 import { useObservability } from '@/hooks/useObservability';
 import { formatDate } from '@/lib/format';
@@ -10,9 +10,33 @@ import { RuntimeOverview } from './RuntimeOverview';
 import { SecurityOverview } from './SecurityOverview';
 import { TestsOverview } from './TestsOverview';
 import { ObservabilityStatusBadge } from './ObservabilityStatusBadge';
+import { SnapshotHistory } from './SnapshotHistory';
 
 export function ObservabilityPanel() {
-  const { overview, loading, error, lastRefreshedAt, refresh } = useObservability();
+  const {
+    overview,
+    loading,
+    error,
+    lastRefreshedAt,
+    refresh,
+    snapshots,
+    snapshotStats,
+    snapshotTrends,
+    snapshotLoading,
+    snapshotError,
+    loadSnapshots,
+    createSnapshot,
+    loadSnapshotStats,
+    loadSnapshotTrends,
+    clearSnapshots,
+  } = useObservability();
+
+  useEffect(() => {
+    void loadSnapshots();
+    void loadSnapshotStats();
+    void loadSnapshotTrends();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading && !overview) {
     return (
@@ -70,6 +94,21 @@ export function ObservabilityPanel() {
 
       <PanelSection title="Logs">
         <LogsOverview overview={overview} />
+      </PanelSection>
+
+      <PanelSection title="Snapshots observabilite">
+        <SnapshotHistory
+          snapshots={snapshots}
+          stats={snapshotStats}
+          trends={snapshotTrends}
+          loading={snapshotLoading}
+          error={snapshotError}
+          onCreateSnapshot={() => void createSnapshot()}
+          onClearSnapshots={() => void clearSnapshots()}
+          onLoadSnapshots={() => void loadSnapshots()}
+          onLoadStats={() => void loadSnapshotStats()}
+          onLoadTrends={() => void loadSnapshotTrends()}
+        />
       </PanelSection>
     </div>
   );
