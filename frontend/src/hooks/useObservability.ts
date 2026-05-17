@@ -2,7 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { apiDelete, apiPost, buildApiUrl, handleApiError } from '@/lib/api';
-import type { ObservabilityOverview, ObservabilitySnapshot, SnapshotStats, SnapshotTrends } from '@/lib/types';
+import type {
+  ObservabilityOverview,
+  ObservabilitySnapshot,
+  SnapshotChartFilters,
+  SnapshotStats,
+  SnapshotTimelineResponse,
+  SnapshotTrends,
+} from '@/lib/types';
 
 interface UseObservabilityState {
   overview: ObservabilityOverview | null;
@@ -20,6 +27,12 @@ interface UseObservabilityState {
   loadSnapshotStats: () => Promise<void>;
   loadSnapshotTrends: () => Promise<void>;
   clearSnapshots: () => Promise<void>;
+  timeline: SnapshotTimelineResponse | null;
+  timelineLoading: boolean;
+  timelineError: string | null;
+  loadSnapshotTimeline: (filters?: SnapshotChartFilters) => Promise<void>;
+  exportSnapshotsJson: () => void;
+  exportSnapshotsCsv: () => void;
 }
 
 export function useObservability(pollMs = 0): UseObservabilityState {
@@ -35,6 +48,10 @@ export function useObservability(pollMs = 0): UseObservabilityState {
   const [snapshotTrends, setSnapshotTrends] = useState<SnapshotTrends | null>(null);
   const [snapshotLoading, setSnapshotLoading] = useState(false);
   const [snapshotError, setSnapshotError] = useState<string | null>(null);
+
+  const [timeline, setTimeline] = useState<SnapshotTimelineResponse | null>(null);
+  const [timelineLoading, setTimelineLoading] = useState(false);
+  const [timelineError, setTimelineError] = useState<string | null>(null);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -109,6 +126,7 @@ export function useObservability(pollMs = 0): UseObservabilityState {
         setSnapshots(prev => [snapshot, ...prev]);
         setSnapshotStats(null);
         setSnapshotTrends(null);
+        setTimeline(null);
       }
       return snapshot;
     } catch (err) {
@@ -153,12 +171,47 @@ export function useObservability(pollMs = 0): UseObservabilityState {
         setSnapshots([]);
         setSnapshotStats(null);
         setSnapshotTrends(null);
+        setTimeline(null);
       }
     } catch (err) {
       if (mountedRef.current) setSnapshotError(handleApiError(err));
     } finally {
       if (mountedRef.current) setSnapshotLoading(false);
     }
+  }, []);
+
+  const loadSnapshotTimeline = useCallback(async (filters?: SnapshotChartFilters) => {
+    if (typeof window === 'undefined') return;
+    setTimelineLoading(true);
+    setTimelineError(null);
+    try {
+      const params = new URLSearchParams();
+      if (filters?.limit) params.set('limit', String(filters.limit));
+      if (filters?.status) params.set('status', filters.status);
+      if (filters?.source) params.set('source', filters.source);
+      if (filters?.from) params.set('from', filters.from);
+      if (filters?.to) params.set('to', filters.to);
+      const query = params.toString();
+      const url = buildApiUrl(`/api/observability/snapshots/timeline${query ? `?${query}` : ''}`);
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = (await res.json()) as SnapshotTimelineResponse;
+      if (mountedRef.current) setTimeline(json);
+    } catch (err) {
+      if (mountedRef.current) setTimelineError(handleApiError(err));
+    } finally {
+      if (mountedRef.current) setTimelineLoading(false);
+    }
+  }, []);
+
+  const exportSnapshotsJson = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    window.open(buildApiUrl('/api/observability/snapshots/export.json'), '_blank', 'noopener,noreferrer');
+  }, []);
+
+  const exportSnapshotsCsv = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    window.open(buildApiUrl('/api/observability/snapshots/export.csv'), '_blank', 'noopener,noreferrer');
   }, []);
 
   return {
@@ -177,5 +230,11 @@ export function useObservability(pollMs = 0): UseObservabilityState {
     loadSnapshotStats,
     loadSnapshotTrends,
     clearSnapshots,
+    timeline,
+    timelineLoading,
+    timelineError,
+    loadSnapshotTimeline,
+    exportSnapshotsJson,
+    exportSnapshotsCsv,
   };
 }

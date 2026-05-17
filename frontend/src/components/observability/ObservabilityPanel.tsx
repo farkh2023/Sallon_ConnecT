@@ -11,6 +11,7 @@ import { SecurityOverview } from './SecurityOverview';
 import { TestsOverview } from './TestsOverview';
 import { ObservabilityStatusBadge } from './ObservabilityStatusBadge';
 import { SnapshotHistory } from './SnapshotHistory';
+import { ObservabilityCharts } from './charts/ObservabilityCharts';
 
 export function ObservabilityPanel() {
   const {
@@ -29,12 +30,19 @@ export function ObservabilityPanel() {
     loadSnapshotStats,
     loadSnapshotTrends,
     clearSnapshots,
+    timeline,
+    timelineLoading,
+    timelineError,
+    loadSnapshotTimeline,
+    exportSnapshotsJson,
+    exportSnapshotsCsv,
   } = useObservability();
 
   useEffect(() => {
     void loadSnapshots();
     void loadSnapshotStats();
     void loadSnapshotTrends();
+    void loadSnapshotTimeline({ limit: 50 });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -108,6 +116,17 @@ export function ObservabilityPanel() {
           onLoadSnapshots={() => void loadSnapshots()}
           onLoadStats={() => void loadSnapshotStats()}
           onLoadTrends={() => void loadSnapshotTrends()}
+        />
+      </PanelSection>
+
+      <PanelSection title="Graphes temporels">
+        <ObservabilityCharts
+          timeline={timeline}
+          timelineLoading={timelineLoading}
+          timelineError={timelineError}
+          onLoadTimeline={loadSnapshotTimeline}
+          onExportJson={exportSnapshotsJson}
+          onExportCsv={exportSnapshotsCsv}
         />
       </PanelSection>
     </div>

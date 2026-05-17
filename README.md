@@ -1017,7 +1017,31 @@ Pour configurer les appareils : `copy .env.example .env` puis renseigner les hos
 - Intégration YouTube API
 - Streaming local DLNA vers Samsung TV
 
-### Phase 18B — Historique snapshots observabilité ✅ (actuelle)
+### Phase 19 — Graphes temporels observabilité ✅ (actuelle)
+- Visualisation graphique de l'historique des snapshots avec Recharts
+- Endpoint timeline `/api/observability/snapshots/timeline` avec filtres (limit/status/source/from/to)
+- 7 scores normalisés (0–1) : statut, mémoire, notifications, sécurité, intégrations, scheduler, runtime
+- Export JSON et CSV non sensibles (`/api/observability/snapshots/export.json` et `export.csv`)
+- 7 composants frontend : AreaChart statut, RadarChart scores, LineCharts tendances, tableau compact, filtres
+- Aucun token, IP, chemin absolu ou ID complet exposé
+
+**Endpoints timeline & export :**
+```bash
+curl http://localhost:3000/api/observability/snapshots/timeline
+curl http://localhost:3000/api/observability/snapshots/timeline?limit=20&status=ok
+curl http://localhost:3000/api/observability/snapshots/export.json
+curl http://localhost:3000/api/observability/snapshots/export.csv
+```
+
+**Tests :**
+```bash
+npm run test:backend -- --testPathPattern=observability-timeline
+npm run test:frontend -- ObservabilityCharts
+```
+
+> ⚠️ Sécurité : la timeline et les exports n'exposent que des scores et buckets. Aucune valeur sensible.
+
+### Phase 18B — Historique snapshots observabilité ✅
 - Snapshots compacts de l'état système (buckets non sensibles)
 - 7 endpoints `/api/observability/snapshots/*`
 - Action scheduler `observability.snapshot` (quotidien 21:00, désactivé par défaut)
@@ -1125,4 +1149,4 @@ curl -X DELETE http://localhost:3000/api/observability/snapshots
 
 ---
 
-*Sallon-ConnecT — Hub personnel · Phase 18B · 2026*
+*Sallon-ConnecT — Hub personnel · Phase 19 · 2026*

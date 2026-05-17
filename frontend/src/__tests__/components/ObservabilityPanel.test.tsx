@@ -16,12 +16,15 @@ const EMPTY_SNAPSHOTS = { snapshots: [], total: 0 };
 const EMPTY_STATS = { total: 0, okCount: 0, warningCount: 0, errorCount: 0, lastStatus: null, lastCreatedAt: null, statusChanges: 0, mostCommonStatus: null };
 const EMPTY_TRENDS = { statusTrend: 'stable', warningFrequency: 0, errorFrequency: 0, memoryTrend: 'stable', notificationTrend: 'stable', schedulerTrend: 'stable', integrationTrend: 'stable' };
 
+const EMPTY_TIMELINE = { items: [], summary: { total: 0, ok: 0, warning: 0, error: 0 } };
+
 function overviewMock(status = 'ok') {
   return () => jsonResponse(overview(status as ObservabilityStatus));
 }
 function snapshotsMock() { return () => jsonResponse(EMPTY_SNAPSHOTS); }
 function statsMock() { return () => jsonResponse(EMPTY_STATS); }
 function trendsMock() { return () => jsonResponse(EMPTY_TRENDS); }
+function timelineMock() { return () => jsonResponse(EMPTY_TIMELINE); }
 
 function overview(status: ObservabilityStatus = 'ok'): ObservabilityOverview {
   return {
@@ -123,13 +126,14 @@ function overview(status: ObservabilityStatus = 'ok'): ObservabilityOverview {
   };
 }
 
-// On mount the component makes 4 fetch calls in order:
-// 1: loadSnapshots, 2: loadSnapshotStats, 3: loadSnapshotTrends, 4: refresh(overview)
+// On mount the component makes 5 fetch calls in order:
+// 1: loadSnapshots, 2: loadSnapshotStats, 3: loadSnapshotTrends, 4: loadSnapshotTimeline, 5: refresh(overview)
 function mountMock(...overrides: Array<() => Promise<Response>>) {
   return vi.fn()
     .mockImplementationOnce(snapshotsMock())
     .mockImplementationOnce(statsMock())
     .mockImplementationOnce(trendsMock())
+    .mockImplementationOnce(timelineMock())
     .mockImplementation(overrides[0] ?? overviewMock('ok'));
 }
 
@@ -169,6 +173,7 @@ describe('ObservabilityPanel', () => {
       .mockImplementationOnce(snapshotsMock())
       .mockImplementationOnce(statsMock())
       .mockImplementationOnce(trendsMock())
+      .mockImplementationOnce(timelineMock())
       .mockImplementationOnce(overviewMock('ok'))
       .mockImplementationOnce(overviewMock('warning'));
     vi.stubGlobal('fetch', fetchMock);
@@ -178,7 +183,7 @@ describe('ObservabilityPanel', () => {
     await screen.findByText('Observabilite globale');
     fireEvent.click(screen.getAllByRole('button', { name: /Actualiser/i })[0]);
 
-    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(5));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(6));
   });
 
   it('does not display secret-like values from mocked payloads', async () => {

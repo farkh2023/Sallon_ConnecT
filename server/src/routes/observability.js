@@ -15,6 +15,7 @@ const { sanitizeForResponse } = require('../services/observability/sanitizer');
 const snapshotEngine = require('../services/observability/snapshotEngine');
 const snapshotStore = require('../services/observability/snapshotStore');
 const { buildSafeSnapshotError } = require('../services/observability/snapshotSafety');
+const { buildTimeline, buildCsv } = require('../services/observability/snapshotTimeline');
 
 const SNAPSHOTS_MAX_ITEMS = parseInt(process.env.OBSERVABILITY_SNAPSHOTS_MAX_ITEMS || '200', 10);
 
@@ -128,6 +129,49 @@ router.delete('/snapshots', (_req, res) => {
   try {
     const result = snapshotStore.clearSnapshots();
     res.json({ status: 'ok', ...result });
+  } catch {
+    res.status(500).json(buildSafeSnapshotError());
+  }
+});
+
+/* ── Phase 19 — Timeline & Export ─────────── */
+
+router.get('/snapshots/timeline', (req, res) => {
+  try {
+    const filters = {
+      limit:  req.query.limit  ? String(req.query.limit)  : undefined,
+      status: req.query.status ? String(req.query.status) : undefined,
+      source: req.query.source ? String(req.query.source) : undefined,
+      from:   req.query.from   ? String(req.query.from)   : undefined,
+      to:     req.query.to     ? String(req.query.to)     : undefined,
+    };
+    const snapshots = snapshotStore.loadSnapshots();
+    const result = buildTimeline(snapshots, filters);
+    res.json(result);
+  } catch {
+    res.status(500).json(buildSafeSnapshotError());
+  }
+});
+
+router.get('/snapshots/export.json', (_req, res) => {
+  try {
+    const snapshots = snapshotStore.loadSnapshots();
+    const safe = sanitizeForResponse(snapshots);
+    res.setHeader('Content-Disposition', 'attachment; filename="observability-snapshots.json"');
+    res.setHeader('Content-Type', 'application/json');
+    res.json(safe);
+  } catch {
+    res.status(500).json(buildSafeSnapshotError());
+  }
+});
+
+router.get('/snapshots/export.csv', (_req, res) => {
+  try {
+    const snapshots = snapshotStore.loadSnapshots();
+    const csv = buildCsv(snapshots);
+    res.setHeader('Content-Disposition', 'attachment; filename="observability-snapshots.csv"');
+    res.setHeader('Content-Type', 'text/csv');
+    res.send(csv);
   } catch {
     res.status(500).json(buildSafeSnapshotError());
   }

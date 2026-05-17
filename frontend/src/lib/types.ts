@@ -246,6 +246,40 @@ export interface SnapshotTrends {
   integrationTrend: 'stable' | 'improving' | 'degrading';
 }
 
+export interface SnapshotTimelineItem {
+  id?: string;
+  createdAt: string;
+  source: SnapshotSource;
+  status: ObservabilityStatus;
+  statusScore: number;
+  memoryScore: number;
+  notificationScore: number;
+  securityScore: number;
+  integrationScore: number;
+  schedulerScore: number;
+  runtimeScore: number;
+}
+
+export interface SnapshotTimelineSummary {
+  total: number;
+  ok: number;
+  warning: number;
+  error: number;
+}
+
+export interface SnapshotTimelineResponse {
+  items: SnapshotTimelineItem[];
+  summary: SnapshotTimelineSummary;
+}
+
+export interface SnapshotChartFilters {
+  limit?: number;
+  status?: 'ok' | 'warning' | 'error' | '';
+  source?: 'manual' | 'scheduler' | 'startup' | '';
+  from?: string;
+  to?: string;
+}
+
 export interface ObservabilityDirectorySummary {
   name: string;
   exists: boolean;
