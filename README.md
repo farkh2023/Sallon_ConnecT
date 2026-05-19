@@ -181,6 +181,7 @@ Details : [SECURITY.md](SECURITY.md) et [docs/SECURITY_MODEL.md](docs/SECURITY_M
 
 | Guide | Role |
 |---|---|
+| [Manuel complet SAVOIR_IA](docs/user/sallon-connect-manuel-savoir-ia.html) | Manuel interactif complet avec 12 TP, recherche et progression |
 | [Quick Start Windows](docs/user/QUICK_START_WINDOWS.md) | Installer, lancer, ouvrir, arreter et packager |
 | [User Guide](docs/user/USER_GUIDE.md) | Comprendre les sections du dashboard |
 | [Mode TV](docs/user/TV_MODE_GUIDE.md) | Utiliser le mode TV et les raccourcis |

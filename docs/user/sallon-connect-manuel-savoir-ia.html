@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manuel complet Sallon-ConnecT — SAVOIR_IA</title>
+<style>
+/* ===== PALETTE SAVOIR_IA ===== */
+:root {
+  --navy:    #0A2540;
+  --bg:      #071A2F;
+  --card:    #102A43;
+  --card2:   #0D2137;
+  --cyan:    #38BDF8;
+  --blue:    #2563EB;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger:  #EF4444;
+  --text:    #F8FAFC;
+  --muted:   #94A3B8;
+  --border:  #1E3A5F;
+  --sidebar-w: 260px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ===== LAYOUT ===== */
+.layout { display: flex; min-height: 100vh; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--navy);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  overflow-y: auto;
+  z-index: 100;
+  transition: transform 0.3s;
+}
+.sidebar-logo {
+  padding: 1.2rem 1rem 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo h2 {
+  font-size: 1rem;
+  color: var(--cyan);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.sidebar-logo p { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+.nav-list { list-style: none; padding: 0.5rem 0; }
+.nav-list li a {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  border-left: 2px solid transparent;
+  transition: all 0.2s;
+}
+.nav-list li a:hover, .nav-list li a.active {
+  color: var(--cyan);
+  border-left-color: var(--cyan);
+  background: rgba(56,189,248,0.05);
+}
+.nav-list li a .icon { font-size: 0.9rem; flex-shrink: 0; }
+.nav-section-title {
+  padding: 0.8rem 1rem 0.3rem;
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ===== MAIN ===== */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  max-width: 1100px;
+  padding: 0 2rem 4rem;
+}
+
+/* ===== TOPBAR ===== */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(7,26,47,0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 0;
+  display: flex; align-items: center; gap: 0.75rem;
+  margin: 0 -2rem;
+  padding-left: 2rem; padding-right: 2rem;
+}
+.topbar input[type="search"] {
+  flex: 1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  color: var(--text);
+  font-size: 0.85rem;
+  outline: none;
+  max-width: 360px;
+}
+.topbar input[type="search"]:focus { border-color: var(--cyan); }
+.topbar input[type="search"]::placeholder { color: var(--muted); }
+.btn {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.btn-primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+.btn-primary:hover { background: #1d4ed8; color: #fff; }
+.btn-sm { padding: 0.25rem 0.55rem; font-size: 0.75rem; }
+.filter-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin: 0.5rem 0; }
+.filter-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 20px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-btn.active, .filter-btn:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(56,189,248,0.08); }
+
+/* ===== HERO ===== */
+.hero {
+  background: linear-gradient(135deg, var(--navy) 0%, #0c2d50 60%, #0A2540 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2.5rem 2rem 2rem;
+  margin: 2rem 0 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -40px; right: -40px;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(56,189,248,0.12) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+.hero h1 span { color: var(--cyan); }
+.hero p { color: var(--muted); margin: 0.5rem 0 1.2rem; font-size: 0.95rem; }
+.badges { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.badge {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  background: rgba(56,189,248,0.1);
+  border: 1px solid rgba(56,189,248,0.3);
+  color: var(--cyan);
+  border-radius: 20px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+.badge.green { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); color: var(--success); }
+.badge.orange { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.3); color: var(--warning); }
+
+/* ===== PROGRESS ===== */
+.progress-container {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+}
+.progress-item label { font-size: 0.78rem; color: var(--muted); display: block; margin-bottom: 0.4rem; }
+.progress-bar-wrap { background: rgba(255,255,255,0.07); border-radius: 20px; height: 8px; overflow: hidden; }
+.progress-bar-fill { height: 100%; border-radius: 20px; transition: width 0.5s ease; }
+.progress-bar-fill.cyan { background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+.progress-bar-fill.green { background: linear-gradient(90deg, #059669, var(--success)); }
+.progress-val { font-size: 0.78rem; color: var(--cyan); font-weight: 600; margin-top: 0.2rem; }
+.progress-reset {
+  grid-column: 1 / -1; text-align: right;
+}
+
+/* ===== CARDS / SECTIONS ===== */
+.section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+.section-header {
+  padding: 1rem 1.2rem;
+  display: flex; align-items: center; gap: 0.7rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--card2);
+}
+.section-icon { font-size: 1.3rem; }
+.section-title { font-size: 1.05rem; font-weight: 600; }
+.section-body { padding: 1.2rem; }
+.section-body h4 { color: var(--cyan); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 1rem 0 0.4rem; }
+.section-body h4:first-child { margin-top: 0; }
+.section-body p { color: var(--muted); margin-bottom: 0.6rem; font-size: 0.88rem; }
+.section-body ul { padding-left: 1.3rem; color: var(--muted); font-size: 0.88rem; }
+.section-body ul li { margin-bottom: 0.25rem; }
+
+/* ===== OBJECTIVE BOX ===== */
+.obj-box {
+  background: rgba(37,99,235,0.1);
+  border-left: 3px solid var(--blue);
+  border-radius: 0 8px 8px 0;
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 0.8rem;
+  font-size: 0.85rem;
+  color: #93c5fd;
+}
+
+/* ===== CODE BLOCKS ===== */
+.code-block {
+  background: #010f1e;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 0.6rem 0;
+  overflow: hidden;
+}
+.code-header {
+  background: var(--navy);
+  padding: 0.3rem 0.8rem;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.code-lang { font-size: 0.7rem; color: var(--muted); }
+.copy-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 5px;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.copy-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.copy-btn.copied { border-color: var(--success); color: var(--success); }
+pre { padding: 0.8rem 1rem; overflow-x: auto; font-family: 'Consolas', 'Cascadia Code', monospace; font-size: 0.82rem; line-height: 1.6; color: #e2e8f0; }
+
+/* ===== RESULT BOX ===== */
+.result-box {
+  background: rgba(16,185,129,0.08);
+  border-left: 3px solid var(--success);
+  border-radius: 0 8px 8px 0;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.82rem;
+  color: #6ee7b7;
+  margin: 0.5rem 0;
+}
+.warn-box {
+  background: rgba(245,158,11,0.08);
+  border-left: 3px solid var(--warning);
+  border-radius: 0 8px 8px 0;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.82rem;
+  color: #fcd34d;
+  margin: 0.5rem 0;
+}
+.danger-box {
+  background: rgba(239,68,68,0.08);
+  border-left: 3px solid var(--danger);
+  border-radius: 0 8px 8px 0;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.82rem;
+  color: #fca5a5;
+  margin: 0.5rem 0;
+}
+
+/* ===== TABLE ===== */
+.table-wrap { overflow-x: auto; margin: 0.6rem 0; }
+table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+th { background: var(--navy); color: var(--cyan); text-align: left; padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); }
+td { padding: 0.45rem 0.8rem; border-bottom: 1px solid rgba(30,58,95,0.5); color: var(--muted); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+td:first-child { color: var(--text); font-weight: 500; }
+tr:hover td { background: rgba(56,189,248,0.03); }
+
+/* ===== CHECKLIST ===== */
+.checklist { list-style: none; padding: 0; }
+.checklist li {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.3rem 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  border-bottom: 1px solid rgba(30,58,95,0.3);
+}
+.checklist li:last-child { border-bottom: none; }
+.checklist input[type="checkbox"] { accent-color: var(--cyan); width: 15px; height: 15px; cursor: pointer; }
+.checklist label { cursor: pointer; flex: 1; }
+.checklist input:checked + label { text-decoration: line-through; color: var(--success); }
+
+/* ===== ACCORDION ===== */
+.accordion { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 0.5rem 0; }
+.accordion-item { border-bottom: 1px solid var(--border); }
+.accordion-item:last-child { border-bottom: none; }
+.accordion-btn {
+  width: 100%; background: none; border: none;
+  padding: 0.75rem 1rem;
+  display: flex; align-items: center; justify-content: space-between;
+  color: var(--text); font-size: 0.88rem; cursor: pointer;
+  text-align: left;
+}
+.accordion-btn:hover { background: rgba(56,189,248,0.04); }
+.accordion-arrow { color: var(--muted); transition: transform 0.25s; font-size: 0.8rem; }
+.accordion-btn.open .accordion-arrow { transform: rotate(180deg); }
+.accordion-content { display: none; padding: 0.75rem 1rem; background: rgba(10,37,64,0.4); font-size: 0.85rem; color: var(--muted); }
+.accordion-content.open { display: block; }
+
+/* ===== TP SECTION ===== */
+.tp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.tp-card {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  position: relative;
+}
+.tp-card.done { border-color: var(--success); }
+.tp-number {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  background: var(--blue);
+  color: #fff; font-size: 0.78rem; font-weight: 700;
+  border-radius: 50%;
+  margin-bottom: 0.5rem;
+}
+.tp-card.done .tp-number { background: var(--success); }
+.tp-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.4rem; }
+.tp-meta { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.6rem; }
+.tp-check {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-top: 0.8rem; padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem; color: var(--muted);
+}
+.tp-check input { accent-color: var(--success); width: 15px; height: 15px; cursor: pointer; }
+.tp-check label { cursor: pointer; }
+
+/* ===== SECURITY BLOCK ===== */
+.security-block {
+  background: rgba(239,68,68,0.06);
+  border: 1px solid rgba(239,68,68,0.25);
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin: 1rem 0;
+}
+.security-block h3 { color: var(--danger); margin-bottom: 0.8rem; font-size: 0.95rem; display: flex; align-items: center; gap: 0.4rem; }
+.security-block ul { padding-left: 1.3rem; color: #fca5a5; font-size: 0.85rem; }
+.security-block ul li { margin-bottom: 0.3rem; }
+
+/* ===== SHORTCUTS TABLE ===== */
+.shortcuts { display: grid; grid-template-columns: auto 1fr; gap: 0.4rem 1.5rem; font-size: 0.85rem; }
+.shortcuts kbd {
+  background: var(--navy);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.15rem 0.5rem;
+  font-family: monospace;
+  font-size: 0.82rem;
+  color: var(--cyan);
+}
+.shortcuts span { color: var(--muted); align-self: center; }
+
+/* ===== BACK TO TOP ===== */
+#back-to-top {
+  position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 200;
+  background: var(--blue);
+  color: #fff; border: none;
+  border-radius: 50%; width: 42px; height: 42px;
+  font-size: 1.1rem; cursor: pointer;
+  display: none; align-items: center; justify-content: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  transition: background 0.2s;
+}
+#back-to-top:hover { background: var(--cyan); color: var(--navy); }
+#back-to-top.visible { display: flex; }
+
+/* ===== SEARCH HIGHLIGHT ===== */
+.highlight { background: rgba(56,189,248,0.25); border-radius: 3px; padding: 0 2px; }
+.section.hidden { display: none; }
+
+/* ===== PRINT ===== */
+@media print {
+  .sidebar, .topbar, #back-to-top, .copy-btn, .btn, .filter-row, .progress-container { display: none !important; }
+  .main { margin-left: 0; padding: 0; }
+  .section { break-inside: avoid; border: 1px solid #ccc; }
+  body { background: #fff; color: #000; }
+  pre { background: #f5f5f5; color: #000; }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 0 1rem 4rem; }
+  .topbar { padding-left: 1rem; padding-right: 1rem; margin: 0 -1rem; }
+  .progress-container { grid-template-columns: 1fr; }
+  .tp-grid { grid-template-columns: 1fr; }
+  .menu-toggle {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; width: 36px; height: 36px;
+    cursor: pointer; font-size: 1rem; color: var(--text);
+  }
+}
+@media (min-width: 769px) {
+  .menu-toggle { display: none; }
+}
+
+/* ===== TV / LARGE ===== */
+@media (min-width: 1600px) {
+  .main { max-width: 1300px; }
+  body { font-size: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <h2>&#127968; SAVOIR_IA</h2>
+    <p>Manuel Sallon-ConnecT v0.1.0</p>
+  </div>
+  <ul class="nav-list">
+    <li class="nav-section-title">Démarrage</li>
+    <li><a href="#installation" class="icon">&#9881;</a><a href="#installation">Installation</a></li>
+    <li><a href="#demarrage">&#9654; Démarrage &amp; Arrêt</a></li>
+    <li><a href="#dashboard">&#128421; Dashboard</a></li>
+    <li class="nav-section-title">Fonctionnalités</li>
+    <li><a href="#mode-tv">&#128250; Mode TV</a></li>
+    <li><a href="#assistant-vocal">&#127908; Assistant vocal</a></li>
+    <li><a href="#pwa">&#128241; PWA</a></li>
+    <li><a href="#profils">&#128100; Profils</a></li>
+    <li><a href="#sauvegarde">&#128190; Sauvegarde</a></li>
+    <li><a href="#observabilite">&#128202; Observabilité</a></li>
+    <li><a href="#raccourcis">&#9875; Raccourcis</a></li>
+    <li class="nav-section-title">Support</li>
+    <li><a href="#depannage">&#128295; Dépannage</a></li>
+    <li><a href="#faq">&#10067; FAQ</a></li>
+    <li><a href="#securite">&#128274; Sécurité</a></li>
+    <li class="nav-section-title">Pratique</li>
+    <li><a href="#travaux-pratiques">&#127891; Travaux pratiques</a></li>
+  </ul>
+</nav>
+
+<!-- MAIN -->
+<div class="layout">
+<main class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Menu">&#9776;</button>
+    <input type="search" id="search-input" placeholder="&#128269; Rechercher dans le manuel..." oninput="onSearch(this.value)">
+    <button class="btn btn-sm" onclick="window.print()">&#128424; Imprimer</button>
+    <button class="btn btn-sm" onclick="scrollToTop()">&#8679; Haut</button>
+  </div>
+
+  <!-- FILTER ROW -->
+  <div class="filter-row" style="margin-top:0.75rem">
+    <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">Tout</button>
+    <button class="filter-btn" data-filter="debutant" onclick="setFilter('debutant', this)">&#128994; Débutant</button>
+    <button class="filter-btn" data-filter="avance" onclick="setFilter('avance', this)">&#128309; Avancé</button>
+    <button class="filter-btn" data-filter="securite" onclick="setFilter('securite', this)">&#128274; Sécurité</button>
+    <button class="filter-btn" data-filter="reseau" onclick="setFilter('reseau', this)">&#127760; Réseau</button>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Manuel complet <span>Sallon-ConnecT</span></h1>
+    <p>Hub local intelligent pour salon connecté — Documentation SAVOIR_IA</p>
+    <div class="badges">
+      <span class="badge">&#128274; Local-first</span>
+      <span class="badge">&#129695; Windows</span>
+      <span class="badge green">&#10003; PWA</span>
+      <span class="badge green">&#128250; Mode TV</span>
+      <span class="badge orange">&#128737; Sécurité renforcée</span>
+      <span class="badge">v0.1.0</span>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-container">
+    <div class="progress-item">
+      <label>Progression du manuel</label>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill cyan" id="manual-bar" style="width:0%"></div>
+      </div>
+      <div class="progress-val" id="manual-pct">0%</div>
+    </div>
+    <div class="progress-item">
+      <label>Travaux pratiques</label>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill green" id="tp-bar" style="width:0%"></div>
+      </div>
+      <div class="progress-val" id="tp-pct">0 / 12</div>
+    </div>
+    <div class="progress-reset">
+      <button class="btn btn-sm" onclick="resetProgress()">&#8635; Réinitialiser la progression</button>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 1 : PRÉSENTATION ===== -->
+  <div class="section" id="presentation" data-tags="debutant">
+    <div class="section-header">
+      <span class="section-icon">&#127968;</span>
+      <span class="section-title">1. Présentation de Sallon-ConnecT</span>
+    </div>
+    <div class="section-body">
+      <div class="obj-box">Comprendre ce qu'est Sallon-ConnecT, ce qu'il peut faire, et où il tourne.</div>
+      <p>Sallon-ConnecT est un <strong>tableau de bord local</strong> pour suivre et piloter les fonctions du salon connecté depuis un navigateur. Il centralise les appareils, les médias, les scénarios, les notifications, les tâches, les profils et les sauvegardes.</p>
+      <p>La plateforme fonctionne sur votre machine et votre réseau local. <strong>Elle ne nécessite pas de cloud.</strong></p>
+      <h4>Ce que vous pouvez faire</h4>
+      <ul>
+        <li>Ouvrir un dashboard depuis un PC, une tablette ou une TV</li>
+        <li>Naviguer entre Hub, Appareils, Agents, Médias, Scénarios, Notifications, Observabilité, Tâches, Profils et Sauvegarde</li>
+        <li>Installer l'interface comme application PWA</li>
+        <li>Utiliser le Mode TV pour un affichage plein écran</li>
+        <li>Créer des sauvegardes locales contrôlées</li>
+        <li>Consulter les notifications locales et les résultats de tâches</li>
+      </ul>
+      <h4>Adresses locales</h4>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Service</th><th>Adresse</th></tr>
+          <tr><td>Backend Express</td><td>http://localhost:3000</td></tr>
+          <tr><td>Frontend Next.js</td><td>http://localhost:3001</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 2 : PRÉREQUIS ===== -->
+  <div class="section" id="prerequis" data-tags="debutant">
+    <div class="section-header">
+      <span class="section-icon">&#128203;</span>
+      <span class="section-title">2. Prérequis</span>
+    </div>
+    <div class="section-body">
+      <div class="obj-box">Vérifier que votre machine est prête avant d'installer.</div>
+      <ul>
+        <li>Windows 10 ou 11</li>
+        <li>Node.js 22.13 ou plus récent</li>
+        <li>npm (installé avec Node.js)</li>
+        <li>PowerShell disponible</li>
+        <li>Ports 3000 et 3001 libres</li>
+      </ul>
+      <h4>Vérifier Node.js et npm</h4>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>node --version
+npm --version</pre>
+      </div>
+      <div class="result-box">&#10003; Résultat attendu : v22.x.x et 10.x.x ou supérieur</div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 3 : INSTALLATION ===== -->
+  <div class="section" id="installation" data-tags="debutant">
+    <div class="section-header">
+      <span class="section-icon">&#9881;</span>
+      <span class="section-title">3. Installation</span>
+    </div>
+    <div class="section-body">
+      <div class="obj-box">Installer Sallon-ConnecT sur Windows avec les scripts fournis.</div>
+
+      <h4>3.1 Installation guidée (recommandée)</h4>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>scripts\windows\install\install-sallon-connect.bat</pre>
+      </div>
+      <p>Le script effectue automatiquement :</p>
+      <ul>
+        <li>Vérification des prérequis</li>
+        <li>Création de <code>runtime/</code>, <code>logs/</code>, <code>backups/</code> et <code>dist/</code></li>
+        <li>Création de <code>.env</code> depuis <code>.env.example</code> si absent</li>
+        <li>Installation des dépendances (<code>npm install</code>)</li>
+        <li>Build du frontend (<code>npm run build:frontend</code>)</li>
+        <li>Création des raccourcis Bureau et Menu Démarrer</li>
+      </ul>
+
+      <h4>Options utiles</h4>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>powershell -ExecutionPolicy Bypass -File scripts\windows\install\install-sallon-connect.ps1 -SkipInstallDeps
+powershell -ExecutionPolicy Bypass -File scripts\windows\install\install-sallon-connect.ps1 -SkipBuild
+powershell -ExecutionPolicy Bypass -File scripts\windows\install\install-sallon-connect.ps1 -NoShortcut</pre>
+      </div>
+
+      <h4>3.2 Vérifier les prérequis seuls</h4>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>powershell -ExecutionPolicy Bypass -File scripts\windows\install\check-prerequisites.ps1</pre>
+      </div>
+
+      <h4>3.3 Premier lancement (wizard)</h4>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>scripts\windows\install\first-run-wizard.bat</pre>
+      </div>
+      <div class="warn-box">&#9888; Si vous activez SmartThings, modifiez <code>.env</code> manuellement — ne partagez jamais son contenu.</div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 4 : DÉMARRAGE / ARRÊT ===== -->
+  <div class="section" id="demarrage" data-tags="debutant">
+    <div class="section-header">
+      <span class="section-icon">&#9654;</span>
+      <span class="section-title">4. Démarrage et Arrêt</span>
+    </div>
+    <div class="section-body">
+      <div class="obj-box">Démarrer, vérifier le statut et arrêter proprement Sallon-ConnecT.</div>
+      <h4>Démarrer</h4>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>scripts\windows\start-sallon-connect.bat</pre>
+      </div>
+      <div class="result-box">Backend sur http://localhost:3000 — Frontend sur http://localhost:3001</div>
+
+      <h4>Vérifier le statut</h4>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>scripts\windows\status-sallon-connect.bat</pre>
+      </div>
+
+      <h4>Arrêter proprement</h4>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>scripts\windows\stop-sallon-connect.bat</pre>
+      </div>
+      <div class="warn-box">&#9888; Utilisez ce script avant de fermer Windows ou avant de changer de configuration.</div>
+
+      <h4>Ouvrir le dashboard</h4>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>scripts\windows\open-dashboard.bat</pre>
+      </div>
+      <p>Si le navigateur ne s'ouvre pas : <strong>http://localhost:3001</strong></p>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 5 : DASHBOARD ===== -->
+  <div class="section" id="dashboard" data-tags="debutant">
+    <div class="section-header">
+      <span class="section-icon">&#128421;</span>
+      <span class="section-title">5. Sections du Dashboard</span>
+    </div>
+    <div class="section-body">
+      <div class="obj-box">Comprendre le rôle de chaque section du dashboard Sallon-ConnecT.</div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Section</th><th>Rôle</th><th>Statut</th></tr>
+          <tr><td>Hub</td><td>État général, phase courante, appareils connus</td><td style="color:var(--success)">Réel</td></tr>
+          <tr><td>Appareils</td><td>Appareils déclarés et état connu</td><td style="color:var(--success)">Réel</td></tr>
+          <tr><td>Agents</td><td>Rôles logiques du hub</td><td style="color:var(--warning)">Simulé</td></tr>
+          <tr><td>Médias</td><td>ADB, DLNA, SmartThings, streaming assisté</td><td style="color:var(--success)">Réel si activé</td></tr>
+          <tr><td>Scénarios</td><td>Routines : cinéma, travail, famille, diagnostic</td><td style="color:var(--success)">Réel (prévisualisation)</td></tr>
+          <tr><td>Notifications</td><td>Événements locaux : info, succès, warning, erreur, sécurité</td><td style="color:var(--success)">Réel</td></tr>
+          <tr><td>Observabilité</td><td>Health, runtime, sécurité, tests, snapshots</td><td style="color:var(--success)">Réel</td></tr>
+          <tr><td>Tâches</td><td>Tâches planifiées locales et allowlistées</td><td style="color:var(--success)">Réel</td></tr>
+          <tr><td>Profils</td><td>Principal, Famille, Invité, TV, Diagnostic</td><td style="color:var(--success)">Réel</td></tr>
+          <tr><td>Sauvegarde</td><td>ZIP local, manifest SHA256, dry-run, rollback</td><td style="color:var(--success)">Réel</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 6 : MODE TV ===== -->
+  <div class="section" id="mode-tv" data-tags="debutant avance">
+    <div class="section-header">
+      <span class="section-icon">&#128250;</span>
+      <span class="section-title">6. Mode TV</span>
+    </div>
+    <div class="section-body">
+      <div class="obj-box">Afficher le dashboard en plein écran sur une TV ou un grand moniteur.</div>
+      <p>Le Mode TV adapte le dashboard à un affichage plein écran. Cliquez sur <strong>Mode TV</strong> dans la barre du haut, ou utilisez la touche <kbd>T</kbd>.</p>
+      <h4>Raccourcis clavier</h4>
+      <div class="shortcuts">
+        <kbd>T</kbd><span>Activer / désactiver le Mode TV</span>
+        <kbd>F</kbd><span>Plein écran / quitter le plein écran</span>
+        <kbd>R</kbd><span>Actualiser</span>
+        <kbd>N</kbd><span>Aller aux notifications</span>
+        <kbd>S</kbd><span>Aller aux tâches</span>
+        <kbd>H</kbd><span>Aller à l'observabilité</span>
+        <kbd>Échap</kbd><span>Quitter un panneau actif</span>
+      </div>
+      <h4>Comportement de sécurité</h4>
+      <div class="danger-box">
+        &#128274; Aucun raccourci ne lance une commande sensible — aucune scène SmartThings, aucune commande TV, aucun streaming automatique.
+      </div>
+      <h4>Conseils</h4>
+      <ul>
+        <li>Démarrez d'abord le backend et le frontend</li>
+        <li>Ouvrez http://localhost:3001 sur l'écran cible</li>
+        <li>Utilisez le profil TV pour une interface plus restrictive</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 7 : ASSISTANT VOCAL ===== -->
+  <div class="section" id="assistant-vocal" data-tags="avance">
+    <div class="section-header">
+      <span class="section-icon">&#127908;</span>
+      <span class="section-title">7. Assistant Vocal</span>
+    </div>
+    <div class="section-body">
+      <div class="obj-box">Piloter la navigation du dashboard avec des commandes vocales locales.</div>
+      <h4>Activer l'assistant</h4>
+      <ol style="padding-left:1.3rem;color:var(--muted);font-size:0.88rem">
+        <li>Démarrez le backend et le frontend</li>
+        <li>Ouvrez http://localhost:3001</li>
+        <li>Cliquez sur <strong>Assistant vocal</strong> dans la barre du haut</li>
+        <li>Cliquez sur <strong>Micro</strong> pour démarrer l'écoute</li>
+      </ol>
+      <div class="warn-box">L'écoute ne démarre jamais automatiquement — elle doit être déclenchée par un clic utilisateur.</div>
+      <h4>Commandes disponibles</h4>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Commande</th><th>Action</th></tr>
+          <tr><td>ouvre le hub / les appareils / les agents…</td><td>Navigation section</td></tr>
+          <tr><td>actualise</td><td>Rafraîchir le dashboard</td></tr>
+          <tr><td>scanne le statut</td><td>Scan des appareils</td></tr>
+          <tr><td>active / désactive le mode TV</td><td>Mode TV</td></tr>
+          <tr><td>plein écran / quitte le plein écran</td><td>Plein écran</td></tr>
+          <tr><td>statut du système</td><td>Afficher le statut</td></tr>
+        </table>
+      </div>
+      <h4>Commandes refusées (bloquées)</h4>
+      <div class="danger-box">
+        &#128274; Bloquées : allumer/éteindre la TV · scènes SmartThings · streaming · restauration sauvegarde · suppression audit · vidage notifications · changement de profil
+      </div>
+      <h4>Sécurité</h4>
+      <ul>
+        <li>Aucun cloud — pas d'OpenAI, Google Cloud, Azure ou Firebase</li>
+        <li>Audio non stocké — historique en mémoire uniquement</li>
+        <li>Fallback texte disponible si le micro n'est pas supporté</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 8 : PWA ===== -->
+  <div class="section" id="pwa" data-tags="debutant">
+    <div class="section-header">
+      <span class="section-icon">&#128241;</span>
+      <span class="section-title">8. Installation PWA</span>
+    </div>
+    <div class="section-body">
+      <div class="obj-box">Installer Sallon-ConnecT comme application web progressive depuis Chrome ou Edge.</div>
+      <ol style="padding-left:1.3rem;color:var(--muted);font-size:0.88rem">
+        <li>Démarrez Sallon-ConnecT</li>
+        <li>Ouvrez http://localhost:3001 dans Chrome ou Edge</li>
+        <li>Dans la barre d'adresse, cherchez l'icône d'installation</li>
+        <li>Cliquez sur <strong>Installer</strong> et confirmez</li>
+      </ol>
+      <div class="warn-box">La PWA affiche une page offline si le backend est indisponible. Elle ne remplace pas les scripts de démarrage.</div>
+      <h4>Limites</h4>
+      <ul>
+        <li>Les API locales nécessitent le backend sur http://localhost:3000</li>
+        <li>La PWA ne stocke pas de secret</li>
+        <li>Un cache ancien peut afficher une version obsolète — videz le cache du site si nécessaire</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 9 : PROFILS ===== -->
+  <div class="section" id="profils" data-tags="debutant avance">
+    <div class="section-header">
+      <span class="section-icon">&#128100;</span>
+      <span class="section-title">9. Profils et Permissions</span>
+    </div>
+    <div class="section-body">
+      <div class="obj-box">Adapter l'interface et les permissions selon l'usage et l'utilisateur.</div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Profil</th><th>Usage</th><th>Accès</th></tr>
+          <tr><td>Principal</td><td>Administration locale du hub</td><td style="color:var(--cyan)">Complet</td></tr>
+          <tr><td>Famille</td><td>Consultation et usages courants</td><td style="color:var(--success)">Standard</td></tr>
+          <tr><td>Invité</td><td>Vue limitée et prudente</td><td style="color:var(--warning)">Lecture seule</td></tr>
+          <tr><td>TV</td><td>Affichage grand écran</td><td style="color:var(--warning)">Réduit</td></tr>
+          <tr><td>Diagnostic</td><td>Vérification technique</td><td style="color:var(--muted)">Technique / sans restauration</td></tr>
+        </table>
+      </div>
+      <div class="danger-box">&#128274; Principe fondamental : un profil ne contourne <strong>jamais</strong> les garde-fous backend. Si le backend refuse une action, le profil ne peut pas forcer son exécution.</div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 10 : SAUVEGARDE ===== -->
+  <div class="section" id="sauvegarde" data-tags="avance securite">
+    <div class="section-header">
+      <span class="section-icon">&#128190;</span>
+      <span class="section-title">10. Sauvegarde et Restauration</span>
+    </div>
+    <div class="section-body">
+      <div class="obj-box">Créer, vérifier et restaurer des sauvegardes locales de manière sécurisée.</div>
+      <h4>Créer une sauvegarde</h4>
+      <ol style="padding-left:1.3rem;color:var(--muted);font-size:0.88rem">
+        <li>Ouvrez le dashboard</li>
+        <li>Allez dans <strong>Sauvegarde</strong></li>
+        <li>Lancez une création — vérifiez le nom du ZIP</li>
+      </ol>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell (API)</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>Invoke-RestMethod -Method POST http://localhost:3000/api/backup/create</pre>
+      </div>
+      <h4>Dry-run obligatoire avant restauration</h4>
+      <div class="danger-box">&#128274; Toujours lancer un dry-run avant toute restauration. Sans dry-run valide et sans code de confirmation, la restauration est refusée.</div>
+      <h4>Ce qui n'est jamais sauvegardé</h4>
+      <ul>
+        <li><code>.env</code> — tokens et secrets</li>
+        <li><code>node_modules/</code> — dépendances</li>
+        <li>Logs bruts et ZIP de sauvegarde existants</li>
+        <li><code>.git/</code>, <code>.next/</code>, clés et certificats</li>
+      </ul>
+      <h4>Bonnes pratiques</h4>
+      <ul>
+        <li>Gardez les sauvegardes hors Git</li>
+        <li>Ne partagez jamais un ZIP sans vérifier son contenu</li>
+        <li>Lancez le preflight avant toute publication GitHub</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 11 : OBSERVABILITÉ ===== -->
+  <div class="section" id="observabilite" data-tags="avance">
+    <div class="section-header">
+      <span class="section-icon">&#128202;</span>
+      <span class="section-title">11. Observabilité</span>
+    </div>
+    <div class="section-body">
+      <div class="obj-box">Lire les indicateurs de santé du hub, créer des snapshots, exporter les données.</div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Bloc</th><th>Contenu</th></tr>
+          <tr><td>Health backend</td><td>Statut du service Express</td></tr>
+          <tr><td>Sécurité</td><td>Score et alertes de sécurité locales</td></tr>
+          <tr><td>Runtime</td><td>État des processus locaux</td></tr>
+          <tr><td>Logs</td><td>Résumés non sensibles</td></tr>
+          <tr><td>Tests</td><td>Résultats des derniers tests</td></tr>
+          <tr><td>Intégrations</td><td>Statut SmartThings, ADB, DLNA</td></tr>
+          <tr><td>Snapshots</td><td>Historique d'état avec graphes temporels</td></tr>
+        </table>
+      </div>
+      <h4>Créer un snapshot</h4>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell (API)</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>Invoke-RestMethod -Method POST http://localhost:3000/api/observability/snapshots
+Invoke-RestMethod http://localhost:3000/api/observability/snapshots/timeline</pre>
+      </div>
+      <div class="danger-box">&#128274; L'observabilité ne doit pas exposer : logs bruts, chemins complets, secrets, IP complètes, contenu de <code>.env</code>.</div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 12 : RACCOURCIS ===== -->
+  <div class="section" id="raccourcis" data-tags="debutant">
+    <div class="section-header">
+      <span class="section-icon">&#9875;</span>
+      <span class="section-title">12. Raccourcis Clavier</span>
+    </div>
+    <div class="section-body">
+      <div class="shortcuts" style="margin-top:0.5rem">
+        <kbd>T</kbd><span>Activer / désactiver le Mode TV</span>
+        <kbd>F</kbd><span>Plein écran / quitter le plein écran</span>
+        <kbd>R</kbd><span>Actualiser le dashboard</span>
+        <kbd>N</kbd><span>Aller aux notifications</span>
+        <kbd>S</kbd><span>Aller aux tâches</span>
+        <kbd>H</kbd><span>Aller à l'observabilité</span>
+        <kbd>Échap</kbd><span>Quitter un panneau actif</span>
+      </div>
+      <div class="warn-box" style="margin-top:1rem">Aucun raccourci ne lance de commande sensible.</div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 13 : RÉPARATION ===== -->
+  <div class="section" id="reparation" data-tags="avance">
+    <div class="section-header">
+      <span class="section-icon">&#128295;</span>
+      <span class="section-title">13. Réparation et Désinstallation</span>
+    </div>
+    <div class="section-body">
+      <h4>Réparation</h4>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>scripts\windows\install\repair-sallon-connect.bat</pre>
+      </div>
+      <p>Mode léger :</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>powershell -ExecutionPolicy Bypass -File scripts\windows\install\repair-sallon-connect.ps1 -SkipBuild -SkipInstallDeps -NoShortcut</pre>
+      </div>
+      <div class="result-box">La réparation ne supprime pas vos données et ne remplace pas <code>.env</code> existant.</div>
+      <h4>Désinstallation douce</h4>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>scripts\windows\install\uninstall-sallon-connect.bat</pre>
+      </div>
+      <p>Chaque suppression (<code>logs/</code>, <code>backups/</code>, <code>runtime/</code>, <code>node_modules/</code>) demande une confirmation explicite.</p>
+      <h4>Recréer les raccourcis seulement</h4>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>powershell -ExecutionPolicy Bypass -File scripts\windows\create-desktop-shortcut.ps1
+powershell -ExecutionPolicy Bypass -File scripts\windows\install\create-start-menu-shortcut.ps1</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 14 : DÉPANNAGE ===== -->
+  <div class="section" id="depannage" data-tags="debutant avance reseau">
+    <div class="section-header">
+      <span class="section-icon">&#128295;</span>
+      <span class="section-title">14. Dépannage</span>
+    </div>
+    <div class="section-body">
+      <div class="accordion" id="acc-depannage">
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">EADDRINUSE port 3000 <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content">
+            <p>Arrêter l'ancien processus :</p>
+            <div class="code-block"><div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>scripts\windows\stop-sallon-connect.bat</pre></div>
+            <p>Ou changer <code>PORT</code> dans <code>.env</code>.</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">Port 3001 déjà utilisé <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content">
+            <div class="code-block"><div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>scripts\windows\stop-sallon-connect.bat
+scripts\windows\start-sallon-connect.bat</pre></div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">Backend indisponible <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content">
+            <div class="code-block"><div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>Invoke-RestMethod http://localhost:3000/api/health
+npm run dev:backend</pre></div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">PowerShell bloque un script <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content">
+            <div class="code-block"><div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>powershell -ExecutionPolicy Bypass -File scripts\windows\status-sallon-connect.ps1</pre></div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">Node version trop ancienne <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content">
+            <p>Installer Node.js 22.13 ou plus récent, fermer et rouvrir le terminal, vérifier <code>node --version</code>.</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">Raccourcis Windows absents <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content">
+            <div class="code-block"><div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>scripts\windows\install\repair-sallon-connect.bat</pre></div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">La PWA ne s'installe pas <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content"><p>Utiliser Chrome ou Edge — ouvrir http://localhost:3001 — vérifier que le frontend est lancé.</p></div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">DLNA ne trouve rien <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content"><p>Vérifier que les appareils sont sur le même réseau local — vérifier <code>DLNA_ENABLED</code> dans <code>.env</code> — redémarrer le backend.</p></div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">Restore refusé sans dry-run <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content"><p>C'est normal. Lancez un dry-run depuis la section Sauvegarde, puis confirmez explicitement.</p></div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">Git preflight échoue <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content">
+            <div class="code-block"><div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>powershell -ExecutionPolicy Bypass -File scripts\release\preflight-github.ps1</pre></div>
+            <p>Ne jamais ajouter <code>.env</code>, runtime, logs, backups ou dépendances.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 15 : FAQ ===== -->
+  <div class="section" id="faq" data-tags="debutant securite">
+    <div class="section-header">
+      <span class="section-icon">&#10067;</span>
+      <span class="section-title">15. FAQ</span>
+    </div>
+    <div class="section-body">
+      <div class="accordion">
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">Sallon-ConnecT envoie-t-il des données au cloud ? <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content">Non. Le projet est local-first. Dashboard et backend tournent sur votre machine. Les intégrations externes sont optionnelles.</div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">SmartThings est-il obligatoire ? <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content">Non. Le dashboard fonctionne sans SmartThings. Si désactivé, les panneaux affichent un statut limité.</div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">ADB lit-il mes photos ? <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content">Non par défaut. ADB est en lecture seule et sert au diagnostic. Aucune copie de fichiers personnels ne doit être lancée automatiquement.</div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">Le streaming est-il automatique ? <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content">Non. Le streaming est assisté et protégé. Aucun scénario ou raccourci ne lance un streaming automatiquement.</div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">L'assistant vocal utilise-t-il un cloud ? <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content">Non. Il utilise uniquement les APIs navigateur (Web Speech API) et un fallback texte. Aucune API cloud n'est appelée.</div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">L'installateur écrase-t-il mon .env ? <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content">Non. Si <code>.env</code> existe déjà, le script le conserve. Les fichiers sont créés depuis les exemples uniquement s'ils sont absents.</div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">Où sont stockées les données ? <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content">
+            <code>data/</code> → données versionnées &nbsp;|&nbsp;
+            <code>runtime/</code> → états locaux &nbsp;|&nbsp;
+            <code>logs/</code> → rapports &nbsp;|&nbsp;
+            <code>backups/</code> → sauvegardes. Les dossiers sensibles sont ignorés par Git.
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-btn" onclick="toggleAccordion(this)">Comment arrêter proprement ? <span class="accordion-arrow">&#9660;</span></button>
+          <div class="accordion-content">
+            <div class="code-block"><div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>scripts\windows\stop-sallon-connect.bat</pre></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 16 : SÉCURITÉ ===== -->
+  <div class="section" id="securite" data-tags="securite">
+    <div class="section-header">
+      <span class="section-icon">&#128274;</span>
+      <span class="section-title">16. Règles de Sécurité</span>
+    </div>
+    <div class="section-body">
+      <div class="security-block">
+        <h3>&#128737; Règles absolues — ne jamais enfreindre</h3>
+        <ul>
+          <li>Ne jamais publier <code>.env</code> dans Git ou sur GitHub</li>
+          <li>Ne jamais publier <code>runtime/*.json</code></li>
+          <li>Ne jamais publier les dossiers <code>logs/</code></li>
+          <li>Ne jamais publier les backups privés (<code>backups/*.zip</code>)</li>
+          <li>Ne jamais afficher de token, IP complète, identifiant matériel, numéro de série ou ID complet</li>
+        </ul>
+      </div>
+      <h4>Intégrations — opt-in uniquement</h4>
+      <ul>
+        <li><strong>SmartThings</strong> est opt-in — désactivé par défaut</li>
+        <li><strong>ADB</strong> est en lecture seule par défaut</li>
+        <li><strong>DLNA</strong> est en découverte locale passive</li>
+        <li>L'<strong>assistant vocal</strong> ne lance aucune action sensible</li>
+      </ul>
+      <h4>Restauration sauvegarde</h4>
+      <div class="danger-box">&#128274; La restauration backup nécessite toujours un dry-run + confirmation explicite.</div>
+      <h4>Vérification avant publication GitHub</h4>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+        <pre>npm run check
+powershell -ExecutionPolicy Bypass -File scripts\release\preflight-github.ps1
+powershell -ExecutionPolicy Bypass -File scripts\release\final-release-check.ps1</pre>
+      </div>
+      <div class="result-box">&#10003; Résultat attendu : 0 erreur, 0 fichier interdit, 0 secret probable</div>
+    </div>
+  </div>
+
+  <!-- ===== TRAVAUX PRATIQUES ===== -->
+  <div class="section" id="travaux-pratiques" data-tags="debutant avance securite reseau">
+    <div class="section-header">
+      <span class="section-icon">&#127891;</span>
+      <span class="section-title">Travaux pratiques guidés</span>
+    </div>
+    <div class="section-body">
+      <p style="margin-bottom:1rem">12 exercices progressifs pour maîtriser Sallon-ConnecT. Cochez chaque TP terminé — votre progression est sauvegardée localement.</p>
+      <div class="tp-grid">
+
+        <!-- TP 1 -->
+        <div class="tp-card" id="tp-card-1">
+          <div class="tp-number">1</div>
+          <div class="tp-title">Installer Sallon-ConnecT</div>
+          <div class="tp-meta">&#128994; Débutant</div>
+          <div class="obj-box">Installer les dépendances et préparer le projet.</div>
+          <div class="code-block"><div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>scripts\windows\install\install-sallon-connect.bat</pre></div>
+          <div class="result-box">Backend et frontend prêts, dossiers créés.</div>
+          <div class="tp-check">
+            <input type="checkbox" id="tp-1" onchange="saveTpProgress(1, this.checked)">
+            <label for="tp-1">TP 1 terminé</label>
+          </div>
+        </div>
+
+        <!-- TP 2 -->
+        <div class="tp-card" id="tp-card-2">
+          <div class="tp-number">2</div>
+          <div class="tp-title">Lancer le dashboard</div>
+          <div class="tp-meta">&#128994; Débutant</div>
+          <div class="obj-box">Démarrer les services et ouvrir le dashboard.</div>
+          <div class="code-block"><div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>scripts\windows\start-sallon-connect.bat
+scripts\windows\open-dashboard.bat</pre></div>
+          <div class="result-box">Dashboard accessible sur http://localhost:3001</div>
+          <div class="tp-check">
+            <input type="checkbox" id="tp-2" onchange="saveTpProgress(2, this.checked)">
+            <label for="tp-2">TP 2 terminé</label>
+          </div>
+        </div>
+
+        <!-- TP 3 -->
+        <div class="tp-card" id="tp-card-3">
+          <div class="tp-number">3</div>
+          <div class="tp-title">Vérifier la santé du système</div>
+          <div class="tp-meta">&#128994; Débutant</div>
+          <div class="obj-box">Contrôler que le backend répond correctement.</div>
+          <div class="code-block"><div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>npm run health
+Invoke-RestMethod http://localhost:3000/api/health</pre></div>
+          <div class="result-box">&#10003; status: ok</div>
+          <div class="tp-check">
+            <input type="checkbox" id="tp-3" onchange="saveTpProgress(3, this.checked)">
+            <label for="tp-3">TP 3 terminé</label>
+          </div>
+        </div>
+
+        <!-- TP 4 -->
+        <div class="tp-card" id="tp-card-4">
+          <div class="tp-number">4</div>
+          <div class="tp-title">Configurer la Box SFR</div>
+          <div class="tp-meta">&#128309; Avancé — Réseau</div>
+          <div class="obj-box">Ajouter la box SFR dans les variables d'environnement.</div>
+          <p style="font-size:0.83rem;color:var(--muted)">Éditer <code>.env</code> et ajouter :</p>
+          <div class="code-block"><div class="code-header"><span class="code-lang">.env</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>DEVICE_BOX_SFR_HOST=192.168.1.1</pre></div>
+          <div class="result-box">Box SFR affichée "En ligne" dans le hub.</div>
+          <div class="warn-box">Ne jamais committer ce fichier .env.</div>
+          <div class="tp-check">
+            <input type="checkbox" id="tp-4" onchange="saveTpProgress(4, this.checked)">
+            <label for="tp-4">TP 4 terminé</label>
+          </div>
+        </div>
+
+        <!-- TP 5 -->
+        <div class="tp-card" id="tp-card-5">
+          <div class="tp-number">5</div>
+          <div class="tp-title">Tester le réseau local</div>
+          <div class="tp-meta">&#127760; Réseau</div>
+          <div class="obj-box">Identifier les appareils visibles sur le réseau local.</div>
+          <div class="code-block"><div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>arp -a
+ping 192.168.1.1
+Test-NetConnection 192.168.1.1</pre></div>
+          <div class="result-box">Liste des appareils ARP visible, ping OK.</div>
+          <div class="tp-check">
+            <input type="checkbox" id="tp-5" onchange="saveTpProgress(5, this.checked)">
+            <label for="tp-5">TP 5 terminé</label>
+          </div>
+        </div>
+
+        <!-- TP 6 -->
+        <div class="tp-card" id="tp-card-6">
+          <div class="tp-number">6</div>
+          <div class="tp-title">Activer DLNA</div>
+          <div class="tp-meta">&#128309; Avancé — Réseau</div>
+          <div class="obj-box">Configurer et tester la découverte DLNA locale.</div>
+          <p style="font-size:0.83rem;color:var(--muted)">Dans <code>.env</code> :</p>
+          <div class="code-block"><div class="code-header"><span class="code-lang">.env</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>DLNA_ENABLED=true</pre></div>
+          <div class="code-block"><div class="code-header"><span class="code-lang">powershell (API)</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>Invoke-RestMethod http://localhost:3000/api/dlna/status
+Invoke-RestMethod -Method POST http://localhost:3000/api/dlna/discover</pre></div>
+          <div class="result-box">status: "ready" ou "no_device" — pas "disabled"</div>
+          <div class="tp-check">
+            <input type="checkbox" id="tp-6" onchange="saveTpProgress(6, this.checked)">
+            <label for="tp-6">TP 6 terminé</label>
+          </div>
+        </div>
+
+        <!-- TP 7 -->
+        <div class="tp-card" id="tp-card-7">
+          <div class="tp-number">7</div>
+          <div class="tp-title">Utiliser le Mode TV</div>
+          <div class="tp-meta">&#128994; Débutant</div>
+          <div class="obj-box">Passer en interface grand écran.</div>
+          <ul style="font-size:0.83rem;color:var(--muted);padding-left:1.2rem">
+            <li>Cliquer <strong>Mode TV</strong> dans la barre du haut</li>
+            <li>Utiliser la touche <kbd>T</kbd></li>
+            <li>Utiliser <kbd>F</kbd> pour le plein écran</li>
+          </ul>
+          <div class="result-box">Interface lisible sur grand écran, aucune action sensible.</div>
+          <div class="tp-check">
+            <input type="checkbox" id="tp-7" onchange="saveTpProgress(7, this.checked)">
+            <label for="tp-7">TP 7 terminé</label>
+          </div>
+        </div>
+
+        <!-- TP 8 -->
+        <div class="tp-card" id="tp-card-8">
+          <div class="tp-number">8</div>
+          <div class="tp-title">Utiliser l'assistant vocal</div>
+          <div class="tp-meta">&#128309; Avancé</div>
+          <div class="obj-box">Tester les commandes vocales sûres.</div>
+          <ul style="font-size:0.83rem;color:var(--muted);padding-left:1.2rem">
+            <li>"ouvre les appareils"</li>
+            <li>"affiche les notifications"</li>
+            <li>"active le mode TV"</li>
+            <li>"statut du système"</li>
+          </ul>
+          <div class="result-box">Navigation sans action sensible.</div>
+          <div class="danger-box">&#128274; Les commandes TV, SmartThings, streaming sont bloquées.</div>
+          <div class="tp-check">
+            <input type="checkbox" id="tp-8" onchange="saveTpProgress(8, this.checked)">
+            <label for="tp-8">TP 8 terminé</label>
+          </div>
+        </div>
+
+        <!-- TP 9 -->
+        <div class="tp-card" id="tp-card-9">
+          <div class="tp-number">9</div>
+          <div class="tp-title">Créer une sauvegarde locale</div>
+          <div class="tp-meta">&#128274; Sécurité</div>
+          <div class="obj-box">Créer un backup sûr avec manifest SHA256.</div>
+          <div class="code-block"><div class="code-header"><span class="code-lang">powershell (API)</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>Invoke-RestMethod -Method POST http://localhost:3000/api/backup/create</pre></div>
+          <div class="result-box">Backup ZIP local créé dans backups/ avec manifest.</div>
+          <div class="tp-check">
+            <input type="checkbox" id="tp-9" onchange="saveTpProgress(9, this.checked)">
+            <label for="tp-9">TP 9 terminé</label>
+          </div>
+        </div>
+
+        <!-- TP 10 -->
+        <div class="tp-card" id="tp-card-10">
+          <div class="tp-number">10</div>
+          <div class="tp-title">Vérifier une sauvegarde</div>
+          <div class="tp-meta">&#128274; Sécurité</div>
+          <div class="obj-box">Contrôler checksum et manifest du backup.</div>
+          <div class="code-block"><div class="code-header"><span class="code-lang">powershell (API)</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>Invoke-RestMethod http://localhost:3000/api/backup/backups
+Invoke-RestMethod -Method POST http://localhost:3000/api/backup/backups/BACKUP_ID/verify</pre></div>
+          <div class="result-box">Backup validé — intégrité SHA256 confirmée.</div>
+          <div class="tp-check">
+            <input type="checkbox" id="tp-10" onchange="saveTpProgress(10, this.checked)">
+            <label for="tp-10">TP 10 terminé</label>
+          </div>
+        </div>
+
+        <!-- TP 11 -->
+        <div class="tp-card" id="tp-card-11">
+          <div class="tp-number">11</div>
+          <div class="tp-title">Observer le système</div>
+          <div class="tp-meta">&#128309; Avancé</div>
+          <div class="obj-box">Créer un snapshot d'observabilité et l'afficher dans les graphes.</div>
+          <div class="code-block"><div class="code-header"><span class="code-lang">powershell (API)</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>Invoke-RestMethod -Method POST http://localhost:3000/api/observability/snapshots
+Invoke-RestMethod http://localhost:3000/api/observability/snapshots/timeline</pre></div>
+          <div class="result-box">Snapshot visible dans les graphes temporels.</div>
+          <div class="tp-check">
+            <input type="checkbox" id="tp-11" onchange="saveTpProgress(11, this.checked)">
+            <label for="tp-11">TP 11 terminé</label>
+          </div>
+        </div>
+
+        <!-- TP 12 -->
+        <div class="tp-card" id="tp-card-12">
+          <div class="tp-number">12</div>
+          <div class="tp-title">Préparer une release propre</div>
+          <div class="tp-meta">&#128274; Sécurité</div>
+          <div class="obj-box">Vérifier que le projet est publiable sur GitHub sans secret.</div>
+          <div class="code-block"><div class="code-header"><span class="code-lang">powershell</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div><pre>npm run check
+powershell -ExecutionPolicy Bypass -File scripts\release\preflight-github.ps1
+powershell -ExecutionPolicy Bypass -File scripts\release\final-release-check.ps1</pre></div>
+          <div class="result-box">&#10003; 0 erreur — projet publiable</div>
+          <div class="tp-check">
+            <input type="checkbox" id="tp-12" onchange="saveTpProgress(12, this.checked)">
+            <label for="tp-12">TP 12 terminé</label>
+          </div>
+        </div>
+
+      </div><!-- /tp-grid -->
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="text-align:center;color:var(--muted);font-size:0.75rem;margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border)">
+    Sallon-ConnecT v0.1.0 — Manuel SAVOIR_IA — Local-first, aucune télémétrie
+  </div>
+
+</main>
+</div>
+
+<!-- BACK TO TOP -->
+<button id="back-to-top" onclick="scrollToTop()" aria-label="Retour en haut">&#8679;</button>
+
+<script>
+// ===== STORAGE KEY =====
+const LS_TP   = 'sc_tp_progress';
+const LS_MAN  = 'sc_manual_progress';
+const TP_TOTAL = 12;
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  loadTpProgress();
+  updateManualProgress();
+  highlightActiveNav();
+  window.addEventListener('scroll', onScroll);
+});
+
+// ===== NAVIGATION ACTIVE =====
+function highlightActiveNav() {
+  const links = document.querySelectorAll('.nav-list a[href^="#"]');
+  const sections = document.querySelectorAll('.section[id]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector('.nav-list a[href="#' + e.target.id + '"]');
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { threshold: 0.2 });
+  sections.forEach(s => observer.observe(s));
+}
+
+// ===== SCROLL =====
+function onScroll() {
+  const btn = document.getElementById('back-to-top');
+  btn.classList.toggle('visible', window.scrollY > 400);
+}
+function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+// ===== SIDEBAR MOBILE =====
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// ===== COPY BUTTON =====
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent.trim()).then(() => {
+    btn.textContent = '&#10003; Copié';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copier'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = pre.textContent.trim();
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent = '&#10003; Copié';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copier'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ===== ACCORDION =====
+function toggleAccordion(btn) {
+  const content = btn.nextElementSibling;
+  const isOpen = btn.classList.contains('open');
+  // Close siblings in same accordion
+  const acc = btn.closest('.accordion');
+  acc.querySelectorAll('.accordion-btn.open').forEach(b => {
+    b.classList.remove('open');
+    b.nextElementSibling.classList.remove('open');
+  });
+  if (!isOpen) {
+    btn.classList.add('open');
+    content.classList.add('open');
+  }
+}
+
+// ===== TP PROGRESS =====
+function loadTpProgress() {
+  const saved = JSON.parse(localStorage.getItem(LS_TP) || '{}');
+  for (let i = 1; i <= TP_TOTAL; i++) {
+    const cb = document.getElementById('tp-' + i);
+    if (cb && saved[i]) {
+      cb.checked = true;
+      document.getElementById('tp-card-' + i).classList.add('done');
+    }
+  }
+  updateTpBar();
+}
+
+function saveTpProgress(num, checked) {
+  const saved = JSON.parse(localStorage.getItem(LS_TP) || '{}');
+  if (checked) saved[num] = true; else delete saved[num];
+  localStorage.setItem(LS_TP, JSON.stringify(saved));
+  const card = document.getElementById('tp-card-' + num);
+  if (card) card.classList.toggle('done', checked);
+  updateTpBar();
+}
+
+function updateTpBar() {
+  const saved = JSON.parse(localStorage.getItem(LS_TP) || '{}');
+  const count = Object.keys(saved).length;
+  const pct = Math.round(count / TP_TOTAL * 100);
+  document.getElementById('tp-bar').style.width = pct + '%';
+  document.getElementById('tp-pct').textContent = count + ' / ' + TP_TOTAL;
+}
+
+// ===== MANUAL PROGRESS (section scroll tracking) =====
+function updateManualProgress() {
+  const sections = document.querySelectorAll('.section[id]');
+  const total = sections.length;
+  const saved = JSON.parse(localStorage.getItem(LS_MAN) || '[]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !saved.includes(e.target.id)) {
+        saved.push(e.target.id);
+        localStorage.setItem(LS_MAN, JSON.stringify(saved));
+        const pct = Math.round(saved.length / total * 100);
+        document.getElementById('manual-bar').style.width = pct + '%';
+        document.getElementById('manual-pct').textContent = pct + '%';
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => observer.observe(s));
+  // Init from saved
+  const pct = Math.round(Math.min(saved.length, total) / total * 100);
+  document.getElementById('manual-bar').style.width = pct + '%';
+  document.getElementById('manual-pct').textContent = pct + '%';
+}
+
+// ===== RESET =====
+function resetProgress() {
+  if (!confirm('Réinitialiser toute la progression ?')) return;
+  localStorage.removeItem(LS_TP);
+  localStorage.removeItem(LS_MAN);
+  for (let i = 1; i <= TP_TOTAL; i++) {
+    const cb = document.getElementById('tp-' + i);
+    if (cb) cb.checked = false;
+    const card = document.getElementById('tp-card-' + i);
+    if (card) card.classList.remove('done');
+  }
+  document.getElementById('tp-bar').style.width = '0%';
+  document.getElementById('tp-pct').textContent = '0 / ' + TP_TOTAL;
+  document.getElementById('manual-bar').style.width = '0%';
+  document.getElementById('manual-pct').textContent = '0%';
+}
+
+// ===== SEARCH =====
+function onSearch(query) {
+  const q = query.trim().toLowerCase();
+  const sections = document.querySelectorAll('.section');
+  sections.forEach(sec => {
+    if (!q) { sec.classList.remove('hidden'); return; }
+    const text = sec.textContent.toLowerCase();
+    sec.classList.toggle('hidden', !text.includes(q));
+  });
+}
+
+// ===== FILTER =====
+function setFilter(filter, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const sections = document.querySelectorAll('.section');
+  sections.forEach(sec => {
+    if (filter === 'all') { sec.classList.remove('hidden'); return; }
+    const tags = (sec.dataset.tags || '').split(' ');
+    sec.classList.toggle('hidden', !tags.includes(filter));
+  });
+}
+</script>
+</body>
+</html>

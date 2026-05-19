@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node tests/docs/manual-page.test.js)"
+    ]
+  }
+}

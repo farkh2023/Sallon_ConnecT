@@ -2,6 +2,7 @@
 
 ## Documentation utilisateur
 
+- [Manuel complet interactif SAVOIR_IA](user/sallon-connect-manuel-savoir-ia.html)
 - [Accueil utilisateur](user/README_USER.md)
 - [Quick Start Windows](user/QUICK_START_WINDOWS.md)
 - [Guide utilisateur](user/USER_GUIDE.md)

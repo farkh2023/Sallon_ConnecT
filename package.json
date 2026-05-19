@@ -20,7 +20,8 @@
     "build": "npm run build:frontend",
     "build:frontend": "cd frontend && npm run build",
     "check:docs": "node scripts/release/check-doc-links.js",
-    "check": "npm run check:docs && npm run lint && npm run test && npm run test:windows && npm run build"
+    "check:manual": "node tests/docs/manual-page.test.js",
+    "check": "npm run check:docs && npm run check:manual && npm run lint && npm run test && npm run test:windows && npm run build"
   },
   "dependencies": {
     "adm-zip": "^0.5.17",
