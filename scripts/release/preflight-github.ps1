@@ -144,22 +144,42 @@ $SensitiveRules = @(
 foreach ($Rule in $SensitiveRules) {
   $Hits = [System.Collections.Generic.List[string]]::new()
 
-  foreach ($File in $Tracked) {
-    if (-not (Test-Path -LiteralPath $File)) { continue }
+  foreach ($CleanFile in $Tracked) {
+    
+try {
+    if ([string]::IsNullOrWhiteSpace($CleanFile)) {
+        continue
+    }
 
-    $Extension = [System.IO.Path]::GetExtension($File)
-    if ($File -eq '.gitignore') { $Extension = '.gitignore' }
+    $CleanFile = [string]$CleanFile
+    $CleanFile = $CleanFile.Trim()
+
+    if ($CleanFile.IndexOfAny([System.IO.Path]::GetInvalidPathChars()) -ge 0) {
+        Write-Host "[WARN] Chemin ignore car invalide pour Test-Path." -ForegroundColor Yellow
+        continue
+    }
+
+    if (-not (Test-Path -LiteralPath $CleanFile)) {
+        continue
+    }
+}
+catch {
+    Write-Host "[WARN] Chemin ignore pendant le scan sensible." -ForegroundColor Yellow
+    continue
+}
+    $Extension = [System.IO.Path]::GetExtension($CleanFile)
+    if ($CleanFile -eq '.gitignore') { $Extension = '.gitignore' }
     if ($TextExtensions -notcontains $Extension) { continue }
 
     try {
-      $FileLines = Get-Content -LiteralPath $File -ErrorAction Stop
-      for ($i = 0; $i -lt $FileLines.Count; $i += 1) {
-        if ($FileLines[$i] -match $Rule.Pattern) {
+      $CleanFileLines = Get-Content -LiteralPath $CleanFile -ErrorAction Stop
+      for ($i = 0; $i -lt $CleanFileLines.Count; $i += 1) {
+        if ($CleanFileLines[$i] -match $Rule.Pattern) {
           $Hits.Add("${File}:$($i + 1)")
         }
       }
     } catch {
-      WARN "Scan ignore : $File"
+      WARN "Scan ignore : $CleanFile"
     }
   }
 
