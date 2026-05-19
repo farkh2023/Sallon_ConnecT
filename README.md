@@ -181,6 +181,8 @@ Details : [SECURITY.md](SECURITY.md) et [docs/SECURITY_MODEL.md](docs/SECURITY_M
 
 | Guide | Role |
 |---|---|
+| Centre d'aide intégré | http://localhost:3001/aide — commandes, TP, FAQ, statut système |
+| Manuel Next.js | http://localhost:3001/manuel — manuel dans le dashboard |
 | [Manuel complet SAVOIR_IA](docs/user/sallon-connect-manuel-savoir-ia.html) | Manuel interactif complet avec 12 TP, recherche et progression |
 | [Quick Start Windows](docs/user/QUICK_START_WINDOWS.md) | Installer, lancer, ouvrir, arreter et packager |
 | [User Guide](docs/user/USER_GUIDE.md) | Comprendre les sections du dashboard |

@@ -522,6 +522,76 @@ export interface BackupSafety {
   forbiddenPaths: string[];
 }
 
+// Phase 27 — Centre d'aide intégré
+
+export interface HelpTopic {
+  id: string;
+  title: string;
+  description: string;
+  category: HelpCategory;
+  tags: string[];
+}
+
+export interface HelpCommand {
+  id: string;
+  label: string;
+  command: string;
+  category: HelpCategory;
+  description?: string;
+}
+
+export interface HelpLab {
+  id: number;
+  title: string;
+  objective: string;
+  command: string;
+  expected: string;
+  category: HelpCategory;
+  level: 'debutant' | 'avance' | 'securite' | 'reseau';
+}
+
+export interface HelpFaqItem {
+  id: string;
+  question: string;
+  answer: string;
+  tags: string[];
+}
+
+export interface HelpTroubleshootingItem {
+  id: string;
+  problem: string;
+  solution: string;
+  command?: string;
+  tags: string[];
+}
+
+export type HelpCategory =
+  | 'installation'
+  | 'lancement'
+  | 'sante'
+  | 'tests'
+  | 'documentation'
+  | 'release'
+  | 'reseau'
+  | 'securite'
+  | 'backup'
+  | 'tv'
+  | 'all';
+
+export interface HelpSystemStatus {
+  backendOk: boolean;
+  frontendOk: boolean;
+  phase: number | null;
+  unreadNotifications: number;
+  schedulerActive: boolean;
+  observabilityOk: boolean;
+  backupAvailable: boolean;
+  securityLocalOnly: boolean;
+  loading: boolean;
+  error: string | null;
+  lastCheckedAt: string | null;
+}
+
 // Phase 24 - Assistant vocal local
 export type VoiceCommandIntent =
   | 'navigate'

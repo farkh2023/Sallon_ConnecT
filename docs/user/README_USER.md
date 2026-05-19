@@ -25,6 +25,7 @@ La plateforme est prevue pour fonctionner sur votre machine et votre reseau loca
 
 | Guide | Quand l'utiliser |
 |---|---|
+| [Centre d'aide intégré](http://localhost:3001/aide) | Centre d'aide dans le dashboard : commandes, TP, FAQ, statut |
 | [Manuel complet interactif SAVOIR_IA](sallon-connect-manuel-savoir-ia.html) | Manuel complet avec TP, recherche et progression |
 | [Quick Start Windows](QUICK_START_WINDOWS.md) | Installer et demarrer rapidement |
 | [Guide utilisateur](USER_GUIDE.md) | Comprendre les sections du dashboard |

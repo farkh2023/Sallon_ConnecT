@@ -21,6 +21,7 @@ import { BackupPanel } from '@/components/backup/BackupPanel';
 import { TvModeProvider } from '@/components/tv/TvModeProvider';
 import { TvDashboard } from '@/components/tv/TvDashboard';
 import { VoiceAssistantPanel } from '@/components/voice/VoiceAssistantPanel';
+import { HelpCenterPanel } from '@/components/help/HelpCenterPanel';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useProfiles } from '@/hooks/useProfiles';
 import { PROJECT_TAGLINE } from '@/lib/project';
@@ -39,6 +40,7 @@ function AppShellContent() {
   const tv = useTvMode();
   const unread = stats?.unread ?? 0;
   const [voicePanelOpen, setVoicePanelOpen] = useState(false);
+  const [helpPanelOpen, setHelpPanelOpen] = useState(false);
   const { profiles, activeProfile, loadProfiles, loadActiveProfile, activateProfile } = useProfiles();
 
   useEffect(() => {
@@ -58,6 +60,7 @@ function AppShellContent() {
   const voiceShortcutHandlers = useMemo(
     () => ({
       v: () => setVoicePanelOpen((current) => !current),
+      '?': () => setHelpPanelOpen((current) => !current),
     }),
     []
   );
@@ -72,8 +75,11 @@ function AppShellContent() {
         onActivateProfile={id => void handleActivateProfile(id)}
         voicePanelOpen={voicePanelOpen}
         onToggleVoicePanel={() => setVoicePanelOpen((current) => !current)}
+        helpPanelOpen={helpPanelOpen}
+        onToggleHelpPanel={() => setHelpPanelOpen((current) => !current)}
       />
       <VoiceAssistantPanel open={voicePanelOpen} onClose={() => setVoicePanelOpen(false)} />
+      <HelpCenterPanel open={helpPanelOpen} onClose={() => setHelpPanelOpen(false)} />
 
       <main className="mx-auto w-full max-w-7xl flex-1 space-y-16 px-4 py-8">
         {tv.enabled && <TvDashboard />}

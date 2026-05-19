@@ -34,6 +34,8 @@ interface TopNavProps {
   onActivateProfile?: (id: string) => void;
   voicePanelOpen?: boolean;
   onToggleVoicePanel?: () => void;
+  helpPanelOpen?: boolean;
+  onToggleHelpPanel?: () => void;
 }
 
 export function TopNav({
@@ -43,6 +45,8 @@ export function TopNav({
   onActivateProfile,
   voicePanelOpen = false,
   onToggleVoicePanel,
+  helpPanelOpen = false,
+  onToggleHelpPanel,
 }: TopNavProps) {
   const tv = useTvMode();
 
@@ -99,6 +103,21 @@ export function TopNav({
             Mode TV
           </button>
           <FullscreenButton compact />
+          {onToggleHelpPanel && (
+            <button
+              type="button"
+              aria-pressed={helpPanelOpen}
+              aria-label="Ouvrir le Centre d'aide (touche ?)"
+              onClick={onToggleHelpPanel}
+              className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-coral ${
+                helpPanelOpen
+                  ? 'border-sky-400/40 bg-sky-400/15 text-sky-300'
+                  : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10'
+              }`}
+            >
+              Aide
+            </button>
+          )}
           <InstallPrompt />
           {profiles.length > 0 && onActivateProfile && (
             <ProfileSwitcher
