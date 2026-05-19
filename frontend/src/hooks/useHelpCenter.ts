@@ -137,8 +137,13 @@ export function useHelpCenter(): UseHelpCenterState {
   }, []);
 
   useEffect(() => {
+  const timer = window.setTimeout(() => {
     void refreshStatus();
-  }, [refreshStatus]);
+  }, 0);
 
+  return () => {
+    window.clearTimeout(timer);
+  };
+}, [refreshStatus]);
   return { query, activeCategory, systemStatus, setQuery, setActiveCategory, refreshStatus };
 }
