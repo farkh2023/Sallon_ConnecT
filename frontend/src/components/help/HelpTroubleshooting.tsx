@@ -35,14 +35,14 @@ function CopyCmd({ cmd }: { cmd: string }) {
   );
 }
 
-interface HelpTroubleshootingProps { query: string; }
+interface HelpTroubleshootingProps { query: string; activeCategory: string; }
 
-export function HelpTroubleshooting({ query }: HelpTroubleshootingProps) {
+export function HelpTroubleshooting({ query, activeCategory }: HelpTroubleshootingProps) {
   const [open, setOpen] = useState<string | null>(null);
   const q = query.toLowerCase();
-  const filtered = q
-    ? ITEMS.filter((item) => item.problem.toLowerCase().includes(q) || item.solution.toLowerCase().includes(q))
-    : ITEMS;
+  const filtered = ITEMS
+    .filter((item) => activeCategory === 'all' || item.tags.includes(activeCategory))
+    .filter((item) => !q || item.problem.toLowerCase().includes(q) || item.solution.toLowerCase().includes(q));
 
   return (
     <div className="space-y-1.5">

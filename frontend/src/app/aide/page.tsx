@@ -68,27 +68,27 @@ export default function AidePage() {
 
         {/* Sujets */}
         <section id="sujets" className="rounded-2xl border border-white/[0.08] bg-[#102A43] p-5">
-          <HelpTopics query="" />
+          <HelpTopics query="" activeCategory="all" />
         </section>
 
         {/* TP */}
         <section id="tp" className="rounded-2xl border border-white/[0.08] bg-[#102A43] p-5">
-          <HelpPracticalLabs query="" />
+          <HelpPracticalLabs query="" activeCategory="all" />
         </section>
 
         {/* Commandes */}
         <section id="commandes" className="rounded-2xl border border-white/[0.08] bg-[#102A43] p-5">
-          <HelpCommands query="" />
+          <HelpCommands query="" activeCategory="all" />
         </section>
 
         {/* FAQ */}
         <section id="faq" className="rounded-2xl border border-white/[0.08] bg-[#102A43] p-5">
-          <HelpFaq query="" />
+          <HelpFaq query="" activeCategory="all" />
         </section>
 
         {/* Dépannage */}
         <section id="depannage" className="rounded-2xl border border-white/[0.08] bg-[#102A43] p-5">
-          <HelpTroubleshooting query="" />
+          <HelpTroubleshooting query="" activeCategory="all" />
         </section>
 
         {/* Liens */}

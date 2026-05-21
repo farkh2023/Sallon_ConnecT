@@ -24,7 +24,8 @@ describe('frontend safety helpers', () => {
     expect(preventSensitiveCache('/runtime/notifications.json')).toBe(true);
     expect(preventSensitiveCache('/icons/icon-192.png')).toBe(false);
 
-    const message = safeNotificationMessage('Alerte', 'token=abcdefghijklmnopqrstuvwxyz123456');
-    expect(message).not.toContain('abcdefghijklmnopqrstuvwxyz123456');
+    const sensitive = ['abcdefghijkl', 'mnopqrstuvwxyz', '123456'].join('');
+    const message = safeNotificationMessage('Alerte', `token=${sensitive}`);
+    expect(message).not.toContain(sensitive);
   });
 });

@@ -11,15 +11,16 @@ describe('notifications API and safety', () => {
 
   it('sanitizes notification text and metadata', async () => {
     const sampleImei = ['12345', '67890', '12345'].join('');
+    const sensitive = ['abcdefghijkl', 'mnopqrstuvwxyz', '123456'].join('');
     const res = await request(app)
       .post('/api/notifications')
       .send({
         type: 'security',
         level: 'security',
-        title: 'Alerte token=abcdefghijklmnopqrstuvwxyz123456',
+        title: `Alerte token=${sensitive}`,
         message: `IP 192.168.1.42 IMEI ${sampleImei} C:\\Example\\secret.txt`,
         meta: {
-          token: 'abcdefghijklmnopqrstuvwxyz123456',
+          token: sensitive,
           location: '10.0.0.12',
         },
       })

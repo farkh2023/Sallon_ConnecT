@@ -58,13 +58,13 @@ function CopyCmd({ cmd }: { cmd: string }) {
   );
 }
 
-interface HelpCommandsProps { query: string; }
+interface HelpCommandsProps { query: string; activeCategory: string; }
 
-export function HelpCommands({ query }: HelpCommandsProps) {
+export function HelpCommands({ query, activeCategory }: HelpCommandsProps) {
   const q = query.toLowerCase();
-  const filtered = q
-    ? COMMANDS.filter((c) => c.label.toLowerCase().includes(q) || c.command.toLowerCase().includes(q))
-    : COMMANDS;
+  const filtered = COMMANDS
+    .filter((c) => activeCategory === 'all' || c.category === activeCategory)
+    .filter((c) => !q || c.label.toLowerCase().includes(q) || c.command.toLowerCase().includes(q));
 
   const grouped = filtered.reduce<Record<string, HelpCommand[]>>((acc, cmd) => {
     const cat = cmd.category as string;

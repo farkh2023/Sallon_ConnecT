@@ -47,13 +47,13 @@ function CopyCmd({ cmd }: { cmd: string }) {
   );
 }
 
-interface HelpPracticalLabsProps { query: string; }
+interface HelpPracticalLabsProps { query: string; activeCategory: string; }
 
-export function HelpPracticalLabs({ query }: HelpPracticalLabsProps) {
+export function HelpPracticalLabs({ query, activeCategory }: HelpPracticalLabsProps) {
   const q = query.toLowerCase();
-  const filtered = q
-    ? LABS.filter((l) => l.title.toLowerCase().includes(q) || l.objective.toLowerCase().includes(q))
-    : LABS;
+  const filtered = LABS
+    .filter((l) => activeCategory === 'all' || l.category === activeCategory || l.category === 'all')
+    .filter((l) => !q || l.title.toLowerCase().includes(q) || l.objective.toLowerCase().includes(q));
 
   return (
     <div className="space-y-3">

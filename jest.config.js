@@ -6,4 +6,6 @@ module.exports = {
   ],
   setupFiles: ['<rootDir>/tests/jest.setup.js'],
   clearMocks: true,
+  // Séquentiel pour éviter les conflits d'écriture sur les fichiers runtime partagés
+  maxWorkers: 1,
 };

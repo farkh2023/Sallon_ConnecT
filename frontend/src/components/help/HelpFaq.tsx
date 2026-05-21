@@ -17,14 +17,15 @@ const FAQ_ITEMS: HelpFaqItem[] = [
 
 interface HelpFaqProps {
   query: string;
+  activeCategory: string;
 }
 
-export function HelpFaq({ query }: HelpFaqProps) {
+export function HelpFaq({ query, activeCategory }: HelpFaqProps) {
   const [open, setOpen] = useState<string | null>(null);
   const q = query.toLowerCase();
-  const filtered = q
-    ? FAQ_ITEMS.filter((item) => item.question.toLowerCase().includes(q) || item.answer.toLowerCase().includes(q))
-    : FAQ_ITEMS;
+  const filtered = FAQ_ITEMS
+    .filter((item) => activeCategory === 'all' || item.tags.includes(activeCategory))
+    .filter((item) => !q || item.question.toLowerCase().includes(q) || item.answer.toLowerCase().includes(q));
 
   return (
     <div className="space-y-1.5">

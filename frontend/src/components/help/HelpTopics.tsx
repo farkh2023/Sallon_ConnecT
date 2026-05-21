@@ -21,13 +21,14 @@ const TOPICS: HelpTopic[] = [
 
 interface HelpTopicsProps {
   query: string;
+  activeCategory: string;
 }
 
-export function HelpTopics({ query }: HelpTopicsProps) {
+export function HelpTopics({ query, activeCategory }: HelpTopicsProps) {
   const q = query.toLowerCase();
-  const filtered = q
-    ? TOPICS.filter((t) => t.title.toLowerCase().includes(q) || t.description.toLowerCase().includes(q))
-    : TOPICS;
+  const filtered = TOPICS
+    .filter((t) => activeCategory === 'all' || t.tags.includes(activeCategory))
+    .filter((t) => !q || t.title.toLowerCase().includes(q) || t.description.toLowerCase().includes(q));
 
   return (
     <div className="space-y-2">

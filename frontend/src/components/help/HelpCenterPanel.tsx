@@ -114,14 +114,14 @@ export function HelpCenterPanel({ open, onClose }: HelpCenterPanelProps) {
           {activeTab === 'accueil' && (
             <>
               <HelpQuickStart />
-              <HelpTopics query={query} />
+              <HelpTopics query={query} activeCategory={activeCategory} />
               <HelpSafetyNotice />
             </>
           )}
-          {activeTab === 'commandes' && <HelpCommands query={query} />}
-          {activeTab === 'tp' && <HelpPracticalLabs query={query} />}
-          {activeTab === 'faq' && <HelpFaq query={query} />}
-          {activeTab === 'depannage' && <HelpTroubleshooting query={query} />}
+          {activeTab === 'commandes' && <HelpCommands query={query} activeCategory={activeCategory} />}
+          {activeTab === 'tp' && <HelpPracticalLabs query={query} activeCategory={activeCategory} />}
+          {activeTab === 'faq' && <HelpFaq query={query} activeCategory={activeCategory} />}
+          {activeTab === 'depannage' && <HelpTroubleshooting query={query} activeCategory={activeCategory} />}
           {activeTab === 'statut' && (
             <>
               <HelpSystemStatus status={systemStatus} onRefresh={() => void refreshStatus()} />

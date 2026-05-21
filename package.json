@@ -1,6 +1,6 @@
 {
   "name": "sallon-connect",
-  "version": "0.1.0",
+  "version": "0.4.0",
   "private": true,
   "description": "Hub intelligent pour centraliser les appareils, services et agents IA du salon",
   "main": "server.js",
@@ -21,7 +21,10 @@
     "build:frontend": "cd frontend && npm run build",
     "check:docs": "node scripts/release/check-doc-links.js",
     "check:manual": "node tests/docs/manual-page.test.js",
-    "check": "npm run check:docs && npm run check:manual && npm run lint && npm run test && npm run test:windows && npm run build"
+    "check": "npm run check:docs && npm run check:manual && npm run lint && npm run test && npm run test:windows && npm run build",
+    "release:build": "powershell -ExecutionPolicy Bypass -File scripts/windows/release/build-release.ps1",
+    "release:verify": "powershell -ExecutionPolicy Bypass -File scripts/windows/release/verify-release.ps1",
+    "release:start": "powershell -ExecutionPolicy Bypass -File scripts/windows/release/start-release.ps1"
   },
   "dependencies": {
     "adm-zip": "^0.5.17",

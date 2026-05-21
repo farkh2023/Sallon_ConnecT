@@ -4,7 +4,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { buildApiUrl } from '@/lib/api';
 import { sanitizeHelpSearch } from '@/lib/helpSafety';
 import { maskSensitiveClientText } from '@/lib/safety';
-import type { HelpCategory, HelpSystemStatus } from '@/lib/types';
+import { emitSystemEvent } from '@/lib/systemEventBus';
+import type { HelpCategory, HelpNetworkState, HelpSystemStatus } from '@/lib/types';
 
 interface UseHelpCenterState {
   query: string;
@@ -16,15 +17,16 @@ interface UseHelpCenterState {
 }
 
 const DEFAULT_STATUS: HelpSystemStatus = {
-  backendOk: false,
-  frontendOk: true,
+  networkState: 'checking',
+  backendOk: null,
+  frontendOk: null,
   phase: null,
-  unreadNotifications: 0,
-  schedulerActive: false,
-  observabilityOk: false,
-  backupAvailable: false,
-  securityLocalOnly: true,
-  loading: false,
+  unreadNotifications: null,
+  schedulerActive: null,
+  observabilityOk: null,
+  backupAvailable: null,
+  securityLocalOnly: null,
+  loading: true,
   error: null,
   lastCheckedAt: null,
 };
@@ -67,13 +69,12 @@ export function useHelpCenter(): UseHelpCenterState {
         phase = typeof healthData.phase === 'number' ? healthData.phase : null;
       }
 
-      let unreadNotifications = 0;
-      let schedulerActive = false;
-      let observabilityOk = false;
-      let backupAvailable = false;
-      let securityLocalOnly = true;
+      let unreadNotifications: number | null = null;
+      let schedulerActive: boolean | null = null;
+      let observabilityOk: boolean | null = null;
+      let backupAvailable: boolean | null = null;
+      let securityLocalOnly: boolean | null = null;
 
-      // Fetch safe endpoints independently with short timeouts
       const safeGet = async (path: string) => {
         const c = new AbortController();
         const t = window.setTimeout(() => c.abort(), 3_000);
@@ -109,7 +110,14 @@ export function useHelpCenter(): UseHelpCenterState {
         backupAvailable = Boolean(bk.enabled) && Number(bk.count ?? 0) > 0;
       }
 
+      const networkState: HelpNetworkState = !backendOk
+        ? 'offline'
+        : (observabilityOk === false || schedulerActive === false)
+          ? 'degraded'
+          : 'online';
+
       setSystemStatus({
+        networkState,
         backendOk,
         frontendOk: true,
         phase,
@@ -122,15 +130,49 @@ export function useHelpCenter(): UseHelpCenterState {
         error: null,
         lastCheckedAt: new Date().toISOString(),
       });
+
+      emitSystemEvent({
+        type: `help.refresh.${networkState}`,
+        severity: networkState === 'online' ? 'success' : networkState === 'degraded' ? 'warning' : 'error',
+        source: 'backend',
+        message: `Actualisation Centre d'aide — état : ${networkState}`,
+        details: phase !== null ? `Phase ${phase}` : undefined,
+      });
+
+      if (unreadNotifications !== null && unreadNotifications > 0) {
+        emitSystemEvent({
+          type: 'notifications.unread',
+          severity: 'info',
+          source: 'notifications',
+          message: `${unreadNotifications} notification(s) non lue(s)`,
+        });
+      }
+
+      if (securityLocalOnly === true) {
+        emitSystemEvent({
+          type: 'security.localonly.confirmed',
+          severity: 'info',
+          source: 'security',
+          message: 'Mode local-only confirmé — aucune télémétrie externe',
+        });
+      }
     } catch (err) {
       if (!mountedRef.current) return;
       const msg = err instanceof Error ? maskSensitiveClientText(err.message) : 'Erreur reseau';
       setSystemStatus((prev) => ({
         ...prev,
+        networkState: 'offline',
+        backendOk: false,
         loading: false,
         error: msg,
         lastCheckedAt: new Date().toISOString(),
       }));
+      emitSystemEvent({
+        type: 'help.refresh.error',
+        severity: 'error',
+        source: 'network',
+        message: `Erreur refresh Centre d'aide : ${msg}`,
+      });
     } finally {
       window.clearTimeout(timeout);
     }

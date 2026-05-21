@@ -43,6 +43,11 @@ function makeProfile(overrides: Partial<UserProfile> = {}): UserProfile {
       executeTvCommands: false,
       startStreaming: false,
       clearAudits: true,
+      viewBackups: true,
+      createBackups: true,
+      restoreBackups: false,
+      deleteBackups: false,
+      viewBackupAudit: true,
     },
     safety: {
       sensitiveActionsRequireConfirmation: true,
@@ -70,6 +75,11 @@ const guestProfile = makeProfile({
     executeTvCommands: false,
     startStreaming: false,
     clearAudits: false,
+    viewBackups: false,
+    createBackups: false,
+    restoreBackups: false,
+    deleteBackups: false,
+    viewBackupAudit: false,
   },
   safety: {
     sensitiveActionsRequireConfirmation: true,

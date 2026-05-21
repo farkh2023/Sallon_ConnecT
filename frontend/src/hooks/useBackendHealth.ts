@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { buildApiUrl } from '@/lib/api';
 import { maskSensitiveClientText } from '@/lib/safety';
+import { emitSystemEvent } from '@/lib/systemEventBus';
 import type { BackendHealthStatus, OfflineStatus } from '@/lib/types';
 import { useOnlineStatus } from './useOnlineStatus';
 
@@ -20,7 +21,13 @@ interface BackendHealthState extends OfflineStatus {
   refresh: () => Promise<void>;
 }
 
-function toBackendStatus(data: HealthResponse | null, online: boolean, error: string | null): BackendHealthStatus {
+function toBackendStatus(
+  data: HealthResponse | null,
+  online: boolean,
+  error: string | null,
+  initialLoad: boolean,
+): BackendHealthStatus {
+  if (initialLoad) return 'checking';
   if (!online) return 'offline';
   if (error) return 'offline';
   if (!data) return 'unknown';
@@ -31,7 +38,7 @@ export function useBackendHealth(pollMs = 30_000): BackendHealthState {
   const online = useOnlineStatus();
   const mountedRef = useRef(true);
   const [data, setData] = useState<HealthResponse | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastCheckedAt, setLastCheckedAt] = useState<string | null>(null);
 
@@ -89,7 +96,33 @@ export function useBackendHealth(pollMs = 30_000): BackendHealthState {
     return () => window.clearInterval(id);
   }, [pollMs, refresh]);
 
-  const backendStatus = toBackendStatus(data, online, error);
+  const initialLoad = lastCheckedAt === null;
+  const backendStatus = toBackendStatus(data, online, error, initialLoad);
+  const prevStatusRef = useRef<BackendHealthStatus>('checking');
+
+  useEffect(() => {
+    if (backendStatus === prevStatusRef.current) return;
+    const prev = prevStatusRef.current;
+    prevStatusRef.current = backendStatus;
+    if (backendStatus === 'checking') return;
+
+    const transitions: Record<string, { severity: 'info' | 'success' | 'warning' | 'error'; msg: string }> = {
+      online:   { severity: 'success', msg: 'Backend Express en ligne' },
+      offline:  { severity: 'error',   msg: 'Backend Express hors ligne' },
+      degraded: { severity: 'warning', msg: 'Backend Express dégradé' },
+      unknown:  { severity: 'warning', msg: 'État backend inconnu' },
+    };
+    const cfg = transitions[backendStatus];
+    if (cfg) {
+      emitSystemEvent({
+        type: `backend.${backendStatus}`,
+        severity: cfg.severity,
+        source: 'backend',
+        message: cfg.msg,
+        details: prev !== 'checking' ? `Transition : ${prev} → ${backendStatus}` : undefined,
+      });
+    }
+  }, [backendStatus]);
 
   return {
     online,

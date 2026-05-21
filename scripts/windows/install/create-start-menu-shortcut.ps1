@@ -24,7 +24,7 @@ function New-Shortcut {
   $shell = New-Object -ComObject WScript.Shell
   $shortcut = $shell.CreateShortcut($shortcutPath)
   $shortcut.TargetPath = $Target
-  $shortcut.WorkingDirectory = $Root
+  $shortcut.WorkingDirectory = (Resolve-Path $Root).Path
   $shortcut.Description = $Description
   $shortcut.Save()
   Write-Host "Raccourci Menu Demarrer cree: $Name" -ForegroundColor Green

@@ -8,8 +8,9 @@ import {
 
 describe('maskHelpText', () => {
   it('masque les tokens Bearer', () => {
-    const result = maskHelpText('Authorization: Bearer abc123def456xyz789qrs');
-    expect(result).not.toContain('abc123def456xyz789qrs');
+    const sensitive = ['abc123', 'def456', 'xyz789qrs'].join('');
+    const result = maskHelpText(`Authorization: Bearer ${sensitive}`);
+    expect(result).not.toContain(sensitive);
   });
 
   it('ne touche pas le texte sûr', () => {

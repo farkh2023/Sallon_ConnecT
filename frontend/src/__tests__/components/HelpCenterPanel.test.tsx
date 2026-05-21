@@ -1,12 +1,17 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { HelpCenterPanel } from '@/components/help/HelpCenterPanel';
+import { HelpCommands } from '@/components/help/HelpCommands';
+import { HelpFaq } from '@/components/help/HelpFaq';
+import { HelpTroubleshooting } from '@/components/help/HelpTroubleshooting';
+import { HelpTopics } from '@/components/help/HelpTopics';
 
 vi.mock('@/hooks/useHelpCenter', () => ({
   useHelpCenter: () => ({
     query: '',
     activeCategory: 'all',
     systemStatus: {
+      networkState: 'online',
       backendOk: true,
       frontendOk: true,
       phase: 27,
@@ -121,5 +126,43 @@ describe('HelpCenterPanel', () => {
     fireEvent.click(screen.getByRole('button', { name: /Commandes/i }));
     const copyBtns = screen.getAllByRole('button', { name: /Copier/i });
     expect(copyBtns.length).toBeGreaterThan(0);
+  });
+});
+
+describe('Filtrage par catégorie', () => {
+  it('HelpCommands — filtrage installation masque les autres catégories', () => {
+    render(<HelpCommands query="" activeCategory="installation" />);
+    expect(screen.getByText('Installation guidée')).toBeInTheDocument();
+    expect(screen.queryByText('Health check npm')).toBeNull();
+  });
+
+  it('HelpCommands — catégorie all affiche toutes les commandes', () => {
+    render(<HelpCommands query="" activeCategory="all" />);
+    expect(screen.getByText('Installation guidée')).toBeInTheDocument();
+    expect(screen.getByText('Health check npm')).toBeInTheDocument();
+  });
+
+  it('HelpFaq — filtrage backup affiche uniquement les questions backup', () => {
+    render(<HelpFaq query="" activeCategory="backup" />);
+    expect(screen.getByText('Comment sauvegarder ?')).toBeInTheDocument();
+    expect(screen.queryByText('Comment lancer le mode TV ?')).toBeNull();
+  });
+
+  it('HelpFaq — catégorie all affiche toutes les questions', () => {
+    render(<HelpFaq query="" activeCategory="all" />);
+    expect(screen.getByText('Comment sauvegarder ?')).toBeInTheDocument();
+    expect(screen.getByText('Comment lancer le mode TV ?')).toBeInTheDocument();
+  });
+
+  it('HelpTroubleshooting — filtrage reseau masque les entrées hors réseau', () => {
+    render(<HelpTroubleshooting query="" activeCategory="reseau" />);
+    expect(screen.getByText(/DLNA disabled/)).toBeInTheDocument();
+    expect(screen.queryByText(/Node version trop ancienne/)).toBeNull();
+  });
+
+  it('HelpTopics — filtrage tv affiche uniquement les sujets tv', () => {
+    render(<HelpTopics query="" activeCategory="tv" />);
+    expect(screen.getByText('Mode TV')).toBeInTheDocument();
+    expect(screen.queryByText('Installation')).toBeNull();
   });
 });

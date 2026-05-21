@@ -27,7 +27,13 @@ export function HeroPanel() {
           <p className="text-slate-500 text-sm mt-0.5">Hub intelligent local - {PROJECT_PHASE_LABEL}</p>
         </div>
         <div className="ml-auto flex gap-2">
-          {health.data && <Badge color="green">{health.data.status === 'ok' ? 'En ligne' : health.data.status}</Badge>}
+          {health.loading && !health.data && <Badge color="gray">Vérification…</Badge>}
+          {!health.loading && health.data && (
+            <Badge color={health.data.status === 'ok' ? 'green' : 'yellow'}>
+              {health.data.status === 'ok' ? 'En ligne' : 'Dégradé'}
+            </Badge>
+          )}
+          {!health.loading && health.error && <Badge color="red">Backend indisponible</Badge>}
           <Button size="sm" onClick={devices.refresh} loading={devices.loading}>
             Scanner
           </Button>
@@ -41,7 +47,12 @@ export function HeroPanel() {
       )}
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <MetricCard label="Statut serveur" value={health.data?.status === 'ok' ? 'OK' : '---'} icon="SV" color="text-emerald-400" />
+        <MetricCard
+          label="Statut serveur"
+          value={health.loading && !health.data ? '…' : health.data?.status === 'ok' ? 'OK' : health.error ? 'ERR' : '---'}
+          icon="SV"
+          color={health.data?.status === 'ok' ? 'text-emerald-400' : health.error ? 'text-rose-400' : 'text-slate-500'}
+        />
         <MetricCard label="Phase" value={PROJECT_PHASE} icon="PH" />
         <MetricCard label="Appareils en ligne" value={`${online}/${total}`} icon="NW" color="text-blue-400" />
         <MetricCard

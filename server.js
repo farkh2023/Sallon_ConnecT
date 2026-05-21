@@ -37,6 +37,11 @@ const observabilityRoutes = require('./server/src/routes/observability');
 const profilesRoutes = require('./server/src/routes/profiles');
 /* Phase 21 - Sauvegarde locale sécurisée */
 const backupRoutes = require('./server/src/routes/backup');
+/* Phase 30 - Flux SSE local temps réel */
+const eventsRoutes       = require('./server/src/routes/events');
+const serverEventBus     = require('./server/src/services/serverEventBus');
+/* Phase 32 - Tableau de bord diagnostic avancé */
+const diagnosticsRoutes  = require('./server/src/routes/diagnostics');
 /* Phase 18B - Seeds tâches planifiées par défaut */
 require('./server/src/services/scheduler/schedulerSeeds');
 
@@ -264,6 +269,16 @@ app.use('/api/profiles', profilesRoutes);
 app.use('/api/backup', backupRoutes);
 
 /* -----------------------------------------------
+   ROUTES PHASE 30 - SSE flux temps réel
+----------------------------------------------- */
+app.use('/api/events', eventsRoutes);
+
+/* -----------------------------------------------
+   ROUTES PHASE 32 - Diagnostics avancés
+----------------------------------------------- */
+app.use('/api/diagnostics', diagnosticsRoutes);
+
+/* -----------------------------------------------
    FALLBACK — toute route non-API renvoie index.html
 ----------------------------------------------- */
 app.get('*', (_req, res) => {
@@ -311,6 +326,14 @@ function startServer() {
     title: 'Serveur démarré',
     message: `Sallon-ConnecT Phase 22 - port ${PORT}`,
     meta: { phase: 22, port: PORT },
+  });
+
+  /* Événement SSE de démarrage */
+  serverEventBus.publish({
+    type: 'backend.started',
+    severity: 'success',
+    source: 'backend',
+    message: `Backend démarré sur le port ${PORT}`,
   });
   console.log('  Copier .env.example → .env pour configurer les connecteurs');
   console.log('');

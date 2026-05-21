@@ -12,6 +12,9 @@ import { TestsOverview } from './TestsOverview';
 import { ObservabilityStatusBadge } from './ObservabilityStatusBadge';
 import { SnapshotHistory } from './SnapshotHistory';
 import { ObservabilityCharts } from './charts/ObservabilityCharts';
+import { SystemEventsPanel } from './SystemEventsPanel';
+import { NotificationsCenterPanel } from '@/components/notifications/NotificationsCenterPanel';
+import { DiagnosticDashboard } from '@/components/diagnostics/DiagnosticDashboard';
 
 export function ObservabilityPanel() {
   const {
@@ -128,6 +131,18 @@ export function ObservabilityPanel() {
           onExportJson={exportSnapshotsJson}
           onExportCsv={exportSnapshotsCsv}
         />
+      </PanelSection>
+
+      <PanelSection title="Diagnostic avancé">
+        <DiagnosticDashboard />
+      </PanelSection>
+
+      <PanelSection title="Événements système temps réel">
+        <SystemEventsPanel />
+      </PanelSection>
+
+      <PanelSection title="Centre de notifications">
+        <NotificationsCenterPanel />
       </PanelSection>
     </div>
   );

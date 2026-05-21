@@ -1,73 +1,135 @@
 # Changelog
 
-Toutes les modifications notables de ce projet sont documentées ici.
+Toutes les modifications notables de ce projet sont documentees ici.
 Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/) — versionnement [SemVer](https://semver.org/).
+
+---
+
+## [0.4.0] — 2026-05-22 — Release locale stable
+
+### Ajoute
+
+**Phase 26 — Stabilisation aide et etat systeme**
+- Centre d'aide consolide avec statut systeme plus explicite.
+- Etats backend `checking`, `online`, `offline`, `degraded`.
+- Tests frontend renforces autour des panneaux d'aide et du statut local.
+
+**Phase 27/28 — Observabilite et evenements systeme**
+- Panneau d'evenements systeme avec filtres severity/source.
+- Bus d'evenements frontend local, marque lu/non-lu et exports.
+- Integration dans `ObservabilityPanel`.
+
+**Phase 29 — Persistance locale**
+- Persistance localStorage des evenements systeme.
+- Retention locale bornee, nettoyage silencieux et export JSON/CSV.
+- Tests stockage et bus local.
+
+**Phase 30 — SSE local securise**
+- Endpoint `GET /api/events/stream`.
+- Endpoint `GET /api/events/client-count`.
+- Origines limitees a `localhost:3000` et `localhost:3001`.
+- Deduplication frontend, heartbeat ignore et fallback local.
+
+**Phase 31 — Centre de notifications intelligent**
+- Notifications locales derivees des evenements systeme.
+- Grouping, deduplication, compteur non-lus et filtres.
+- Aucun appel cloud, aucun secret stocke.
+
+**Phase 32 — Diagnostic avance**
+- Endpoint `GET /api/diagnostics/overview`.
+- Snapshot frontend avec Backend, SSE, Scheduler, Backup, Notifications, Stockage local et Securite.
+- Score global 0-100, etat erreur propre, export JSON local.
+- Tests frontend hook/dashboard et tests backend diagnostics.
+
+**Phase 33 — Release locale stable**
+- Scripts `scripts/windows/release/build-release.ps1`, `verify-release.ps1`, `start-release.ps1`.
+- Generation checksum SHA256, metadata release et rapport local.
+- Verification ZIP local-only, exclusions cache/temp/logs/node_modules/.env.
+- README, ROADMAP et notes de release `v0.4.0`.
+
+### Change
+
+- Version projet alignee sur `0.4.0`.
+- Packaging portable renforce avec exclusions cache/temp et scripts release Windows inclus.
+- Documentation principale orientee release locale stable.
+- Tests packaging et validation PowerShell couvrent les nouveaux scripts.
+
+### Securite
+
+- Aucune protection local-only supprimee.
+- Diagnostics et exports limites aux champs non sensibles.
+- SSE limite aux origines locales.
+- ZIP portable verifie contre `.env`, `frontend/.env.local`, `node_modules`, `.next`, caches, runtime JSON, logs bruts, backups prives et cles/certificats.
+
+### Validation
+
+- Frontend : 228 tests.
+- Backend : 114 tests.
+- `pnpm lint` : OK.
+- `pnpm build` : OK.
+- Packaging ZIP : OK.
 
 ---
 
 ## [0.1.0] — 2026-05-17 — Premier prototype local complet
 
-### Ajouté
+### Ajoute
 
 **Infrastructure (Phases 1–4)**
 - Serveur Express backend sur port 3000
-- Ancien frontend HTML statique conservé
+- Ancien frontend HTML statique conserve
 - Frontend Next.js 16 sur port 3001 (`frontend/`)
-- API appareils, scan réseau, services multimédias
-- Données JSON locales (`data/`)
+- API appareils, scan reseau, services multimedias
+- Donnees JSON locales (`data/`)
 
-**Intégrations locales (Phases 5–11)**
-- Orchestrateur de scénarios intelligents (cinéma, travail, famille…)
-- Diagnostic ADB en lecture seule (pas d'écriture sur l'appareil)
-- Découverte DLNA/UPnP passive (pas de streaming forcé)
-- SmartThings Samsung TV — opt-in sécurisé, cle authentication masquee
-- Scènes SmartThings — confirmation explicite obligatoire
-- Commandes TV — whitelist d'actions, opt-in
-- Streaming assisté — indexation locale uniquement
+**Integrations locales (Phases 5–11)**
+- Orchestrateur de scenarios intelligents (cinema, travail, famille)
+- Diagnostic ADB en lecture seule
+- Decouverte DLNA/UPnP passive
+- SmartThings Samsung TV opt-in securise
+- Scenes SmartThings avec confirmation explicite
+- Commandes TV avec whitelist d'actions
+- Streaming assiste indexe localement
 
-**Qualité et observabilité (Phases 12–19)**
-- Notifications locales avec moteur de règles
-- Scheduler de tâches planifiées — actions safelist uniquement
-- Dashboard observabilité en temps réel (snapshots, tendances)
-- Graphes temporels Recharts (AreaChart, RadarChart, LineChart)
+**Qualite et observabilite (Phases 12–19)**
+- Notifications locales avec moteur de regles
+- Scheduler de taches planifiees safelist uniquement
+- Dashboard observabilite en temps reel
+- Graphes temporels Recharts
 - Export JSON/CSV non sensible des snapshots
-- Packaging Windows portable (ZIP autonome)
-- Suite de tests automatisés : backend (94 tests), frontend (46 tests), packaging, PowerShell
-- CI GitHub Actions (Windows latest, Node 22.x)
-- Système de snapshots d'observabilité avec buckets non-sensibles
+- Packaging Windows portable
+- Suite de tests backend, frontend, packaging et PowerShell
+- Snapshots d'observabilite avec buckets non sensibles
 
-**Profils et sécurité (Phase 20)**
-- 5 profils par défaut : owner, family, guest, tv, diagnostic
-- Permissions locales par profil (17 actions contrôlées)
+**Profils et securite (Phase 20)**
+- 5 profils par defaut : owner, family, guest, tv, diagnostic
+- Permissions locales par profil
 - Basculement rapide dans la TopNav
 - Audit trail local des changements de profil
-- Mode lecture seule et masquage des panneaux sensibles
 
 **Sauvegarde locale (Phases 21–21B)**
-- Création de ZIP locaux avec manifest SHA256
-- Dry-run obligatoire avant toute restauration
-- Rollback automatique créé avant restauration
-- Code de confirmation explicite requis
-- Exclusion automatique : .env, node_modules, .git, clés, logs bruts
-- Isolation des tests runtime (tests/.runtime/)
-- Résolution de chemins lazy dans profileStore/profileEngine
+- ZIP locaux avec manifest SHA256
+- Dry-run obligatoire avant restauration
+- Rollback automatique avant restauration
+- Code de confirmation explicite
+- Exclusion automatique des secrets, dependances, logs bruts et builds
+- Isolation des tests runtime
 
 **Publication GitHub (Phase 22)**
-- Scripts release : preflight-github.ps1, prepare-release.ps1
-- Documentation complète : README, CHANGELOG, ROADMAP, SECURITY, CONTRIBUTING
-- Architecture, modèle de sécurité, guide setup local, checklist release
+- Scripts release initiaux
+- Documentation complete
 - VERSION 0.1.0, versionnement SemVer
-- .gitignore complet vérifié
-- Badges CI dans README
+- `.gitignore` complet verifie
 
-### Sécurité
+### Securite
 
-- Aucun secret commité (tokens, clés, .env, IP complètes, IMEI)
-- Chemins absolus masqués dans toutes les réponses API
-- Audit runtime non versionné (`runtime/*.json`)
-- node_modules et .next exclus du dépôt
-- SmartThings opt-in : désactivé par défaut
+- Aucun secret commite.
+- Chemins absolus masques dans les reponses API.
+- Audit runtime non versionne.
+- `node_modules`, `.next`, runtime, logs et backups exclus.
+- SmartThings opt-in desactive par defaut.
 
 ---
 
+[0.4.0]: https://github.com/farkh2023/Sallon-ConnecT/releases/tag/v0.4.0
 [0.1.0]: https://github.com/farkh2023/Sallon-ConnecT/releases/tag/v0.1.0

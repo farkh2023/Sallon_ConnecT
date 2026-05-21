@@ -14,7 +14,7 @@ New-Item -Path $Dist -ItemType Directory -Force | Out-Null
 if (Test-Path $StageRoot) { Remove-Item -LiteralPath $StageRoot -Recurse -Force }
 New-Item -Path $StageApp -ItemType Directory -Force | Out-Null
 
-$excludedDirs = @('.git', 'node_modules', '.next', 'logs', 'dist')
+$excludedDirs = @('.git', 'node_modules', '.next', 'logs', 'dist', 'tests', '__tests__', 'coverage', 'cache', '.cache', 'tmp', 'temp', '.turbo', '.vite')
 $excludedFiles = @('.env', '.env.local', '.env.production', 'secrets.json', 'config.local.json')
 $excludedExtensions = @('.pem', '.key', '.p12', '.crt')
 
@@ -84,6 +84,10 @@ $files = @(
   'package.json',
   'package-lock.json',
   'README.md',
+  'CHANGELOG.md',
+  'ROADMAP.md',
+  'VERSION',
+  'SECURITY.md',
   '.env.example',
   'sallon-connect-hub.html'
 )
@@ -107,6 +111,8 @@ New-Item -Path (Join-Path $StageApp 'dist/.gitkeep') -ItemType File -Force | Out
 $requiredPortableItems = @(
   'scripts/windows/install/install-sallon-connect.bat',
   'scripts/windows/install/check-prerequisites.ps1',
+  'scripts/windows/release/start-release.ps1',
+  'scripts/windows/release/verify-release.ps1',
   'docs/user/INSTALLER_WINDOWS_GUIDE.md'
 )
 
@@ -121,4 +127,4 @@ Compress-Archive -Path (Join-Path $StageApp '*') -DestinationPath $ZipPath -Comp
 Remove-Item -LiteralPath $StageRoot -Recurse -Force
 
 Write-Host "Archive creee: dist/$(Split-Path $ZipPath -Leaf)" -ForegroundColor Green
-Write-Host "Exclusions appliquees: .env, .env.local, node_modules, .next, runtime/*.json, backups/*.zip, logs, .git, *.pem, *.key."
+Write-Host "Exclusions appliquees: .env, .env.local, node_modules, tests, cache, temp, .next, runtime/*.json, backups/*.zip, logs, .git, *.pem, *.key."

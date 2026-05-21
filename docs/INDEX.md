@@ -25,6 +25,7 @@
 - [Installation locale](LOCAL_SETUP.md)
 - [Checklist release](RELEASE_CHECKLIST.md)
 - [Versioning](VERSIONING.md)
+- [Release v0.4.0](releases/v0.4.0.md)
 
 ## Historique des phases
 
@@ -53,4 +54,11 @@
 - [Phase 21B](PHASE21B.md)
 - [Phase 24](PHASE24.md)
 - [Phase 25](PHASE25.md)
+- [Phase 26](PHASE26.md)
 - [Phase 27](PHASE27.md)
+- [Phase 28](PHASE28.md)
+- [Phase 29](PHASE29.md)
+- [Phase 30](PHASE30.md)
+- [Phase 31](PHASE31.md)
+- [Phase 32](PHASE32.md)
+- [Phase 33](PHASE33.md)

@@ -126,15 +126,38 @@ function overview(status: ObservabilityStatus = 'ok'): ObservabilityOverview {
   };
 }
 
-// On mount the component makes 5 fetch calls in order:
-// 1: loadSnapshots, 2: loadSnapshotStats, 3: loadSnapshotTrends, 4: loadSnapshotTimeline, 5: refresh(overview)
-function mountMock(...overrides: Array<() => Promise<Response>>) {
-  return vi.fn()
-    .mockImplementationOnce(snapshotsMock())
-    .mockImplementationOnce(statsMock())
-    .mockImplementationOnce(trendsMock())
-    .mockImplementationOnce(timelineMock())
-    .mockImplementation(overrides[0] ?? overviewMock('ok'));
+function diagnosticsMock() {
+  return () => jsonResponse({
+    timestamp: new Date().toISOString(),
+    status: 'ok',
+    uptime: 120,
+    nodeVersion: 'v22.11.0',
+    memory: { rss: 1000000, heapUsed: 500000, heapTotal: 800000 },
+    scheduler: { status: 'running', running: true, activeSchedules: 1, totalSchedules: 2, tickMs: 30000, nextScheduled: null },
+    backup: { enabled: true, count: 1, latest: null },
+    notifications: { total: 0, unread: 0 },
+    sse: { clients: 0 },
+    security: { localOnly: true, firebase: false, cloudServices: false, externalPush: false },
+  });
+}
+
+function requestUrl(input: RequestInfo | URL): string {
+  if (typeof input === 'string') return input;
+  if (input instanceof URL) return input.toString();
+  return input.url;
+}
+
+function mountMock(overviewResponder: () => Promise<Response> = overviewMock('ok')) {
+  return vi.fn((input: RequestInfo | URL) => {
+    const url = requestUrl(input);
+    if (url.includes('/api/observability/snapshots/stats')) return statsMock()();
+    if (url.includes('/api/observability/snapshots/trends')) return trendsMock()();
+    if (url.includes('/api/observability/snapshots/timeline')) return timelineMock()();
+    if (url.includes('/api/observability/snapshots')) return snapshotsMock()();
+    if (url.includes('/api/diagnostics/overview')) return diagnosticsMock()();
+    if (url.includes('/api/observability/overview')) return overviewResponder();
+    return jsonResponse({});
+  });
 }
 
 describe('ObservabilityPanel', () => {
@@ -169,13 +192,11 @@ describe('ObservabilityPanel', () => {
   });
 
   it('refreshes when the button is clicked', async () => {
-    const fetchMock = vi.fn()
-      .mockImplementationOnce(snapshotsMock())
-      .mockImplementationOnce(statsMock())
-      .mockImplementationOnce(trendsMock())
-      .mockImplementationOnce(timelineMock())
-      .mockImplementationOnce(overviewMock('ok'))
-      .mockImplementationOnce(overviewMock('warning'));
+    let overviewCalls = 0;
+    const fetchMock = mountMock(() => {
+      overviewCalls += 1;
+      return jsonResponse(overview(overviewCalls === 1 ? 'ok' : 'warning'));
+    });
     vi.stubGlobal('fetch', fetchMock);
 
     render(<ObservabilityPanel />);
@@ -183,7 +204,7 @@ describe('ObservabilityPanel', () => {
     await screen.findByText('Observabilite globale');
     fireEvent.click(screen.getAllByRole('button', { name: /Actualiser/i })[0]);
 
-    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(6));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(7));
   });
 
   it('does not display secret-like values from mocked payloads', async () => {

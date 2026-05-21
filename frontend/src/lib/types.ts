@@ -151,7 +151,7 @@ export interface StreamingPolicy {
 
 export type PwaInstallState = 'unsupported' | 'available' | 'prompting' | 'installed' | 'dismissed';
 
-export type BackendHealthStatus = 'unknown' | 'online' | 'offline' | 'degraded';
+export type BackendHealthStatus = 'checking' | 'unknown' | 'online' | 'offline' | 'degraded';
 
 export interface OfflineStatus {
   online: boolean;
@@ -578,18 +578,49 @@ export type HelpCategory =
   | 'tv'
   | 'all';
 
+export type HelpNetworkState = 'checking' | 'online' | 'offline' | 'degraded' | 'unknown';
+
 export interface HelpSystemStatus {
-  backendOk: boolean;
-  frontendOk: boolean;
+  networkState: HelpNetworkState;
+  backendOk: boolean | null;
+  frontendOk: boolean | null;
   phase: number | null;
-  unreadNotifications: number;
-  schedulerActive: boolean;
-  observabilityOk: boolean;
-  backupAvailable: boolean;
-  securityLocalOnly: boolean;
+  unreadNotifications: number | null;
+  schedulerActive: boolean | null;
+  observabilityOk: boolean | null;
+  backupAvailable: boolean | null;
+  securityLocalOnly: boolean | null;
   loading: boolean;
   error: string | null;
   lastCheckedAt: string | null;
+}
+
+// Phase 27 — Observabilité temps réel + événements système
+
+export type SystemEventSeverity = 'info' | 'success' | 'warning' | 'error';
+export type SystemEventSource =
+  | 'backend'
+  | 'frontend'
+  | 'network'
+  | 'scheduler'
+  | 'backup'
+  | 'security'
+  | 'notifications';
+
+export interface SystemEvent {
+  id: string;
+  timestamp: string;
+  type: string;
+  severity: SystemEventSeverity;
+  source: SystemEventSource;
+  message: string;
+  details?: string;
+  read: boolean;
+}
+
+export interface SystemEventFilter {
+  severity: SystemEventSeverity | 'all';
+  source: SystemEventSource | 'all';
 }
 
 // Phase 24 - Assistant vocal local
@@ -646,4 +677,80 @@ export interface VoiceAssistantState {
   transcript: string;
   transcriptHistory: VoiceTranscriptEntry[];
   lastResult: VoiceCommandResult | null;
+}
+
+/* ---- Phase 31 — Centre de notifications intelligent ---- */
+
+export type LocalNotificationSeverity = 'info' | 'success' | 'warning' | 'error';
+export type LocalNotificationSource =
+  | 'system' | 'network' | 'backup' | 'scheduler'
+  | 'security' | 'sse' | 'frontend' | 'backend';
+
+export interface LocalNotification {
+  id: string;
+  timestamp: string;
+  title: string;
+  message: string;
+  severity: LocalNotificationSeverity;
+  source: LocalNotificationSource;
+  read: boolean;
+  groupKey?: string;
+  count?: number;
+  relatedEventIds?: string[];
+}
+
+export interface LocalNotificationFilter {
+  severity: LocalNotificationSeverity | 'all';
+  source: LocalNotificationSource | 'all';
+}
+
+/* ---- Phase 32 — Tableau de bord diagnostic avancé ---- */
+
+export type DiagnosticStatus = 'healthy' | 'degraded' | 'offline' | 'unknown';
+export type DiagnosticEntryStatus = 'ok' | 'degraded' | 'offline' | 'unknown';
+
+export interface DiagnosticEntry {
+  status: DiagnosticEntryStatus;
+  label: string;
+  detail?: string;
+  score: number;
+}
+
+export interface DiagnosticSnapshot {
+  timestamp: string;
+  overallStatus: DiagnosticStatus;
+  score: number;
+  backend: DiagnosticEntry;
+  frontend: DiagnosticEntry;
+  sse: DiagnosticEntry;
+  network: DiagnosticEntry;
+  storage: DiagnosticEntry;
+  scheduler: DiagnosticEntry;
+  backup: DiagnosticEntry;
+  notifications: DiagnosticEntry;
+  security: DiagnosticEntry;
+}
+
+export interface DiagnosticsApiResponse {
+  timestamp: string;
+  status: string;
+  uptime: number;
+  nodeVersion: string;
+  memory: { rss: number; heapUsed: number; heapTotal: number };
+  scheduler: {
+    status: string;
+    running: boolean;
+    activeSchedules: number;
+    totalSchedules: number;
+    tickMs: number | null;
+    nextScheduled: { name: string; at: string } | null;
+  };
+  backup: {
+    enabled: boolean;
+    count: number;
+    latest: { backupId: string; createdAt: string } | null;
+  };
+  notifications: { total: number; unread: number };
+  sse: { clients: number };
+  security: { localOnly: boolean; firebase: boolean; cloudServices: boolean; externalPush: boolean };
 }
