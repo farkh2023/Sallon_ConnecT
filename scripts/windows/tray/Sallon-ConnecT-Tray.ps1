@@ -135,6 +135,17 @@ $itemDocs.Add_Click({
     if (Test-Path $docsDir) { Start-Process explorer.exe -ArgumentList $docsDir }
 })
 
+# Ouvrir dossier sauvegardes
+$itemBackups = New-Object System.Windows.Forms.ToolStripMenuItem
+$itemBackups.Text = 'Ouvrir les sauvegardes'
+$itemBackups.Add_Click({
+    $backupsDir = Join-Path $script:Root 'backups\snapshots'
+    if (-not (Test-Path $backupsDir)) {
+        New-Item -ItemType Directory -Path $backupsDir -Force -ErrorAction SilentlyContinue | Out-Null
+    }
+    Start-Process explorer.exe -ArgumentList $backupsDir -ErrorAction SilentlyContinue
+})
+
 $sep3b = New-Object System.Windows.Forms.ToolStripSeparator
 
 # Verifier mise a jour
@@ -170,6 +181,7 @@ $ctxMenu.Items.Add($sep3) | Out-Null
 $ctxMenu.Items.Add($itemStatusDetail) | Out-Null
 $ctxMenu.Items.Add($itemLogs) | Out-Null
 $ctxMenu.Items.Add($itemDocs) | Out-Null
+$ctxMenu.Items.Add($itemBackups) | Out-Null
 $ctxMenu.Items.Add($sep3b) | Out-Null
 $ctxMenu.Items.Add($itemUpdate) | Out-Null
 $ctxMenu.Items.Add($sep4) | Out-Null

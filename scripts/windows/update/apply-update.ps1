@@ -160,6 +160,16 @@ if (-not $SkipBackup) {
     }
     $bManifest | ConvertTo-Json | Set-Content -Path (Join-Path $backupDir 'backup-manifest.json') -Encoding utf8
     Write-Ok "Backup : runtime\update-backups\$backupStamp"
+
+    # Snapshot utilisateur Phase 40 (backups/snapshots/)
+    $createBackupScript = Join-Path $Root 'scripts\windows\backup\create-backup.ps1'
+    if (Test-Path $createBackupScript) {
+        $psArgsB = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $createBackupScript,
+                     '-Type', 'quick', '-Description', "Pre-update v$fromVersion vers v$Version",
+                     '-RootPath', $Root)
+        try { & powershell.exe @psArgsB | Out-Null; Write-Ok 'Snapshot utilisateur cree (backups/snapshots/).' }
+        catch { Write-Warn 'Snapshot utilisateur: echec non bloquant.' }
+    }
 } else {
     Write-Warn 'Sauvegarde ignoree (-SkipBackup).'
 }

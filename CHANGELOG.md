@@ -9,6 +9,19 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/) — versionnem
 
 ### Ajoute
 
+**Phase 40 — Sauvegarde/restauration complete utilisateur**
+- `create-backup.ps1` : snapshot horodaté (quick/full), metadata.json, checksum.json SHA256, rapport texte, export ZIP optionnel.
+- `list-backups.ps1` : liste tous les snapshots avec type, version, taille, validité.
+- `verify-backup.ps1` : recalcule SHA256, compare checksum.json, états valid/corrupted/incomplete.
+- `restore-backup.ps1` : vérifie intégrité, demande confirmation, arrête service/tray, backup pré-restauration automatique, rapport restore.
+- `delete-backup.ps1` : confirmation obligatoire (oui ou SUPPRIMER TOUT).
+- `export-backup.ps1` : archive ZIP avec SHA256, chiffrement optionnel via 7-Zip AES-256.
+- Endpoint `GET /api/diagnostics/backup` : liste snapshots, dernier backup, taille, validité.
+- Tray : item "Ouvrir les sauvegardes" ouvre `backups/snapshots/` dans l'explorateur.
+- `apply-update.ps1` : crée snapshot Phase 40 avant chaque mise à jour.
+- Scripts backup inclus dans le ZIP portable (scripts/windows/backup/).
+- Documentation `docs/PHASE40.md` et `docs/BACKUP_RESTORE.md`.
+
 **Phase 26 — Stabilisation aide et etat systeme**
 - Centre d'aide consolide avec statut systeme plus explicite.
 - Etats backend `checking`, `online`, `offline`, `degraded`.

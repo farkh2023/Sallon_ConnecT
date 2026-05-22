@@ -33,6 +33,7 @@
 - [Tray Windows](WINDOWS_TRAY.md)
 - [Assistant premier lancement](FIRST_RUN.md)
 - [Mise a jour securisee](SECURE_UPDATE.md)
+- [Sauvegarde et restauration](BACKUP_RESTORE.md)
 
 ## Historique des phases
 
@@ -74,3 +75,4 @@
 - [Phase 37](PHASE37.md)
 - [Phase 38](PHASE38.md)
 - [Phase 39](PHASE39.md)
+- [Phase 40](PHASE40.md)

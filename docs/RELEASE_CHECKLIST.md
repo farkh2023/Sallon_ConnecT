@@ -182,6 +182,21 @@ Resultat attendu :
 - [ ] Aucun auto-update, aucune telemetrie, aucun secret dans rapports.
 - [ ] ZIP portable non impacte par la Phase 39.
 
+## 17. Sauvegarde/restauration (Phase 40)
+
+- [ ] `scripts/windows/backup/create-backup.ps1` cree un snapshot horodaté dans `backups/snapshots/`.
+- [ ] `list-backups.ps1` liste les snapshots avec type, version, taille.
+- [ ] `verify-backup.ps1` recalcule SHA256 et retourne valid/corrupted/incomplete.
+- [ ] `restore-backup.ps1` demande confirmation, arrete service/tray, cree backup pre-restauration.
+- [ ] `delete-backup.ps1` demande confirmation avant suppression.
+- [ ] `export-backup.ps1` cree ZIP avec SHA256. Chiffrement optionnel (7-Zip).
+- [ ] `GET /api/diagnostics/backup` repond avec liste et dernier snapshot.
+- [ ] Tray : item "Ouvrir les sauvegardes" ouvre `backups/snapshots/`.
+- [ ] `apply-update.ps1` cree snapshot Phase 40 avant mise a jour.
+- [ ] Aucun secret dans les snapshots (.env non copie).
+- [ ] `backups/snapshots/` exclu du ZIP portable.
+- [ ] Documentation `docs/PHASE40.md` et `docs/BACKUP_RESTORE.md` presentes.
+
 ## 14. GitHub Release
 
 - [ ] Tag `v0.4.0` publie.
