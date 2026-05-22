@@ -522,6 +522,84 @@ export interface BackupSafety {
   forbiddenPaths: string[];
 }
 
+// Phase 41 — Tableau de bord visuel des sauvegardes
+
+export type BackupStatus41 = 'valid' | 'corrupted' | 'incomplete' | 'unknown';
+export type BackupType41   = 'quick' | 'full' | 'unknown';
+
+export interface BackupDashboardItem {
+  id:          string;
+  timestamp:   string | null;
+  type:        BackupType41;
+  description: string;
+  fileCount:   number;
+  totalSizeKB: number;
+  valid:       boolean;
+  hasChecksum: boolean;
+  hasReport:   boolean;
+}
+
+export interface BackupDashboardSummary {
+  total:          number;
+  valid:          number;
+  corrupted:      number;
+  incomplete:     number;
+  quick:          number;
+  full:           number;
+  totalSizeLabel: string;
+  lastBackupAt:   string | null;
+}
+
+export interface BackupDashboardResponse {
+  status:     'ok' | 'error';
+  phase:      number;
+  summary:    BackupDashboardSummary;
+  items:      BackupDashboardItem[];
+  diagnostic: { snapshotsDirExists: boolean; scriptsAvailable: boolean };
+  safety:     BackupDashboardSafety;
+}
+
+export interface BackupDashboardSafety {
+  localOnly:                        boolean;
+  noCloud:                          boolean;
+  restoreRequiresManualConfirmation: boolean;
+  deleteRequiresConfirmation:       boolean;
+  secretsExcluded:                  boolean;
+  envExcluded:                      boolean;
+  nodeModulesExcluded:              boolean;
+  pathsMasked:                      boolean;
+}
+
+export interface BackupCreateRequest {
+  type:      BackupType41;
+  exportZip: boolean;
+}
+
+export interface BackupActionResult {
+  ok:        boolean;
+  type?:     string;
+  exportZip?: boolean;
+  error?:    string;
+}
+
+export interface BackupVerifyResult {
+  ok:      boolean;
+  results: { snapshotId: string; status: string; verified: string[]; missing: string[]; corrupted: string[] }[];
+  error?:  string;
+}
+
+export interface BackupRestorePrepareResult {
+  ok:          boolean;
+  snapshotId:  string;
+  warning:     string;
+  instruction: string;
+  command:     string;
+  risks:       string[];
+  localOnly:   boolean;
+  noAutoRestore: boolean;
+  error?:      string;
+}
+
 // Phase 27 — Centre d'aide intégré
 
 export interface HelpTopic {

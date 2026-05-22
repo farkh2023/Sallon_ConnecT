@@ -25,6 +25,7 @@ const NAV_LINKS: NavLink[] = [
   { href: '#taches', label: 'Taches' },
   { href: '#profils', label: 'Profils' },
   { href: '#sauvegarde', label: 'Sauvegarde' },
+  { href: '/sauvegardes', label: 'Sauvegardes' },
 ];
 
 interface TopNavProps {

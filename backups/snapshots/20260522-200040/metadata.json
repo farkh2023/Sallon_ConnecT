@@ -1,0 +1,18 @@
+﻿{
+    "snapshotId":  "20260522-200040",
+    "version":  "0.4.0",
+    "timestamp":  "2026-05-22T20:00:41",
+    "type":  "quick",
+    "description":  "Sauvegarde quick automatique",
+    "fileCount":  9,
+    "totalSizeBytes":  16255,
+    "checksumFile":  "checksum.json",
+    "checksumSHA256":  "d9acd610cdf6e3983088ae2660f134fd5fad6d4277229418059907feeeb05fa2",
+    "errors":  0,
+    "security":  {
+                     "localOnly":  true,
+                     "noCloud":  true,
+                     "secretsExcluded":  true,
+                     "envNotCopied":  true
+                 }
+}

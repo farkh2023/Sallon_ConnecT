@@ -42,6 +42,8 @@ const eventsRoutes       = require('./server/src/routes/events');
 const serverEventBus     = require('./server/src/services/serverEventBus');
 /* Phase 32 - Tableau de bord diagnostic avancé */
 const diagnosticsRoutes  = require('./server/src/routes/diagnostics');
+/* Phase 41 - Tableau de bord visuel des sauvegardes */
+const backupDashboardRoutes = require('./server/src/routes/backupDashboard');
 /* Phase 18B - Seeds tâches planifiées par défaut */
 require('./server/src/services/scheduler/schedulerSeeds');
 
@@ -277,6 +279,11 @@ app.use('/api/events', eventsRoutes);
    ROUTES PHASE 32 - Diagnostics avancés
 ----------------------------------------------- */
 app.use('/api/diagnostics', diagnosticsRoutes);
+
+/* -----------------------------------------------
+   ROUTES PHASE 41 - Tableau de bord sauvegardes
+----------------------------------------------- */
+app.use('/api/backups', backupDashboardRoutes);
 
 /* -----------------------------------------------
    FALLBACK — toute route non-API renvoie index.html

@@ -1,0 +1,87 @@
+[
+  {
+    "id": "IA_ordinateur_BOM_WXX9",
+    "name": "PC Portable Huawei",
+    "icon": "💻",
+    "type": "Ordinateur portable",
+    "category": "ordinateur",
+    "role": "Station de développement IA et agent principal d'orchestration du hub.",
+    "status": "connected",
+    "statusLabel": "Connecté",
+    "details": {
+      "ID logique": "IA_ordinateur_BOM_WXX9",
+      "OS": "Windows 11",
+      "Rôle hub": "Orchestrateur principal",
+      "Connexion": "Wi-Fi / Ethernet",
+      "Priorité": "Haute"
+    }
+  },
+  {
+    "id": "TV_Samsung_7_Series",
+    "name": "Smart TV Samsung 7 Series",
+    "icon": "📺",
+    "type": "Télévision connectée",
+    "category": "tv",
+    "role": "Écran principal d'affichage du tableau de bord Sallon-ConnecT.",
+    "status": "principal",
+    "statusLabel": "Principal",
+    "details": {
+      "ID logique": "TV_Samsung_7_Series",
+      "Résolution": "4K UHD",
+      "OS TV": "Tizen",
+      "Connexion": "Wi-Fi",
+      "Priorité": "Principale"
+    }
+  },
+  {
+    "id": "PC_Bureau",
+    "name": "PC de Bureau",
+    "icon": "🖥️",
+    "type": "Ordinateur de bureau",
+    "category": "ordinateur",
+    "role": "Serveur local pour le streaming de médias et les traitements lourds.",
+    "status": "available",
+    "statusLabel": "Disponible",
+    "details": {
+      "ID logique": "PC_Bureau",
+      "OS": "Windows 11",
+      "Rôle hub": "Serveur de médias local",
+      "Connexion": "Ethernet",
+      "Priorité": "Moyenne"
+    }
+  },
+  {
+    "id": "Galaxy_S23_Ultra",
+    "name": "Galaxy S23 Ultra",
+    "icon": "📱",
+    "type": "Smartphone",
+    "category": "mobile",
+    "role": "Source de galerie photos, contenu mobile et notifications du hub.",
+    "status": "connected",
+    "statusLabel": "Connecté",
+    "details": {
+      "ID logique": "Galaxy_S23_Ultra",
+      "OS": "Android 14",
+      "Rôle hub": "Source contenu mobile",
+      "Connexion": "Wi-Fi / 5G",
+      "Priorité": "Moyenne"
+    }
+  },
+  {
+    "id": "Box_SFR_Fibre",
+    "name": "Box SFR Fibre",
+    "icon": "📡",
+    "type": "Routeur / Box Internet",
+    "category": "reseau",
+    "role": "Passerelle réseau domestique et point d'accès Wi-Fi du salon.",
+    "status": "connected",
+    "statusLabel": "Connecté",
+    "details": {
+      "ID logique": "Box_SFR_Fibre",
+      "Type": "Box fibre optique",
+      "Rôle hub": "Passerelle réseau",
+      "Connexion": "Fibre FTTH",
+      "Priorité": "Critique"
+    }
+  }
+]

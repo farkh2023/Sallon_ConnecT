@@ -17,6 +17,7 @@ const TOPICS: HelpTopic[] = [
   { id: 'reseau', title: 'Réseau local', description: 'DLNA, ADB, SmartThings opt-in, découverte passive.', category: 'reseau', tags: ['reseau', 'all'] },
   { id: 'repair', title: 'Réparation', description: 'Réparer dossiers, raccourcis et build sans supprimer les données.', category: 'installation', tags: ['installation', 'all'] },
   { id: 'release', title: 'Release', description: 'Preflight, check, packaging ZIP portable, aucun secret dans Git.', category: 'release', tags: ['release', 'securite', 'all'] },
+  { id: 'sauvegardes-visuelles', title: 'Sauvegardes visuelles', description: 'Tableau de bord Phase 41 : creer, verifier, exporter, preparer restauration via interface.', category: 'backup', tags: ['backup', 'securite', 'all'] },
 ];
 
 interface HelpTopicsProps {

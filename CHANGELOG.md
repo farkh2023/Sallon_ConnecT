@@ -9,6 +9,16 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/) — versionnem
 
 ### Ajoute
 
+**Phase 41 — Tableau de bord visuel des sauvegardes**
+- Interface visuelle `/sauvegardes` : creation, verification, export ZIP, preparation de restauration, suppression.
+- 3 services backend + 7 endpoints sous `/api/backups`.
+- 14 composants React dans `frontend/src/components/backups/`.
+- Hook `useBackupDashboard` avec chargement automatique et protection montage.
+- Securite : IDs valides par regex, chemins masques, aucun secret expose, "SUPPRIMER" obligatoire.
+- Restauration : commande PowerShell manuelle uniquement, aucune auto-restauration.
+- Tests : 18 cas backend (jest) + 6 cas frontend (vitest).
+- Lien "Sauvegardes" dans TopNav, topics et commandes dans le centre d'aide.
+
 **Phase 40 — Sauvegarde/restauration complete utilisateur**
 - `create-backup.ps1` : snapshot horodaté (quick/full), metadata.json, checksum.json SHA256, rapport texte, export ZIP optionnel.
 - `list-backups.ps1` : liste tous les snapshots avec type, version, taille, validité.

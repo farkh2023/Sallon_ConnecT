@@ -1,0 +1,21 @@
+﻿=== Rapport snapshot Sallon-ConnecT ===
+Date        : 2026-05-22 20:01:06
+Type        : quick
+Version     : 0.4.0
+Snapshot ID : 20260522-200106
+Dossier     : C:\Users\Youss\Sallon_ConnecT\backups\snapshots\20260522-200106
+Fichiers    : 9
+Taille      : 15.9 KB
+
+--- Fichiers sauvegardes ---
+  VERSION
+  package.json
+  data\agents.json
+  data\devices.json
+  data\media-playlists.json
+  data\media-services.json
+  data\scenarios.json
+  data\services.json
+  env-marker.txt
+
+Securite : local-only, aucun secret copie, aucun upload.

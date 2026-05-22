@@ -29,6 +29,12 @@ const COMMANDS: HelpCommand[] = [
   // Release
   { id: 'preflight', label: 'Preflight GitHub', command: 'powershell -ExecutionPolicy Bypass -File scripts\\release\\preflight-github.ps1', category: 'release' },
   { id: 'final-check', label: 'Final release check', command: 'powershell -ExecutionPolicy Bypass -File scripts\\release\\final-release-check.ps1', category: 'release' },
+  // Backup Phase 40
+  { id: 'backup-quick', label: 'Backup rapide', command: 'powershell -ExecutionPolicy Bypass -File scripts\\windows\\backup\\create-backup.ps1 -Type quick', category: 'backup' },
+  { id: 'backup-full', label: 'Backup complet', command: 'powershell -ExecutionPolicy Bypass -File scripts\\windows\\backup\\create-backup.ps1 -Type full', category: 'backup' },
+  { id: 'backup-list', label: 'Lister backups', command: 'powershell -ExecutionPolicy Bypass -File scripts\\windows\\backup\\list-backups.ps1', category: 'backup' },
+  { id: 'backup-verify', label: 'Verifier tous', command: 'powershell -ExecutionPolicy Bypass -File scripts\\windows\\backup\\verify-backup.ps1 -All', category: 'backup' },
+  { id: 'backup-restore', label: 'Restaurer (manuel)', command: 'powershell -ExecutionPolicy Bypass -File scripts\\windows\\backup\\restore-backup.ps1', category: 'backup' },
 ];
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -38,6 +44,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   tests: '🧪 Tests',
   documentation: '📄 Documentation',
   release: '🚀 Release',
+  backup: '💾 Sauvegardes',
 };
 
 function CopyCmd({ cmd }: { cmd: string }) {

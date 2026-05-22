@@ -4,7 +4,7 @@
 
 Version stable locale : `v0.4.0`
 
-Phases 1-33 et 35-40 terminees. Le hub fonctionne localement, est teste, documente, packagable en ZIP portable, dispose d'un installateur Windows autonome (Inno Setup), d'un service Windows avec demarrage automatique, d'un tray zone de notification, et d'un systeme complet de sauvegarde/restauration utilisateur. Architecture local-first securisee preservee.
+Phases 1-33 et 35-41 terminees. Le hub fonctionne localement, est teste, documente, packagable en ZIP portable, dispose d'un installateur Windows autonome (Inno Setup), d'un service Windows avec demarrage automatique, d'un tray zone de notification, d'un systeme complet de sauvegarde/restauration utilisateur et d'un tableau de bord visuel des sauvegardes. Architecture local-first securisee preservee.
 
 ---
 
@@ -36,6 +36,7 @@ Phases 1-33 et 35-40 terminees. Le hub fonctionne localement, est teste, documen
 | 38 | Assistant premier lancement (wizard interactif, diagnostic environnement, rapport) | Fait |
 | 39 | Auto-update local securise (check/download/apply/rollback, SHA256, backup, tray) | Fait |
 | 40 | Sauvegarde/restauration complete (snapshots horodates, SHA256, tray, diagnostics) | Fait |
+| 41 | Tableau de bord visuel des sauvegardes (interface React, 7 endpoints, securite ID) | Fait |
 
 ---
 

@@ -197,6 +197,23 @@ Resultat attendu :
 - [ ] `backups/snapshots/` exclu du ZIP portable.
 - [ ] Documentation `docs/PHASE40.md` et `docs/BACKUP_RESTORE.md` presentes.
 
+## 18. Tableau de bord visuel des sauvegardes (Phase 41)
+
+- [ ] Page `/sauvegardes` accessible et affiche les snapshots.
+- [ ] Boutons "Backup rapide" et "Backup complet" declenchent la creation.
+- [ ] Verification SHA256 affiche les resultats par fichier.
+- [ ] Export ZIP produit `ok: true` en reponse.
+- [ ] Suppression impossible sans taper "SUPPRIMER".
+- [ ] Restauration : seule la commande PS1 est affichee, aucun bouton auto.
+- [ ] IDs avec `..` ou `/` rejetes par l'API (400).
+- [ ] Aucun chemin `C:\Users\` dans les reponses API.
+- [ ] Aucun secret / token / .env dans les reponses.
+- [ ] `GET /api/backups/safety` retourne tous les flags `true`.
+- [ ] Tests backend : 18 cas passes (`npm run test:backend`).
+- [ ] Tests frontend : 6 cas passes (`npm run test:frontend` ou `pnpm test:frontend`).
+- [ ] Lien "Sauvegardes" present dans TopNav.
+- [ ] Documentation `docs/PHASE41.md` presente.
+
 ## 14. GitHub Release
 
 - [ ] Tag `v0.4.0` publie.

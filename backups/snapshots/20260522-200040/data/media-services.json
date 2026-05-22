@@ -1,0 +1,82 @@
+[
+  {
+    "id": "youtube",
+    "name": "YouTube / Vidéos",
+    "icon": "▶️",
+    "desc": "Streaming YouTube en mode embed légal sur Smart TV Samsung. Aucune clé API requise.",
+    "connector": "youtube",
+    "tag": "Streaming",
+    "tagColor": "badge-coral",
+    "capabilities": ["embed", "preview", "thumbnail"]
+  },
+  {
+    "id": "localGallery",
+    "name": "Galerie photos locale",
+    "icon": "🖼️",
+    "desc": "Affichage des photos stockées sur PC Bureau ou PC Huawei. Configurer MEDIA_LOCAL_GALLERY_PATH dans .env.",
+    "connector": "localGallery",
+    "tag": "Photo",
+    "tagColor": "badge-blue",
+    "capabilities": ["scan", "list-filenames"]
+  },
+  {
+    "id": "smartphonePhotos",
+    "name": "Photos smartphone",
+    "icon": "📱",
+    "desc": "Accès aux photos du Galaxy S23 Ultra via ADB (USB). Nécessite ADB_ENABLED=true dans .env.",
+    "connector": "adb",
+    "tag": "Mobile",
+    "tagColor": "badge-green",
+    "capabilities": []
+  },
+  {
+    "id": "localMusic",
+    "name": "Musique locale",
+    "icon": "🎵",
+    "desc": "Lecture de fichiers audio depuis PC Bureau ou PC Huawei. Intégration DLNA en Phase 5.",
+    "connector": "dlna",
+    "tag": "Audio",
+    "tagColor": "badge-amber",
+    "capabilities": []
+  },
+  {
+    "id": "streamToTV",
+    "name": "Streaming PC vers TV",
+    "icon": "🎞️",
+    "desc": "Diffusion de vidéos locales depuis PC Bureau vers Samsung TV via DLNA/UPnP. Nécessite DLNA_ENABLED=true.",
+    "connector": "dlna",
+    "tag": "DLNA",
+    "tagColor": "badge-coral",
+    "capabilities": []
+  },
+  {
+    "id": "familyPresentation",
+    "name": "Présentation familiale",
+    "icon": "👨‍👩‍👧",
+    "desc": "Diaporama et partage de contenu en mode famille sur grand écran Samsung TV.",
+    "connector": "smartThings",
+    "tag": "Famille",
+    "tagColor": "badge-blue",
+    "capabilities": []
+  },
+  {
+    "id": "aiDashboard",
+    "name": "Tableau de bord IA",
+    "icon": "🤖",
+    "desc": "Affichage du hub-agent en temps réel sur l'écran principal Samsung TV. Disponible sans configuration.",
+    "connector": "youtube",
+    "tag": "IA",
+    "tagColor": "badge-green",
+    "capabilities": ["embed"]
+  },
+  {
+    "id": "voiceCommands",
+    "name": "Commandes vocales",
+    "icon": "🎙️",
+    "desc": "Contrôle vocal du hub Sallon-ConnecT via Web Speech API. Préparé — implémentation en Phase 6.",
+    "connector": null,
+    "tag": "Phase 6",
+    "tagColor": "badge-amber",
+    "capabilities": []
+  }
+]

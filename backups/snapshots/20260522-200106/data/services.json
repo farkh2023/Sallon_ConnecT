@@ -1,0 +1,58 @@
+[
+  {
+    "icon": "▶️",
+    "name": "YouTube / Vidéos",
+    "desc": "Streaming YouTube et vidéos en ligne sur Smart TV Samsung.",
+    "tag": "Streaming",
+    "tagColor": "badge-coral"
+  },
+  {
+    "icon": "🖼️",
+    "name": "Galerie photos",
+    "desc": "Synchronisation et affichage de la galerie du Galaxy S23 Ultra sur TV.",
+    "tag": "Photo",
+    "tagColor": "badge-blue"
+  },
+  {
+    "icon": "🎵",
+    "name": "Musique locale",
+    "desc": "Lecture de fichiers audio stockés sur PC Bureau ou portable Huawei.",
+    "tag": "Audio",
+    "tagColor": "badge-green"
+  },
+  {
+    "icon": "🎞️",
+    "name": "Streaming local PC",
+    "desc": "Diffusion de vidéos locales depuis le PC Bureau vers la Samsung TV.",
+    "tag": "DLNA",
+    "tagColor": "badge-amber"
+  },
+  {
+    "icon": "👨‍👩‍👧",
+    "name": "Présentation familiale",
+    "desc": "Diaporama et partage de contenu en mode famille sur grand écran.",
+    "tag": "Famille",
+    "tagColor": "badge-coral"
+  },
+  {
+    "icon": "🤖",
+    "name": "Tableau de bord IA",
+    "desc": "Affichage du hub-agent en temps réel sur l'écran principal TV.",
+    "tag": "IA",
+    "tagColor": "badge-blue"
+  },
+  {
+    "icon": "📰",
+    "name": "Résumés de contenus",
+    "desc": "Résumés IA de news, mails, rapports affichés en widget sur TV.",
+    "tag": "IA",
+    "tagColor": "badge-green"
+  },
+  {
+    "icon": "🎙️",
+    "name": "Commandes vocales",
+    "desc": "Contrôle vocal du hub (Phase 6) — préparé dans ce prototype.",
+    "tag": "Futur",
+    "tagColor": "badge-amber"
+  }
+]
