@@ -2,6 +2,8 @@
 
 ## Documentation utilisateur
 
+- [Guide utilisateur final](USER_GUIDE.md)
+- [Demarrage rapide final](QUICK_START.md)
 - [Manuel complet interactif SAVOIR_IA](user/sallon-connect-manuel-savoir-ia.html)
 - [Accueil utilisateur](user/README_USER.md)
 - [Quick Start Windows](user/QUICK_START_WINDOWS.md)
@@ -26,6 +28,11 @@
 - [Checklist release](RELEASE_CHECKLIST.md)
 - [Versioning](VERSIONING.md)
 - [Release v0.4.0](releases/v0.4.0.md)
+- [Installateur Windows](INSTALLER_WINDOWS.md)
+- [Service Windows](WINDOWS_SERVICE.md)
+- [Tray Windows](WINDOWS_TRAY.md)
+- [Assistant premier lancement](FIRST_RUN.md)
+- [Mise a jour securisee](SECURE_UPDATE.md)
 
 ## Historique des phases
 
@@ -62,3 +69,8 @@
 - [Phase 31](PHASE31.md)
 - [Phase 32](PHASE32.md)
 - [Phase 33](PHASE33.md)
+- [Phase 35](PHASE35.md)
+- [Phase 36](PHASE36.md)
+- [Phase 37](PHASE37.md)
+- [Phase 38](PHASE38.md)
+- [Phase 39](PHASE39.md)

@@ -1,149 +1,192 @@
-# Release Checklist - Sallon-ConnecT
+# Release Checklist - Sallon-ConnecT v0.4.0
 
-Checklist locale avant commit, tag ou publication GitHub.
+Checklist finale pour une release utilisateur Windows local-only.
 
-## 1. Qualite
+## 1. Installation propre
 
-- [ ] `npm run check` passe.
-- [ ] `npm run test:backend` passe.
-- [ ] `npm run test:frontend` passe.
-- [ ] `npm run test:packaging` passe.
-- [ ] `npm run test:windows` passe.
-- [ ] `npm run build:frontend` passe.
-- [ ] `npm run health` passe si le backend est actif, sinon warning non bloquant.
+- [ ] Tester dans un nouveau dossier hors depot Git.
+- [ ] Extraire le ZIP portable sans copier `.env`.
+- [ ] Confirmer l'absence initiale de `node_modules/` et `frontend/.next/`.
+- [ ] Lancer `scripts\windows\release\start-release.ps1`.
+- [ ] Verifier que les dependances absentes ou incompletes sont reparees.
+- [ ] Verifier que le frontend repond sur `http://localhost:3001`.
+- [ ] Verifier que le backend repond sur `http://localhost:3000/api/health`.
+- [ ] Verifier que le statut signale clairement `.env` absent comme warning non bloquant.
 
-## 2. Package Portable
+## 2. Scripts Windows
 
-- [ ] Construire le ZIP portable si une distribution locale est necessaire.
-- [ ] Verifier que le ZIP ne contient pas `.env`, runtime JSON, logs, backups, `node_modules`, `.next`, cles ou certificats.
-- [ ] Conserver les artefacts locaux dans `dist/`, sans les ajouter a Git.
+- [ ] `scripts\windows\release\start-release.ps1` lance backend et frontend.
+- [ ] `scripts\windows\release\build-release.ps1` execute lint, tests, build, packaging, verification et checksums.
+- [ ] `scripts\windows\release\verify-release.ps1` valide structure ZIP, exclusions et scan secrets.
+- [ ] `scripts\windows\status-sallon-connect.ps1` affiche ports, HTTP, dossiers et dernier log.
+- [ ] `scripts\windows\stop-sallon-connect.ps1` arrete les processus ou avertit si un PID reste actif.
+- [ ] Raccourci Bureau cree et cible valide.
+- [ ] Raccourcis Menu Demarrer crees et cibles valides.
+- [ ] Redemarrage propre valide apres arret.
 
-## 3. Preflight GitHub
+## 3. Reseau et ports
 
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\release\preflight-github.ps1
-```
+- [ ] Port `3000` libre avant demarrage ou occupe par Sallon-ConnecT valide.
+- [ ] Port `3001` libre avant demarrage ou occupe par Sallon-ConnecT valide.
+- [ ] Si un autre service occupe `3000`, le script affiche le PID et refuse le faux backend.
+- [ ] Si un autre service occupe `3001`, le script affiche le PID et refuse le faux frontend.
+- [ ] Aucun crash silencieux : erreur lisible et chemin logs indique.
 
-- [ ] Aucun fichier interdit suivi par Git.
-- [ ] Aucun secret probable dans les fichiers suivis.
-- [ ] Aucun chemin personnel Windows ou macOS dans les fichiers suivis.
-- [ ] Rapport genere dans `logs/`.
+## 4. SSE local
 
-## 4. Documentation
+- [ ] `GET /api/events/client-count` repond.
+- [ ] `GET /api/events/stream` renvoie `sse.connected` depuis `http://localhost:3001`.
+- [ ] Une origine externe recoit `403`.
+- [ ] Le flux reste limite a `localhost:3000` et `localhost:3001`.
+- [ ] Le fallback UI reste comprehensible si EventSource est indisponible.
 
-- [ ] `README.md` a jour.
-- [ ] `CHANGELOG.md` contient l'entree `0.1.0`.
-- [ ] `ROADMAP.md` liste les phases 23 a 28.
-- [ ] `SECURITY.md` et `docs/SECURITY_MODEL.md` a jour.
-- [ ] `CONTRIBUTING.md` rappelle l'interdiction des secrets.
-- [ ] `docs/LOCAL_SETUP.md`, `docs/ARCHITECTURE.md`, `docs/VERSIONING.md` a jour.
-- [ ] `VERSION` contient `0.1.0`.
+## 5. Notifications
 
-## 5. Git
+- [ ] `GET /api/notifications/stats` repond.
+- [ ] Les notifications de demarrage et scheduler sont visibles.
+- [ ] Les messages sont locaux et sans push externe obligatoire.
+- [ ] Les messages sensibles sont masques.
+- [ ] Les filtres et etats non lus restent coherents.
 
-- [ ] `git status` ne montre que les fichiers attendus.
-- [ ] Les fichiers ignores restent locaux.
-- [ ] Aucun remote n'est cree automatiquement.
-- [ ] Aucun push n'est execute automatiquement.
+## 6. Diagnostics et observabilite
 
-Commandes recommandees apres validation :
+- [ ] `GET /api/diagnostics/overview` retourne `status=ok`.
+- [ ] `security.localOnly=true`.
+- [ ] `firebase=false`, `cloudServices=false`, `externalPush=false`.
+- [ ] `GET /api/observability/overview` repond.
+- [ ] Les logs exposes sont masques ou resumes.
+- [ ] Les exports JSON restent locaux et non sensibles.
 
-```powershell
-git status
-git add .
-git commit -m "Prepare v0.1.0 GitHub release"
-git tag v0.1.0
-```
+## 7. UX utilisateur
 
-Le tag et la publication GitHub doivent rester des actions manuelles confirmees.
+- [ ] Messages de lancement clairs : Node, dependances, build, PIDs, URLs.
+- [ ] Message clair si Node est absent ou trop ancien.
+- [ ] Message clair si un port est occupe.
+- [ ] Etat loading visible dans les panneaux frontend.
+- [ ] Erreurs frontend comprehensibles et non techniques quand possible.
+- [ ] Terminologie utilisateur limitee : local, diagnostic, notification, observabilite.
+- [ ] Centre d'aide disponible sur `/aide`.
 
----
+## 8. Securite
 
-## Section v0.1.0 — Validation Release Phase 26
+- [ ] Aucun `.env` reel dans le ZIP.
+- [ ] Aucun `.env.local`.
+- [ ] Aucun token, password, secret ou API key probable.
+- [ ] Aucun `node_modules/`.
+- [ ] Aucun `frontend/.next/`.
+- [ ] Aucun `runtime/*.json`.
+- [ ] Aucun log brut `logs/*.log`, `logs/*.txt`, `logs/*.json`.
+- [ ] Aucun backup prive `backups/*.zip` ou `backups/*.json`.
+- [ ] Aucun certificat ou cle : `.pem`, `.key`, `.p12`, `.crt`.
+- [ ] Diagnostics sans contenu sensible.
 
-Checklist specifique pour la preparation et publication de la version v0.1.0.
+## 9. Packaging
 
-### Qualite et Tests
+- [ ] `pnpm release:build` genere un nouveau ZIP portable.
+- [ ] `pnpm release:verify` valide le ZIP.
+- [ ] `dist/Sallon-ConnecT-v0.4.0-sha256.txt` genere.
+- [ ] `dist/Sallon-ConnecT-v0.4.0-release.json` genere.
+- [ ] Rapport release present dans `dist/`.
+- [ ] Taille ZIP et SHA256 reportes dans le livrable final.
 
-- [ ] `npm run check` passe (lint + tests + packaging + PowerShell + build).
-- [ ] `npm run test:backend` : 0 echec.
-- [ ] `npm run test:frontend` : 0 echec (warning ESLint `_f` corrige).
-- [ ] `npm run test:packaging` passe.
-- [ ] `npm run test:windows` passe.
-- [ ] `npm run build:frontend` passe.
-- [ ] `npm run health` passe si le backend est actif, sinon warning non bloquant.
+## 10. Validations finales
 
-### Preflight et Preparation
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\release\preflight-github.ps1
-powershell -ExecutionPolicy Bypass -File scripts\release\prepare-release.ps1
-```
-
-- [ ] preflight-github.ps1 : 0 echec (aucun secret, aucun fichier interdit).
-- [ ] prepare-release.ps1 : OK.
-
-### Artefacts Release
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\release\build-release-artifacts.ps1
-```
-
-- [ ] ZIP portable genere dans `dist/`.
-- [ ] ZIP verifie : aucun `.env`, `runtime/*.json`, `logs/`, `node_modules`, `.next`, cles PEM.
-- [ ] Checksum SHA256 genere : `dist/Sallon-ConnecT-v0.1.0-checksums.txt`.
-
-### Verification Checksum
+Executer :
 
 ```powershell
-Get-FileHash dist\Sallon-ConnecT-Portable-v0.1.0.zip -Algorithm SHA256
+pnpm lint
+pnpm test
+pnpm build
+pnpm test:backend
+pnpm test:windows
+pnpm release:build
 ```
 
-- [ ] Hash correspond a celui dans `dist/Sallon-ConnecT-v0.1.0-checksums.txt`.
+Resultat attendu :
 
-### Fichiers Release
+- lint OK ;
+- tests frontend OK ;
+- tests backend OK ;
+- build OK ;
+- scripts Windows syntaxiquement valides ;
+- packaging et verification release OK.
 
-- [ ] `docs/releases/v0.1.0.md` presente et complete.
-- [ ] `VERSION` = `0.1.0`.
-- [ ] `CHANGELOG.md` contient l'entree `[0.1.0]`.
-- [ ] `README.md` mentionne v0.1.0 et la section Release.
+## 11. Installateur Windows (Phase 35)
 
-### Verification Git
+- [ ] Inno Setup 6.x installe (`winget install JRSoftware.InnoSetup`).
+- [ ] `scripts/windows/installer/Sallon-ConnecT.iss` present et valide.
+- [ ] `scripts/windows/installer/build-installer.ps1` execute sans erreur.
+- [ ] `dist/Sallon-ConnecT-Setup-0.4.0.exe` genere.
+- [ ] SHA256 calcule et checksum cree dans `dist/`.
+- [ ] `verify-installer.ps1` passe sans erreur critique.
+- [ ] Aucun `.env`, token ou secret dans le `.exe`.
+- [ ] Raccourcis Menu Demarrer crees correctement.
+- [ ] Installation propre dans `%LOCALAPPDATA%\Sallon-ConnecT` validee.
+- [ ] `npm install` et build frontend executes par le post-install.
+- [ ] Desinstallation propre validee avec `uninstall-check.ps1`.
+- [ ] ZIP portable non impacte par la Phase 35.
 
-- [ ] `git status` : working tree propre.
-- [ ] Aucun fichier `.env`, `runtime/`, `logs/`, `node_modules` suivi par Git.
+## 12. Service Windows (Phase 36)
 
-### Check Final
+- [ ] `scripts/windows/service/install-service.ps1 -UseTaskScheduler` execute sans erreur.
+- [ ] `scripts/windows/service/service-status.ps1` retourne mode et statut corrects.
+- [ ] `scripts/windows/service/start-service.ps1` demarre le backend et confirme `/api/health`.
+- [ ] `scripts/windows/service/stop-service.ps1` arrete le backend et libere le port 3000.
+- [ ] `scripts/windows/service/restart-service.ps1` redемarre proprement.
+- [ ] `scripts/windows/service/remove-service.ps1` supprime la tache sans impacter les donnees.
+- [ ] `GET /api/diagnostics/service` repond avec `mode` et `status`.
+- [ ] ZIP portable non impacte par la Phase 36.
 
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\release\final-release-check.ps1
-```
+## 13. Tray Windows (Phase 37)
 
-- [ ] final-release-check.ps1 : 0 echec.
+- [ ] `scripts/windows/tray/start-tray.ps1` lance le processus tray en arriere-plan.
+- [ ] `scripts/windows/tray/tray-status.ps1` retourne PID et memoire.
+- [ ] Icone visible dans la zone de notification Windows.
+- [ ] Menu clic-droit : 8 actions disponibles.
+- [ ] Double-clic gauche ouvre `http://localhost:3001`.
+- [ ] Polling toutes les 5s : icone change selon etat backend.
+- [ ] Notifications locales emises (pas de push externe).
+- [ ] `scripts/windows/tray/stop-tray.ps1` ferme le tray proprement.
+- [ ] Backend non impacte par l'arret du tray.
+- [ ] ZIP portable non impacte par la Phase 37.
 
-### Commit et Tag (manuel)
+## 15. Assistant premier lancement (Phase 38)
 
-```powershell
-git status
-git add .
-git commit -m "Prepare GitHub release v0.1.0"
-git tag v0.1.0
-```
+- [ ] `scripts/windows/first-run/check-environment.ps1` detecte Node.js, npm, ports, backend, frontend, SSE.
+- [ ] `check-environment.ps1 -Json` retourne JSON valide.
+- [ ] `scripts/windows/first-run/first-run.ps1` s'execute en mode interactif.
+- [ ] `first-run.ps1 -Unattended` genere le rapport sans interaction.
+- [ ] `first-run.ps1 -Unattended -Mode task-scheduler` configure le service.
+- [ ] `runtime/first-run-report.json` genere sans chemins sensibles ni secrets.
+- [ ] `logs/first-run-report.txt` genere avec contenu lisible.
+- [ ] `first-run-status.ps1` affiche rapport precedent et environnement actuel.
+- [ ] Raccourci Menu Demarrer "Assistant premier lancement" present dans installateur.
+- [ ] Tache `firstrun` dans installateur (decochee par defaut).
+- [ ] Aucune elevation admin automatique (NSSM sans admin bascule en portable).
+- [ ] ZIP portable non impacte par la Phase 38.
 
-- [ ] Commit cree localement.
-- [ ] Tag `v0.1.0` cree localement.
+## 16. Auto-update securise (Phase 39)
 
-### Publication GitHub (manuelle, quand pret)
+- [ ] `scripts/windows/update/check-update.ps1` affiche version locale, distante et assets.
+- [ ] URL validee : `https://github.com/farkh2023/` uniquement.
+- [ ] Extensions validees : .zip, .txt, .json seulement.
+- [ ] `download-update.ps1` telecharge et ecrit verification.json avec SHA256.
+- [ ] `apply-update.ps1` refuse si SHA256 invalide.
+- [ ] `apply-update.ps1` demande confirmation avant apply.
+- [ ] Backup cree dans `runtime/update-backups/` avant chaque apply.
+- [ ] Fichiers preserves : logs/, runtime/, backups/, .env, data/.
+- [ ] `rollback-update.ps1 -List` liste les backups disponibles.
+- [ ] `rollback-update.ps1` restaure les fichiers de la version precedente.
+- [ ] `update-status.ps1` affiche versions telechargees et backups.
+- [ ] Item "Verifier mise a jour..." present dans le menu tray.
+- [ ] Aucun auto-update, aucune telemetrie, aucun secret dans rapports.
+- [ ] ZIP portable non impacte par la Phase 39.
 
-```powershell
-git remote add origin URL_DU_DEPOT
-git push -u origin main
-git push origin v0.1.0
-```
+## 14. GitHub Release
 
-- [ ] Branche `main` poussee.
-- [ ] Tag `v0.1.0` pousse.
-- [ ] GitHub Release creee manuellement sur github.com.
+- [ ] Tag `v0.4.0` publie.
 - [ ] ZIP portable joint a la release.
-- [ ] Fichier checksums joint a la release.
-- [ ] Notes de release issues de `docs/releases/v0.1.0.md`.
+- [ ] Checksum SHA256 joint ou documente.
+- [ ] Notes de release coherentes avec `docs/releases/v0.4.0.md`.
+- [ ] Aucune action cloud ajoutee par la release.
+- [ ] Aucune publication automatique sans validation humaine.

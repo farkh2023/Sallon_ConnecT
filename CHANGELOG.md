@@ -47,6 +47,54 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/) — versionnem
 - Verification ZIP local-only, exclusions cache/temp/logs/node_modules/.env.
 - README, ROADMAP et notes de release `v0.4.0`.
 
+**Phase 35 — Installateur Windows autonome (Inno Setup)**
+- Script Inno Setup 6 `scripts/windows/installer/Sallon-ConnecT.iss` complet.
+- `build-installer.ps1` : detection ISCC, lint/tests/build avant compilation, SHA256 post-compilation.
+- `verify-installer.ps1` : 11 verifications (taille, SHA256, version, exclusions secrets).
+- `uninstall-check.ps1` : verification proprete post-desinstallation.
+- Installation sans admin dans `%LOCALAPPDATA%\Sallon-ConnecT`.
+- Verification Node.js et creation `.env` automatiques a l'installation.
+- Documentation `INSTALLER_WINDOWS.md`.
+
+**Phase 36 — Service Windows + demarrage automatique**
+- `install-service.ps1` : dual-mode NSSM (admin) / Task Scheduler (sans admin, recommande).
+- `start-service.ps1`, `stop-service.ps1`, `restart-service.ps1`, `remove-service.ps1`, `service-status.ps1`.
+- Watchdog : redemarrage automatique en cas de crash (3 tentatives, delai 1 min).
+- Endpoint `GET /api/diagnostics/service` : mode, statut, PID, uptime.
+- Integration Inno Setup (tache optionnelle `installservice`).
+- Documentation `WINDOWS_SERVICE.md`.
+
+**Phase 39 — Auto-update local securise**
+- `check-update.ps1` : verifie GitHub release vs version locale, affiche changelog et assets.
+- `download-update.ps1` : telecharge ZIP + sha256, valide URL GitHub, verifie SHA256, ecrit verification.json.
+- `apply-update.ps1` : backup systematique, confirmation obligatoire, copie selective (preserve logs/runtime/backups/.env/data/), rapport apply.
+- `rollback-update.ps1` : restaure depuis runtime/update-backups/, listage et confirmation.
+- `update-status.ps1` : statut versions, telechargements, backups.
+- Tray : item "Verifier mise a jour..." dans le menu clic-droit.
+- Aucun auto-update, aucune telemetrie, SHA256 obligatoire avant apply.
+- Documentation `SECURE_UPDATE.md`.
+
+**Phase 38 — Assistant premier lancement**
+- `check-environment.ps1` : diagnostic complet (Node.js, npm, ports, backend, frontend, SSE, service, tray, dossiers).
+- `first-run.ps1` : wizard interactif — choix mode (portable / Task Scheduler / NSSM), activation tray, ouverture dashboard.
+- `first-run-status.ps1` : statut du premier lancement et environnement actuel.
+- Rapport genere : `runtime/first-run-report.json` et `logs/first-run-report.txt`.
+- Integration Inno Setup : tache optionnelle `firstrun`, raccourci Menu Demarrer "Assistant premier lancement".
+- Aucune elevation admin automatique — bascule portable si NSSM sans droits.
+- Aucun secret, aucun chemin sensible dans le rapport.
+- Documentation `FIRST_RUN.md`.
+
+**Phase 37 — Interface tray Windows**
+- `Sallon-ConnecT-Tray.ps1` : application tray PowerShell + Windows Forms NotifyIcon.
+- `start-tray.ps1`, `stop-tray.ps1`, `tray-status.ps1`.
+- Menu clic-droit 8 actions, double-clic ouvre dashboard.
+- Polling health `/api/health` toutes les 5s, icones systeme par etat.
+- Notifications Windows locales avec throttle 60s par type.
+- Protection instance unique via fichier PID dans `%TEMP%`.
+- Integration Inno Setup (tache optionnelle `trayicon`).
+- Aucune dependance externe, aucun appel cloud, pas d'Electron.
+- Documentation `WINDOWS_TRAY.md`.
+
 ### Change
 
 - Version projet alignee sur `0.4.0`.

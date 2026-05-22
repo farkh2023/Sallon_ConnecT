@@ -45,6 +45,114 @@ function Invoke-Npm {
   }
 }
 
+function Test-NodeRequires {
+  param(
+    [string]$WorkingDirectory,
+    [string[]]$Modules
+  )
+
+  $moduleList = ($Modules | ForEach-Object { "'$($_)'" }) -join ','
+  $script = "for (const name of [$moduleList]) require.resolve(name);"
+  $quotedScript = '"' + $script.Replace('"', '\"') + '"'
+  $process = Start-Process -FilePath 'node.exe' `
+    -ArgumentList @('-e', $quotedScript) `
+    -WorkingDirectory $WorkingDirectory `
+    -Wait `
+    -PassThru `
+    -NoNewWindow `
+    -RedirectStandardOutput (Join-Path $Logs 'dependency-check.out.log') `
+    -RedirectStandardError (Join-Path $Logs 'dependency-check.err.log')
+
+  return $process.ExitCode -eq 0
+}
+
+function Ensure-Dependencies {
+  param(
+    [string]$Name,
+    [string]$WorkingDirectory,
+    [string[]]$Modules
+  )
+
+  $modulesPath = Join-Path $WorkingDirectory 'node_modules'
+  $complete = (Test-Path $modulesPath) -and (Test-NodeRequires -WorkingDirectory $WorkingDirectory -Modules $Modules)
+
+  if ($complete) {
+    Write-Host "Dependances $Name presentes."
+    return
+  }
+
+  if (Test-Path $modulesPath) {
+    Write-Host "Dependances $Name incompletes: npm install"
+  }
+  else {
+    Write-Host "Dependances $Name absentes: npm install"
+  }
+
+  Invoke-Npm -WorkingDirectory $WorkingDirectory -Arguments @('install')
+
+  if (-not (Test-NodeRequires -WorkingDirectory $WorkingDirectory -Modules $Modules)) {
+    throw "Dependances $Name incompletes apres npm install. Relancez le script ou supprimez node_modules avant de recommencer."
+  }
+}
+
+function Test-FrontendBuild {
+  $buildId = Join-Path $Frontend '.next\BUILD_ID'
+  $routesManifest = Join-Path $Frontend '.next\routes-manifest.json'
+  return (Test-Path $buildId) -and (Test-Path $routesManifest)
+}
+
+function Test-HttpReady {
+  param(
+    [string]$Name,
+    [string]$Url,
+    [string]$ExpectedPattern = '',
+    [int]$Attempts = 20,
+    [int]$DelaySeconds = 1
+  )
+
+  for ($i = 1; $i -le $Attempts; $i++) {
+    try {
+      $response = Invoke-WebRequest -Uri $Url -UseBasicParsing -TimeoutSec 3
+      if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 400) {
+        if ($ExpectedPattern -and ($response.Content -notmatch $ExpectedPattern)) {
+          if ($i -eq $Attempts) {
+            Write-Warning "$Name repond sur $Url, mais la reponse ne correspond pas a Sallon-ConnecT."
+          }
+          Start-Sleep -Seconds $DelaySeconds
+          continue
+        }
+        Write-Host "$Name pret: $Url"
+        return $true
+      }
+    }
+    catch {
+      if ($i -eq $Attempts) {
+        Write-Warning "$Name indisponible sur $Url. Detail: $($_.Exception.Message)"
+      }
+    }
+
+    Start-Sleep -Seconds $DelaySeconds
+  }
+
+  return $false
+}
+
+function Assert-PortService {
+  param(
+    [string]$Name,
+    [int]$Port,
+    [string]$HealthUrl,
+    [string]$ExpectedPattern,
+    [string[]]$Pids
+  )
+
+  if (Test-HttpReady -Name $Name -Url $HealthUrl -ExpectedPattern $ExpectedPattern -Attempts 3 -DelaySeconds 1) {
+    return
+  }
+
+  throw "Le port $Port est occupe (PID: $($Pids -join ', ')), mais $Name ne correspond pas a Sallon-ConnecT sur $HealthUrl. Fermez le processus concerne ou lancez scripts\windows\stop-sallon-connect.ps1 -Force, puis relancez."
+}
+
 function Start-AppProcess {
   param(
     [string]$Name,
@@ -65,6 +173,17 @@ function Start-AppProcess {
     -PassThru
 
   Write-Host "$Name demarre (PID $($process.Id)). Logs: logs/$LogPrefix-release-$Stamp.log"
+
+  Start-Sleep -Seconds 2
+  if ($process.HasExited) {
+    $errorTail = ''
+    if (Test-Path $errLog) {
+      $errorTail = (Get-Content -Path $errLog -Tail 12 -ErrorAction SilentlyContinue) -join "`n"
+    }
+    throw "$Name s'est arrete juste apres le demarrage. Consultez logs/$LogPrefix-release-$Stamp.err.log.`n$errorTail"
+  }
+
+  return $process
 }
 
 $node = Get-Command node.exe -ErrorAction SilentlyContinue
@@ -76,35 +195,37 @@ $nodeVersion = (& node -v).Trim()
 Write-Host "Node detecte: $nodeVersion"
 
 if (-not $SkipInstall) {
-  if (-not (Test-Path (Join-Path $Root 'node_modules'))) {
-    Write-Host 'Dependances racine absentes: npm install'
-    Invoke-Npm -WorkingDirectory $Root -Arguments @('install')
-  }
-  if (-not (Test-Path (Join-Path $Frontend 'node_modules'))) {
-    Write-Host 'Dependances frontend absentes: npm install'
-    Invoke-Npm -WorkingDirectory $Frontend -Arguments @('install')
-  }
+  Ensure-Dependencies -Name 'racine' -WorkingDirectory $Root -Modules @('adm-zip', 'concurrently', 'dotenv', 'express')
+  Ensure-Dependencies -Name 'frontend' -WorkingDirectory $Frontend -Modules @('next/package.json', 'react/package.json', 'react-dom/package.json', 'recharts/package.json')
 }
 
-if (-not $SkipBuild -and -not (Test-Path (Join-Path $Frontend '.next'))) {
-  Write-Host 'Build frontend absent: npm run build'
+if (-not $SkipBuild -and -not (Test-FrontendBuild)) {
+  Write-Host 'Build frontend absent ou incomplet: npm run build'
   Invoke-Npm -WorkingDirectory $Frontend -Arguments @('run', 'build')
 }
 
 $backendPids = Get-ListeningPid -Port 3000
 if ($backendPids.Count -gt 0) {
   Write-Host "Backend deja actif sur http://localhost:3000 (PID: $($backendPids -join ', '))."
+  Assert-PortService -Name 'Backend Express' -Port 3000 -HealthUrl 'http://localhost:3000/api/health' -ExpectedPattern 'Sallon-ConnecT Hub' -Pids $backendPids
 }
 else {
   Start-AppProcess -Name 'Backend Express' -WorkingDirectory $Root -Arguments @('start') -LogPrefix 'backend'
+  if (-not (Test-HttpReady -Name 'Backend Express' -Url 'http://localhost:3000/api/health' -ExpectedPattern 'Sallon-ConnecT Hub')) {
+    throw 'Backend Express demarre mais endpoint /api/health indisponible. Consultez les logs backend dans logs/.'
+  }
 }
 
 $frontendPids = Get-ListeningPid -Port 3001
 if ($frontendPids.Count -gt 0) {
   Write-Host "Frontend deja actif sur http://localhost:3001 (PID: $($frontendPids -join ', '))."
+  Assert-PortService -Name 'Frontend Next' -Port 3001 -HealthUrl 'http://localhost:3001' -ExpectedPattern 'Sallon-ConnecT' -Pids $frontendPids
 }
 else {
   Start-AppProcess -Name 'Frontend Next production' -WorkingDirectory $Frontend -Arguments @('run', 'start', '--', '--port', '3001') -LogPrefix 'frontend'
+  if (-not (Test-HttpReady -Name 'Frontend Next' -Url 'http://localhost:3001' -ExpectedPattern 'Sallon-ConnecT')) {
+    throw 'Frontend Next demarre mais http://localhost:3001 reste indisponible. Consultez les logs frontend dans logs/.'
+  }
 }
 
 Write-Host ""

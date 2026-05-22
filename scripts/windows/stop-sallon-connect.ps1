@@ -65,7 +65,23 @@ foreach ($target in ($targets | Sort-Object Pid -Unique)) {
   }
 
   Write-Host "Arret PID $($target.Pid) ($($target.Name)) sur port $($target.Port)."
-  Stop-Process -Id $target.Pid -ErrorAction SilentlyContinue
+  try {
+    if ($Force) {
+      Stop-Process -Id $target.Pid -Force -ErrorAction Stop
+    }
+    else {
+      Stop-Process -Id $target.Pid -ErrorAction Stop
+    }
+  }
+  catch {
+    Write-Warning "Impossible d'arreter PID $($target.Pid): $($_.Exception.Message)"
+    continue
+  }
+
+  Start-Sleep -Milliseconds 500
+  if (Get-Process -Id $target.Pid -ErrorAction SilentlyContinue) {
+    Write-Warning "PID $($target.Pid) encore actif apres la demande d'arret. Fermez le processus depuis le Gestionnaire des taches si necessaire."
+  }
 }
 
 Write-Host "Commande d'arret terminee."

@@ -4,7 +4,7 @@
 
 Version stable locale : `v0.4.0`
 
-Phases 1 a 33 terminees. Le hub fonctionne localement, est teste, documente, packagable en ZIP portable et conserve une architecture local-first securisee.
+Phases 1-33 et 35-39 terminees. Le hub fonctionne localement, est teste, documente, packagable en ZIP portable, dispose d'un installateur Windows autonome (Inno Setup), d'un service Windows avec demarrage automatique et d'un tray zone de notification. Architecture local-first securisee preservee.
 
 ---
 
@@ -30,6 +30,11 @@ Phases 1 a 33 terminees. Le hub fonctionne localement, est teste, documente, pac
 | 31 | Centre de notifications intelligent | Fait |
 | 32 | Diagnostic avance | Fait |
 | 33 | Release locale stable et packaging final | Fait |
+| 35 | Installateur Windows autonome (Inno Setup 6) | Fait |
+| 36 | Service Windows + demarrage automatique (NSSM / Task Scheduler) | Fait |
+| 37 | Interface tray Windows (zone de notification, PowerShell + WinForms) | Fait |
+| 38 | Assistant premier lancement (wizard interactif, diagnostic environnement, rapport) | Fait |
+| 39 | Auto-update local securise (check/download/apply/rollback, SHA256, backup, tray) | Fait |
 
 ---
 
@@ -40,32 +45,27 @@ Phases 1 a 33 terminees. Le hub fonctionne localement, est teste, documente, pac
 - Conserver SSE comme flux lecture seule par defaut.
 - Garder validation d'origine, masquage et limites de clients.
 
-### Phase 35 — Multi-machines local
-- Decouverte d'instances Sallon-ConnecT sur le LAN.
-- Federation locale optionnelle, sans cloud.
-- Controle fin des machines autorisees.
-
-### Phase 36 — Mobile companion
+### Phase 38 — Mobile companion
 - Interface mobile companion sur le LAN.
 - QR code local pour ouvrir le dashboard.
 - Notifications navigateur opt-in et sans service push externe.
 
-### Phase 37 — IA locale
+### Phase 39 — IA locale
 - Assistant local connecte aux diagnostics, aux guides et aux scenarios.
 - Execution limitee aux actions allowlist.
 - Aucun appel LLM cloud par defaut.
 
-### Phase 38 — Orchestrateur agents
+### Phase 40 — Orchestrateur agents
 - Agents locaux specialises : diagnostic, media, maintenance, documentation.
 - Planification controlee par permissions et audit.
 - Mode simulation avant toute action sensible.
 
-### Phase 39 — Monitoring avance
+### Phase 41 — Monitoring avance
 - Historique long terme dans un stockage local plus robuste.
 - Alertes locales configurables.
 - Correlation entre SSE, notifications, diagnostics et snapshots.
 
-### Phase 40 — Plugins
+### Phase 42 — Plugins
 - Systeme de plugins locaux signes ou approuves manuellement.
 - API plugin limitee et sandboxee.
 - Marketplace personnelle locale, sans installation automatique distante.
