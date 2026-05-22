@@ -1,0 +1,49 @@
+{
+  "name": "sallon-connect",
+  "version": "0.4.0",
+  "private": true,
+  "description": "Hub intelligent pour centraliser les appareils, services et agents IA du salon",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "health": "node scripts/health-check.js",
+    "dev:backend": "node server.js",
+    "dev:frontend": "cd frontend && npm run dev -- --port 3001",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "test": "npm run test:backend && npm run test:frontend && npm run test:packaging",
+    "test:backend": "jest --runInBand",
+    "test:frontend": "cd frontend && npm test",
+    "test:packaging": "node tests/packaging/portable-zip.test.js",
+    "test:windows": "powershell -ExecutionPolicy Bypass -File tests/windows/validate-powershell.ps1",
+    "lint": "npm run lint:frontend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "build": "npm run build:frontend",
+    "build:frontend": "cd frontend && npm run build",
+    "check:docs": "node scripts/release/check-doc-links.js",
+    "check:manual": "node tests/docs/manual-page.test.js",
+    "check": "npm run check:docs && npm run check:manual && npm run lint && npm run test && npm run test:windows && npm run build",
+    "release:build": "powershell -ExecutionPolicy Bypass -File scripts/windows/release/build-release.ps1",
+    "release:verify": "powershell -ExecutionPolicy Bypass -File scripts/windows/release/verify-release.ps1",
+    "release:start": "powershell -ExecutionPolicy Bypass -File scripts/windows/release/start-release.ps1"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.17",
+    "concurrently": "^9.2.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "keywords": [
+    "hub",
+    "smart-home",
+    "agents",
+    "local"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
+  }
+}
