@@ -9,6 +9,17 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/) — versionnem
 
 ### Ajoute
 
+**Phase 42 — Assistant de restauration securise**
+- Wizard 6 etapes : snapshot, integrite SHA256, dry-run, score de risque, checklist, commande.
+- 2 services backend : restoreAssistantSafety, restoreAssistantService (jamais restore-backup.ps1).
+- 4 endpoints : /assistant, /dry-run, /risk, /command — lecture seule, aucune execution.
+- 11 composants React dans restore-assistant/, hook useRestoreAssistant.
+- Checklist 6 points obligatoires avant affichage commande PowerShell.
+- Score risque : low/medium/high/blocked selon validite, age, type, fichiers.
+- Commande manuelle uniquement : bouton Copier, aucun bouton "Restaurer maintenant".
+- Integration Phase 41 : bouton "Preparer restauration" ouvre maintenant le wizard complet.
+- Tests : 21 cas backend + 10 cas frontend.
+
 **Phase 41 — Tableau de bord visuel des sauvegardes**
 - Interface visuelle `/sauvegardes` : creation, verification, export ZIP, preparation de restauration, suppression.
 - 3 services backend + 7 endpoints sous `/api/backups`.

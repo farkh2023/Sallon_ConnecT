@@ -1,0 +1,18 @@
+﻿{
+    "snapshotId":  "20260522-234219",
+    "version":  "0.4.0",
+    "timestamp":  "2026-05-22T23:42:19",
+    "type":  "full",
+    "description":  "Sauvegarde full automatique",
+    "fileCount":  60,
+    "totalSizeBytes":  283178,
+    "checksumFile":  "checksum.json",
+    "checksumSHA256":  "b3b39a16241afd23ca75e5755d6b8e2d2f56ff869ff8e27ddc08a1a387bfc775",
+    "errors":  0,
+    "security":  {
+                     "localOnly":  true,
+                     "noCloud":  true,
+                     "secretsExcluded":  true,
+                     "envNotCopied":  true
+                 }
+}

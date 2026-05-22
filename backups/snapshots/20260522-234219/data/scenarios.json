@@ -1,0 +1,56 @@
+[
+  {
+    "icon": "🎬",
+    "name": "Mode Cinéma",
+    "desc": "Ambiance tamisée, son surround, contenus vidéo en plein écran.",
+    "devices": "Samsung TV + PC Bureau + Galaxy S23 Ultra",
+    "result": "Lumières réduites · Streaming actif · Mode DND téléphone",
+    "priority": "high",
+    "priorityLabel": "Haute"
+  },
+  {
+    "icon": "💼",
+    "name": "Mode Travail",
+    "desc": "Affichage productivité, minimisation des distractions, focus mode.",
+    "devices": "PC Huawei + PC Bureau",
+    "result": "Notifications off · Mode focus · Dashboard pro sur TV",
+    "priority": "high",
+    "priorityLabel": "Haute"
+  },
+  {
+    "icon": "📊",
+    "name": "Mode Présentation",
+    "desc": "Partage d'écran sur TV pour réunions ou présentations professionnelles.",
+    "devices": "PC Huawei + Samsung TV",
+    "result": "Écran miroir TV · Mode plein écran · Pas de notifications",
+    "priority": "medium",
+    "priorityLabel": "Moyenne"
+  },
+  {
+    "icon": "👨‍👩‍👧",
+    "name": "Mode Famille",
+    "desc": "Contenu adapté, galerie photos partagée, jeux et divertissement commun.",
+    "devices": "Samsung TV + Galaxy S23 Ultra",
+    "result": "Galerie partagée · Contrôle parental · Musique ambiante",
+    "priority": "medium",
+    "priorityLabel": "Moyenne"
+  },
+  {
+    "icon": "🌙",
+    "name": "Mode Veille",
+    "desc": "Extinction progressive, sauvegarde des états, mise en veille des appareils.",
+    "devices": "Tous les appareils",
+    "result": "Économies d'énergie · Statuts sauvegardés · Wake-on-LAN prêt",
+    "priority": "low",
+    "priorityLabel": "Basse"
+  },
+  {
+    "icon": "🔧",
+    "name": "Mode Diagnostic réseau",
+    "desc": "Scan réseau complet, vérification des performances, rapport de santé.",
+    "devices": "Box SFR + PC Huawei + PC Bureau",
+    "result": "Rapport réseau · Latences mesurées · Alertes anomalies",
+    "priority": "medium",
+    "priorityLabel": "Moyenne"
+  }
+]

@@ -5,10 +5,12 @@
    Local uniquement — aucun secret expose.
 ============================================= */
 
-const express = require('express');
-const router  = express.Router();
-const service = require('../services/backupDashboard/backupDashboardService');
-const safety  = require('../services/backupDashboard/backupDashboardSafety');
+const express          = require('express');
+const router           = express.Router();
+const service          = require('../services/backupDashboard/backupDashboardService');
+const safety           = require('../services/backupDashboard/backupDashboardSafety');
+const restoreService   = require('../services/backupDashboard/restoreAssistantService');
+const restoreSafety    = require('../services/backupDashboard/restoreAssistantSafety');
 
 router.use((_req, res, next) => {
   res.set('Cache-Control', 'no-store');
@@ -101,6 +103,50 @@ router.post('/:id/restore/prepare', (req, res) => {
   if (!safeId) return res.status(400).json({ error: 'invalid_backup_id' });
   const result = service.prepareRestore(safeId);
   res.json(result);
+});
+
+/* ── GET /api/backups/:id/restore/assistant ── Phase 42 */
+router.get('/:id/restore/assistant', async (req, res) => {
+  const rejection = restoreSafety.rejectUnsafeSnapshotId(req.params.id);
+  if (rejection) return res.status(400).json(rejection);
+  try {
+    const data = await restoreService.getAssistantData(req.params.id);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json(safety.buildSafeBackupDashboardError(err));
+  }
+});
+
+/* ── POST /api/backups/:id/restore/dry-run ── Phase 42 */
+router.post('/:id/restore/dry-run', async (req, res) => {
+  const rejection = restoreSafety.rejectUnsafeSnapshotId(req.params.id);
+  if (rejection) return res.status(400).json(rejection);
+  try {
+    const data = await restoreService.getDryRun(req.params.id);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json(safety.buildSafeBackupDashboardError(err));
+  }
+});
+
+/* ── POST /api/backups/:id/restore/risk ── Phase 42 */
+router.post('/:id/restore/risk', async (req, res) => {
+  const rejection = restoreSafety.rejectUnsafeSnapshotId(req.params.id);
+  if (rejection) return res.status(400).json(rejection);
+  try {
+    const data = await restoreService.getRisk(req.params.id);
+    res.json(data);
+  } catch (err) {
+    res.status(500).json(safety.buildSafeBackupDashboardError(err));
+  }
+});
+
+/* ── GET /api/backups/:id/restore/command ── Phase 42 */
+router.get('/:id/restore/command', (req, res) => {
+  const rejection = restoreSafety.rejectUnsafeSnapshotId(req.params.id);
+  if (rejection) return res.status(400).json(rejection);
+  const data = restoreService.getManualCommand(req.params.id);
+  res.json(data);
 });
 
 module.exports = router;

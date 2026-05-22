@@ -1,0 +1,72 @@
+﻿=== Rapport snapshot Sallon-ConnecT ===
+Date        : 2026-05-22 23:42:19
+Type        : full
+Version     : 0.4.0
+Snapshot ID : 20260522-234219
+Dossier     : C:\Users\Youss\Sallon_ConnecT\backups\snapshots\20260522-234219
+Fichiers    : 60
+Taille      : 276.5 KB
+
+--- Fichiers sauvegardes ---
+  VERSION
+  package.json
+  data\agents.json
+  data\devices.json
+  data\media-playlists.json
+  data\media-services.json
+  data\scenarios.json
+  data\services.json
+  env-marker.txt
+  logs\backend-20260522-211225.log
+  logs\frontend-20260521-211843.log
+  scripts\release\build-release-artifacts.ps1
+  scripts\release\final-release-check.ps1
+  scripts\release\preflight-github.ps1
+  scripts\release\prepare-release.ps1
+  scripts\windows\build-frontend.ps1
+  scripts\windows\create-desktop-shortcut.ps1
+  scripts\windows\diagnose.ps1
+  scripts\windows\install-deps.ps1
+  scripts\windows\open-dashboard.ps1
+  scripts\windows\package-portable.ps1
+  scripts\windows\start-sallon-connect.ps1
+  scripts\windows\status-sallon-connect.ps1
+  scripts\windows\stop-sallon-connect.ps1
+  scripts\windows\backup\create-backup.ps1
+  scripts\windows\backup\delete-backup.ps1
+  scripts\windows\backup\export-backup.ps1
+  scripts\windows\backup\list-backups.ps1
+  scripts\windows\backup\restore-backup.ps1
+  scripts\windows\backup\verify-backup.ps1
+  scripts\windows\first-run\check-environment.ps1
+  scripts\windows\first-run\first-run-status.ps1
+  scripts\windows\first-run\first-run.ps1
+  scripts\windows\install\check-prerequisites.ps1
+  scripts\windows\install\create-start-menu-shortcut.ps1
+  scripts\windows\install\first-run-wizard.ps1
+  scripts\windows\install\install-sallon-connect.ps1
+  scripts\windows\install\repair-sallon-connect.ps1
+  scripts\windows\install\uninstall-sallon-connect.ps1
+  scripts\windows\installer\build-installer.ps1
+  scripts\windows\installer\uninstall-check.ps1
+  scripts\windows\installer\verify-installer.ps1
+  scripts\windows\release\build-release.ps1
+  scripts\windows\release\start-release.ps1
+  scripts\windows\release\verify-release.ps1
+  scripts\windows\service\install-service.ps1
+  scripts\windows\service\remove-service.ps1
+  scripts\windows\service\restart-service.ps1
+  scripts\windows\service\service-status.ps1
+  scripts\windows\service\start-service.ps1
+  scripts\windows\service\stop-service.ps1
+  scripts\windows\tray\Sallon-ConnecT-Tray.ps1
+  scripts\windows\tray\start-tray.ps1
+  scripts\windows\tray\stop-tray.ps1
+  scripts\windows\tray\tray-status.ps1
+  scripts\windows\update\apply-update.ps1
+  scripts\windows\update\check-update.ps1
+  scripts\windows\update\download-update.ps1
+  scripts\windows\update\rollback-update.ps1
+  scripts\windows\update\update-status.ps1
+
+Securite : local-only, aucun secret copie, aucun upload.

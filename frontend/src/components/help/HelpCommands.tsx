@@ -35,6 +35,8 @@ const COMMANDS: HelpCommand[] = [
   { id: 'backup-list', label: 'Lister backups', command: 'powershell -ExecutionPolicy Bypass -File scripts\\windows\\backup\\list-backups.ps1', category: 'backup' },
   { id: 'backup-verify', label: 'Verifier tous', command: 'powershell -ExecutionPolicy Bypass -File scripts\\windows\\backup\\verify-backup.ps1 -All', category: 'backup' },
   { id: 'backup-restore', label: 'Restaurer (manuel)', command: 'powershell -ExecutionPolicy Bypass -File scripts\\windows\\backup\\restore-backup.ps1', category: 'backup' },
+  { id: 'restore-assistant-api', label: 'Assistant restauration (API)', command: 'Invoke-RestMethod http://localhost:3000/api/backups/SNAPSHOT_ID/restore/assistant', category: 'backup' },
+  { id: 'restore-dry-run', label: 'Dry-run restauration', command: 'Invoke-RestMethod -Method POST http://localhost:3000/api/backups/SNAPSHOT_ID/restore/dry-run', category: 'backup' },
 ];
 
 const CATEGORY_LABELS: Record<string, string> = {

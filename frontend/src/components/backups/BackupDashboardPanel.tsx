@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useBackupDashboard } from '@/hooks/useBackupDashboard';
-import type { BackupVerifyResult, BackupActionResult, BackupRestorePrepareResult } from '@/lib/types';
+import type { BackupVerifyResult, BackupActionResult } from '@/lib/types';
 
 import { BackupSummaryCards }    from './BackupSummaryCards';
 import { BackupActionsBar }      from './BackupActionsBar';
@@ -11,22 +11,22 @@ import { BackupDeleteConfirm }   from './BackupDeleteConfirm';
 import { BackupTable }           from './BackupTable';
 import { BackupVerifyPanel }     from './BackupVerifyPanel';
 import { BackupExportPanel }     from './BackupExportPanel';
-import { BackupRestorePrepare }  from './BackupRestorePrepare';
 import { BackupDiagnosticPanel } from './BackupDiagnosticPanel';
 import { BackupSafetyNotice }    from './BackupSafetyNotice';
 import { BackupLimitations }     from './BackupLimitations';
+import { RestoreAssistantWizard } from './restore-assistant/RestoreAssistantWizard';
 
 export function BackupDashboardPanel() {
   const {
-    dashboard, items, safety, loading, error,
-    loadDashboard, createBackup, verifyBackup, exportBackup, deleteBackup, prepareRestore,
+    dashboard, items, loading, error,
+    loadDashboard, createBackup, verifyBackup, exportBackup, deleteBackup,
   } = useBackupDashboard();
 
-  const [showCreate,  setShowCreate]  = useState(false);
-  const [deleteId,    setDeleteId]    = useState<string | null>(null);
-  const [verifyRes,   setVerifyRes]   = useState<BackupVerifyResult | null>(null);
-  const [exportRes,   setExportRes]   = useState<BackupActionResult | null>(null);
-  const [restoreRes,  setRestoreRes]  = useState<BackupRestorePrepareResult | null>(null);
+  const [showCreate,   setShowCreate]   = useState(false);
+  const [deleteId,     setDeleteId]     = useState<string | null>(null);
+  const [verifyRes,    setVerifyRes]    = useState<BackupVerifyResult | null>(null);
+  const [exportRes,    setExportRes]    = useState<BackupActionResult | null>(null);
+  const [restoreId,    setRestoreId]    = useState<string | null>(null);
 
   const handleQuickBackup = async () => {
     await createBackup('quick', false);
@@ -53,9 +53,8 @@ export function BackupDashboardPanel() {
     if (res) setExportRes(res);
   };
 
-  const handleRestore = async (id: string) => {
-    const res = await prepareRestore(id);
-    if (res) setRestoreRes(res);
+  const handleRestore = (id: string) => {
+    setRestoreId(id);
   };
 
   const handleDelete = async (id: string, _confirmation: string) => {
@@ -81,9 +80,14 @@ export function BackupDashboardPanel() {
         onOpenCreate={() => setShowCreate(true)}
       />
 
-      {verifyRes  && <BackupVerifyPanel  result={verifyRes}  onClose={() => setVerifyRes(null)}  />}
-      {exportRes  && <BackupExportPanel  result={exportRes}  onClose={() => setExportRes(null)}  />}
-      {restoreRes && <BackupRestorePrepare result={restoreRes} onClose={() => setRestoreRes(null)} />}
+      {verifyRes  && <BackupVerifyPanel result={verifyRes} onClose={() => setVerifyRes(null)} />}
+      {exportRes  && <BackupExportPanel result={exportRes} onClose={() => setExportRes(null)} />}
+      {restoreId  && (
+        <RestoreAssistantWizard
+          snapshotId={restoreId}
+          onClose={() => setRestoreId(null)}
+        />
+      )}
 
       <BackupTable
         items={items}

@@ -1,0 +1,66 @@
+[
+  {
+    "id": "pl_famille",
+    "name": "Soirée famille",
+    "icon": "👨‍👩‍👧",
+    "desc": "Sélection de films et séries pour toute la famille.",
+    "items": [
+      { "type": "video", "title": "Film_Famille_2024.mp4",      "source": "PC_Bureau",       "duration": "1h42m" },
+      { "type": "video", "title": "Dessin_Anime_Collection.mp4", "source": "PC_Bureau",       "duration": "45m"   },
+      { "type": "photo", "title": "Album_Vacances_2024",         "source": "Galaxy_S23_Ultra", "count": 47        }
+    ],
+    "scenario": "Mode Famille",
+    "devices": ["TV_Samsung_7_Series", "PC_Bureau", "Galaxy_S23_Ultra"]
+  },
+  {
+    "id": "pl_photos",
+    "name": "Présentation photos",
+    "icon": "🖼️",
+    "desc": "Diaporama des meilleurs souvenirs sur grand écran.",
+    "items": [
+      { "type": "photo", "title": "Album_Voyages",       "source": "Galaxy_S23_Ultra", "count": 124 },
+      { "type": "photo", "title": "Album_Événements",    "source": "PC_Bureau",        "count": 89  },
+      { "type": "photo", "title": "Album_Quotidien_2025","source": "Galaxy_S23_Ultra", "count": 312 }
+    ],
+    "scenario": "Mode Présentation",
+    "devices": ["TV_Samsung_7_Series", "Galaxy_S23_Ultra"]
+  },
+  {
+    "id": "pl_musique_calme",
+    "name": "Musique calme",
+    "icon": "🎵",
+    "desc": "Playlist apaisante pour les soirées ou le travail.",
+    "items": [
+      { "type": "audio", "title": "Jazz_Collection.flac",    "source": "PC_Bureau", "duration": "2h15m" },
+      { "type": "audio", "title": "Ambient_Focus.mp3",       "source": "PC_Bureau", "duration": "1h30m" },
+      { "type": "audio", "title": "Classique_Soiree.flac",   "source": "PC_Bureau", "duration": "1h48m" }
+    ],
+    "scenario": "Mode Travail",
+    "devices": ["TV_Samsung_7_Series", "PC_Bureau"]
+  },
+  {
+    "id": "pl_cinema",
+    "name": "Mode cinéma",
+    "icon": "🎬",
+    "desc": "Sélection cinéma — sons surround, plein écran, lumières éteintes.",
+    "items": [
+      { "type": "video", "title": "Film_Action_HD.mkv",      "source": "PC_Bureau", "duration": "2h08m" },
+      { "type": "video", "title": "Documentaire_Nature.mp4", "source": "PC_Bureau", "duration": "1h22m" }
+    ],
+    "scenario": "Mode Cinéma",
+    "devices": ["TV_Samsung_7_Series", "PC_Bureau"]
+  },
+  {
+    "id": "pl_ia",
+    "name": "Tutoriels IA",
+    "icon": "🤖",
+    "desc": "Ressources éducatives sur l'intelligence artificielle.",
+    "items": [
+      { "type": "youtube", "title": "Introduction au Machine Learning", "youtubeId": "EXEMPLE_ID_1" },
+      { "type": "youtube", "title": "Agents IA et automatisation",      "youtubeId": "EXEMPLE_ID_2" },
+      { "type": "youtube", "title": "LLM et prompting avancé",          "youtubeId": "EXEMPLE_ID_3" }
+    ],
+    "scenario": "Mode Travail",
+    "devices": ["TV_Samsung_7_Series", "IA_ordinateur_BOM_WXX9"]
+  }
+]

@@ -214,6 +214,26 @@ Resultat attendu :
 - [ ] Lien "Sauvegardes" present dans TopNav.
 - [ ] Documentation `docs/PHASE41.md` presente.
 
+## 19. Assistant de restauration securise (Phase 42)
+
+- [ ] Bouton "Preparer restauration" ouvre le wizard a 6 etapes.
+- [ ] Etape 1 : infos snapshot affichees, bloque si invalide.
+- [ ] Etape 2 : resultats integrite SHA256 affiches, bloque si echec.
+- [ ] Etape 3 : dry-run affiche wouldRestore/wouldReplace/wouldKeep/excluded.
+- [ ] Etape 4 : score de risque low/medium/high/blocked.
+- [ ] Etape 5 : 6 cases checklist toutes obligatoires.
+- [ ] Etape 6 : commande PowerShell avec bouton Copier — aucun bouton "Restaurer maintenant".
+- [ ] `GET /api/backups/:id/restore/assistant` retourne status ready/blocked.
+- [ ] `POST /api/backups/:id/restore/dry-run` retourne les 4 listes.
+- [ ] `POST /api/backups/:id/restore/risk` retourne level + score.
+- [ ] `GET /api/backups/:id/restore/command` retourne manualOnly:true.
+- [ ] IDs invalides (.. / \ espace) rejetes 400.
+- [ ] Aucune reponse ne contient C:\Users\ ou .env ou Bearer.
+- [ ] runRestoreBackup n'existe pas dans le runner.
+- [ ] Tests backend : 21 cas passes.
+- [ ] Tests frontend : 10 cas passes.
+- [ ] Documentation docs/PHASE42.md presente.
+
 ## 14. GitHub Release
 
 - [ ] Tag `v0.4.0` publie.

@@ -1,0 +1,44 @@
+[
+  {
+    "id": "agent_discovery",
+    "icon": "🔍",
+    "name": "Agent 1 — Découverte réseau",
+    "mission": "Détecter les appareils du salon, vérifier leur disponibilité et cartographier le réseau local.",
+    "output": "Réseau scanné · 5 appareils détectés · Latence moy. : 4 ms · Box SFR OK · Tous les hôtes joignables."
+  },
+  {
+    "id": "agent_inventory",
+    "icon": "📋",
+    "name": "Agent 2 — Appareils & Inventaire",
+    "mission": "Organiser les appareils détectés par type, rôle et priorité dans l'écosystème.",
+    "output": "5 appareils catalogués · 2 ordinateurs, 1 TV, 1 mobile, 1 réseau · Priorités définies · Inventaire JSON généré."
+  },
+  {
+    "id": "agent_tv",
+    "icon": "📺",
+    "name": "Agent 3 — Affichage TV",
+    "mission": "Préparer l'interface optimisée pour l'écran principal Samsung TV 4K en mode paysage.",
+    "output": "Layout TV 4K préparé · Mode paysage · Police Inter 32px · Dashboard hub chargé sur Samsung TV 7 Series."
+  },
+  {
+    "id": "agent_media",
+    "icon": "🎬",
+    "name": "Agent 4 — Multimédia",
+    "mission": "Proposer les services multimédias disponibles : vidéo, musique, photos, YouTube, streaming local.",
+    "output": "8 services indexés · YouTube OK · Galerie Galaxy S23 Ultra · Streaming PC Bureau · Musique locale détectée."
+  },
+  {
+    "id": "agent_auto",
+    "icon": "⚙️",
+    "name": "Agent 5 — Automatisation",
+    "mission": "Préparer les scénarios intelligents : mode cinéma, travail, famille, présentation, veille, diagnostic.",
+    "output": "6 scénarios configurés · Mode cinéma prêt · Mode travail prêt · Scénarios enregistrés."
+  },
+  {
+    "id": "agent_synthesis",
+    "icon": "🧠",
+    "name": "Agent 6 — Synthèse finale",
+    "mission": "Fusionner les sorties de tous les agents dans un livrable de tableau de bord unique et cohérent.",
+    "output": "Fusion complète · Tableau de bord généré · Rapport exportable · Hub opérationnel."
+  }
+]

@@ -18,6 +18,7 @@ const TOPICS: HelpTopic[] = [
   { id: 'repair', title: 'Réparation', description: 'Réparer dossiers, raccourcis et build sans supprimer les données.', category: 'installation', tags: ['installation', 'all'] },
   { id: 'release', title: 'Release', description: 'Preflight, check, packaging ZIP portable, aucun secret dans Git.', category: 'release', tags: ['release', 'securite', 'all'] },
   { id: 'sauvegardes-visuelles', title: 'Sauvegardes visuelles', description: 'Tableau de bord Phase 41 : creer, verifier, exporter, preparer restauration via interface.', category: 'backup', tags: ['backup', 'securite', 'all'] },
+  { id: 'assistant-restauration', title: 'Assistant restauration', description: 'Phase 42 : wizard 6 etapes, dry-run, score de risque, checklist, commande PowerShell manuelle uniquement.', category: 'backup', tags: ['backup', 'securite', 'all'] },
 ];
 
 interface HelpTopicsProps {

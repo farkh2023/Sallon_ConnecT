@@ -600,6 +600,63 @@ export interface BackupRestorePrepareResult {
   error?:      string;
 }
 
+// Phase 42 — Assistant de restauration securise
+
+export type RestoreRiskLevel = 'low' | 'medium' | 'high' | 'blocked';
+export type RestoreAssistantStep = 'snapshot' | 'integrity' | 'dryrun' | 'risk' | 'checklist' | 'command';
+
+export interface RestoreChecklistItem {
+  id:      string;
+  label:   string;
+  checked?: boolean;
+}
+
+export interface RestoreRiskResult {
+  level:           RestoreRiskLevel;
+  score:           number;
+  reasons:         string[];
+  blockingReasons: string[];
+}
+
+export interface RestoreDryRunResult {
+  status:          'ok' | 'blocked';
+  snapshotId:      string;
+  wouldRestore:    string[];
+  wouldReplace:    string[];
+  wouldKeep:       string[];
+  excluded:        string[];
+  preRestoreBackup: { willBeCreated: boolean; type: string };
+  warnings:        string[];
+  blockedReasons:  string[];
+}
+
+export interface RestoreManualCommand {
+  manualOnly: boolean;
+  command:    string | null;
+  note:       string;
+  safety:     Record<string, unknown>;
+}
+
+export interface RestoreAssistantSafety {
+  manualOnly:         boolean;
+  noAutoRestore:      boolean;
+  noApiExecution:     boolean;
+  requiresPowerShell: boolean;
+  message:            string;
+}
+
+export interface RestoreAssistantResponse {
+  snapshotId:    string;
+  status:        'ready' | 'blocked';
+  snapshot:      Record<string, unknown> | null;
+  integrity:     { ok: boolean; results: { snapshotId: string; status: string; verified: string[]; missing: string[]; corrupted: string[] }[] } | null;
+  dryRun:        RestoreDryRunResult | null;
+  risk:          RestoreRiskResult;
+  checklist:     RestoreChecklistItem[];
+  manualCommand: string | null;
+  safety:        RestoreAssistantSafety;
+}
+
 // Phase 27 — Centre d'aide intégré
 
 export interface HelpTopic {
