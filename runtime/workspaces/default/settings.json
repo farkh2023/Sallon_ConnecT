@@ -1,0 +1,10 @@
+{
+  "theme": "dark",
+  "language": "fr",
+  "aiEnabled": false,
+  "ragEnabled": false,
+  "memoryEnabled": false,
+  "kbEnabled": false,
+  "workflowsEnabled": false,
+  "agentsEnabled": false
+}

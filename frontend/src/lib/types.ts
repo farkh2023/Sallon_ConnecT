@@ -657,6 +657,36 @@ export interface RestoreAssistantResponse {
   safety:        RestoreAssistantSafety;
 }
 
+// Phase 43 — Plugins locaux extensibles
+
+export interface PluginInfo {
+  id:          string;
+  name:        string;
+  version:     string;
+  description: string;
+  author:      string;
+  permissions: string[];
+  localOnly:   boolean;
+  enabled:     boolean;
+  valid:       boolean;
+  error:       string | null;
+}
+
+export interface PluginsListResponse {
+  plugins: PluginInfo[];
+  total:   number;
+}
+
+export interface PluginSafety {
+  localOnly:              boolean;
+  noNetworkByDefault:     boolean;
+  noAutoInstall:          boolean;
+  noCloudSync:            boolean;
+  permissionsAllowlist:   string[];
+  errorIsolation:         boolean;
+  manualApprovalRequired: boolean;
+}
+
 // Phase 27 — Centre d'aide intégré
 
 export interface HelpTopic {
@@ -888,4 +918,713 @@ export interface DiagnosticsApiResponse {
   notifications: { total: number; unread: number };
   sse: { clients: number };
   security: { localOnly: boolean; firebase: boolean; cloudServices: boolean; externalPush: boolean };
+}
+
+/* ── Phase 45 — IA locale ──────────────────────────────────────────── */
+
+export interface AiSafetyFlags {
+  localOnly:                boolean;
+  noCloudAllowed:           boolean;
+  noAutoExecution:          boolean;
+  ollamaLocalOnly:          boolean;
+  maxInputChars:            number;
+  secretMaskingEnabled:     boolean;
+  dangerousCommandBlocking: boolean;
+  suggestionsAreDryRunOnly: boolean;
+}
+
+export interface AiStatusResponse {
+  enabled:    boolean;
+  provider:   string;
+  model:      string;
+  available:  boolean;
+  reason:     string | null;
+  ollamaUrl?: string;
+  safety:     AiSafetyFlags;
+}
+
+export interface AiModel {
+  name: string;
+  size?: number;
+}
+
+export interface AiModelsResponse {
+  models: AiModel[];
+  total:  number;
+}
+
+export interface AiChatResponse {
+  ok:       boolean;
+  response: string | null;
+  error:    string | null;
+}
+
+export interface AiCommandResponse {
+  ok:      boolean;
+  command: string | null;
+  safe:    boolean;
+  dryRun:  boolean;
+  error:   string | null;
+  reason?: string;
+}
+
+export interface AiChatMessage {
+  role:    'user' | 'assistant';
+  content: string;
+  ts:      string;
+}
+
+// ── Phase 46 — RAG local ──────────────────────────────────────────────────────
+
+export interface RagSafetyFlags {
+  localOnly:              boolean;
+  noCloudAllowed:         boolean;
+  sourceAllowlist:        boolean;
+  pathTraversalBlocked:   boolean;
+  secretMaskingEnabled:   boolean;
+  maxFileSizeMB:          number;
+  maxQuestionChars:       number;
+  citationsLocalOnly:     boolean;
+}
+
+export interface RagIndexedSource {
+  path:   string;
+  chunks: number;
+  size:   number;
+}
+
+export interface RagStatusResponse {
+  workspaceId?:    string;
+  indexed:        boolean;
+  chunkCount:     number;
+  sources:        RagIndexedSource[];
+  mode:           'embedding' | 'lexical' | null;
+  embeddingModel: string | null;
+  indexedAt:      string | null;
+  checksum:       string | null;
+  ragVersion:     string | null;
+  aiEnabled:      boolean;
+  safety:         RagSafetyFlags;
+}
+
+export interface RagCitation {
+  index:   number;
+  source:  string;
+  heading: string;
+  excerpt: string;
+  score:   number | null;
+}
+
+export interface RagSearchResponse {
+  ok:      boolean;
+  workspaceId?: string;
+  query:   string;
+  chunks:  RagCitation[];
+  mode:    string;
+  indexed: boolean;
+  total:   number;
+  error?:  string;
+}
+
+export interface RagAskResponse {
+  ok:        boolean;
+  workspaceId?: string;
+  response:  string | null;
+  error:     string | null;
+  citations: RagCitation[];
+  mode:      string;
+  indexed:   boolean;
+}
+
+// ── Phase 47 — Agents IA locaux orchestres ───────────────────────────────────
+
+export interface AgentManifest {
+  id:                string;
+  name:              string;
+  description:       string;
+  model:             string;
+  tools:             string[];
+  permissions:       string[];
+  enabled:           boolean;
+  localOnly:         boolean;
+  dryRun:            boolean;
+  requiresCitations?: boolean;
+}
+
+export interface AgentSafetyFlags {
+  localOnly:               boolean;
+  noCloudAllowed:          boolean;
+  noAutoExecution:         boolean;
+  dryRunByDefault:         boolean;
+  humanValidationRequired: boolean;
+  secretMaskingEnabled:    boolean;
+  allowedTools:            string[];
+  forbiddenTools:          string[];
+  maxSteps:                number;
+  maxContextChars:         number;
+}
+
+export interface AgentStepResult {
+  tool:   string;
+  input:  string;
+  output: string;
+  ok:     boolean;
+  error:  string | null;
+}
+
+export interface AgentRunStep {
+  agentId:         string;
+  agentName:       string;
+  steps:           AgentStepResult[];
+  output:          string | null;
+  ok:              boolean;
+  error:           string | null;
+  citations:       RagCitation[];
+  rejectedActions: { tool: string; reason: string }[];
+  dryRun:          boolean;
+}
+
+export interface AgentRecommendation {
+  agentId:   string;
+  agentName: string;
+  text:      string;
+  dryRun:    boolean;
+}
+
+export interface AgentSafetySummary {
+  localOnly:       boolean;
+  dryRun:          boolean;
+  noAutoExecution: boolean;
+  agentsRun:       number;
+  agentsFailed:    number;
+  rejectedTotal:   number;
+}
+
+export interface AgentRunResult {
+  ok:              boolean;
+  workspaceId?:    string;
+  runId:           string;
+  status:          'completed' | 'failed' | 'pending';
+  task:            string;
+  agentsUsed:      string[];
+  steps:           AgentRunStep[];
+  recommendations: AgentRecommendation[];
+  citations:       RagCitation[];
+  rejectedActions: { tool: string; reason: string }[];
+  safetySummary:   AgentSafetySummary | null;
+  summary:         string | null;
+  startedAt:       string;
+  completedAt:     string | null;
+  dryRun:          boolean;
+  error?:          string;
+}
+
+export interface AgentRunMeta {
+  runId:       string;
+  workspaceId?: string;
+  task:        string;
+  agentsUsed:  string[];
+  status:      string;
+  startedAt:   string;
+  completedAt: string | null;
+}
+
+export interface AgentsListResponse {
+  workspaceId?: string;
+  agents: AgentManifest[];
+  total:  number;
+  safety: AgentSafetyFlags;
+}
+
+export interface AgentsRunsResponse {
+  workspaceId?: string;
+  runs:  AgentRunMeta[];
+  total: number;
+}
+
+// ── Phase 48 — Workflows IA visuels ──────────────────────────────────────────
+
+export type WorkflowNodeType =
+  | 'agent' | 'rag-search' | 'rag-ask' | 'diagnostic'
+  | 'notification' | 'condition' | 'delay'
+  | 'safe-command-suggestion' | 'plugin-tool';
+
+export interface WorkflowNode {
+  id:         string;
+  type:       WorkflowNodeType;
+  label?:     string;
+  dependsOn?: string[];
+  agentId?:   string;
+  query?:     string;
+  question?:  string;
+  message?:   string;
+  severity?:  string;
+  condition?: string;
+  delayMs?:   number;
+  task?:      string;
+}
+
+export interface WorkflowEdge {
+  from: string;
+  to:   string;
+}
+
+export interface WorkflowTrigger {
+  type: 'manual' | 'interval' | 'startup';
+  intervalMs?: number;
+}
+
+export interface WorkflowDefinition {
+  id:           string;
+  name:         string;
+  description:  string;
+  version:      string;
+  enabled:      boolean;
+  localOnly:    boolean;
+  dryRun:       boolean;
+  nodes:        WorkflowNode[];
+  edges:        WorkflowEdge[];
+  triggers:     WorkflowTrigger[];
+  createdAt?:   string;
+  updatedAt?:   string;
+  _isTemplate?: boolean;
+}
+
+export interface WorkflowSummary {
+  id:          string;
+  name:        string;
+  description: string;
+  version:     string;
+  enabled:     boolean;
+  localOnly:   boolean;
+  dryRun:      boolean;
+  nodeCount:   number;
+  _isTemplate: boolean;
+}
+
+export interface WorkflowNodeResult {
+  nodeId:  string;
+  label:   string;
+  type:    string;
+  ok:      boolean;
+  output:  string | null;
+  error:   string | null;
+  dryRun:  boolean;
+}
+
+export interface WorkflowSafetySummary {
+  localOnly:       boolean;
+  dryRun:          boolean;
+  noAutoExecution: boolean;
+  nodesRun:        number;
+  nodesFailed:     number;
+  rejectedTotal:   number;
+}
+
+export interface WorkflowRunResult {
+  ok:              boolean;
+  workspaceId?:    string;
+  runId:           string;
+  workflowId:      string;
+  workflowName:    string;
+  status:          'completed' | 'failed';
+  nodeResults:     WorkflowNodeResult[];
+  citations:       RagCitation[];
+  rejectedActions: { nodeId: string; type: string; reason: string }[];
+  safetySummary:   WorkflowSafetySummary | null;
+  summary:         string | null;
+  startedAt:       string;
+  completedAt:     string | null;
+  dryRun:          boolean;
+  error?:          string;
+}
+
+export interface WorkflowRunMeta {
+  runId:        string;
+  workspaceId?: string;
+  workflowId:   string;
+  workflowName: string;
+  status:       string;
+  startedAt:    string;
+  completedAt:  string | null;
+}
+
+export interface WorkflowsSafetyFlags {
+  localOnly:               boolean;
+  noCloudAllowed:          boolean;
+  noAutoExecution:         boolean;
+  dryRunByDefault:         boolean;
+  humanValidationRequired: boolean;
+  secretMaskingEnabled:    boolean;
+  maxNodes:                number;
+  maxWorkflowJsonBytes:    number;
+  forbiddenNodeTypes:      string[];
+}
+
+export interface WorkflowsListResponse {
+  workspaceId?: string;
+  workflows: WorkflowSummary[];
+  total:     number;
+  safety:    WorkflowsSafetyFlags;
+}
+
+export interface WorkflowTemplateSummary {
+  id:          string;
+  name:        string;
+  description: string;
+  version:     string;
+  nodeCount:   number;
+  localOnly:   boolean;
+  dryRun:      boolean;
+}
+
+export interface WorkflowRunsResponse {
+  workspaceId?: string;
+  runs:  WorkflowRunMeta[];
+  total: number;
+}
+
+// ── Phase 49 — Mémoire persistante IA ────────────────────────────────────────
+
+export type MemoryItemType =
+  | 'preference' | 'fact' | 'summary' | 'workflow-result'
+  | 'agent-result' | 'diagnostic-insight' | 'note';
+
+export type MemoryScope  = 'user' | 'project' | 'system' | 'session';
+export type MemorySource = 'chat' | 'agent' | 'workflow' | 'manual' | 'diagnostic';
+
+export interface MemoryItem {
+  id:              string;
+  workspaceId?:    string;
+  type:            MemoryItemType;
+  scope:           MemoryScope;
+  content:         string;
+  tags:            string[];
+  importance:      number;
+  source:          MemorySource;
+  createdAt:       string;
+  updatedAt:       string;
+  lastAccessedAt:  string;
+  expiresAt:       string | null;
+  localOnly:       true;
+  embeddingHash:   string | null;
+  _score?:         number;
+}
+
+export interface MemoryMeta {
+  totalItems: number;
+  byType:     Record<string, number>;
+  byScope:    Record<string, number>;
+  updatedAt:  string | null;
+}
+
+export interface MemorySafetyFlags {
+  localOnly:             true;
+  noCloudAllowed:        boolean;
+  secretMaskingEnabled:  boolean;
+  humanControlRequired:  boolean;
+  exportSanitized:       boolean;
+  memoryTypes:           string[];
+  memoryScopes:          string[];
+  maxItems:              number;
+  maxItemChars:          number;
+  embeddingsEnabled:     boolean;
+  includeInRag:          boolean;
+}
+
+export interface MemoryRetentionStatus {
+  totalItems:    number;
+  maxItems:      number;
+  retentionDays: number;
+  byType:        Record<string, number>;
+  byScope:       Record<string, number>;
+}
+
+export interface MemoryListResponse {
+  workspaceId?: string;
+  items:  MemoryItem[];
+  total:  number;
+  meta:   MemoryMeta;
+  safety: MemorySafetyFlags;
+}
+
+export interface MemoryStatusResponse {
+  ok:        boolean;
+  workspaceId?: string;
+  enabled:   boolean;
+  safety:    MemorySafetyFlags;
+  retention: MemoryRetentionStatus;
+}
+
+export interface MemorySearchResponse {
+  ok:      boolean;
+  workspaceId?: string;
+  results: MemoryItem[];
+  total:   number;
+  query:   string;
+}
+
+export interface MemorySummaryResponse {
+  ok:      boolean;
+  summary: string;
+  method:  'ai' | 'extractive' | 'empty';
+  model?:  string;
+  items:   number;
+}
+
+// ── Phase 50 — Base de connaissances locale ───────────────────────────────────
+
+export type KnowledgeItemType = 'memory' | 'rag' | 'workflow' | 'agent' | 'diagnostic' | 'plugin' | 'event' | 'note';
+export type KnowledgeRelationType = 'related-to' | 'derived-from' | 'referenced-by' | 'causes' | 'solves' | 'extends' | 'summarizes';
+
+export interface KnowledgeRelation {
+  targetId:  string;
+  type:      KnowledgeRelationType;
+  createdAt?: string;
+}
+
+export interface KnowledgeItem {
+  id:         string;
+  type:       KnowledgeItemType;
+  title:      string;
+  content:    string;
+  sourceId?:  string;
+  tags:       string[];
+  entities:   string[];
+  relations:  KnowledgeRelation[];
+  importance: number;
+  createdAt:  string;
+  updatedAt:  string;
+  localOnly:  true;
+  _score?:    number;
+  _citation?: KnowledgeCitation;
+}
+
+export interface KnowledgeCitation {
+  id:         string;
+  type:       KnowledgeItemType;
+  title:      string;
+  tags:       string[];
+  entities:   string[];
+  sourceId?:  string;
+  importance: number;
+  createdAt:  string;
+}
+
+export interface KnowledgeMeta {
+  totalItems: number;
+  byType:     Record<string, number>;
+  bySource:   Record<string, number>;
+  updatedAt:  string | null;
+}
+
+export interface KnowledgeSafetyFlags {
+  localOnly:                 true;
+  noCloudAllowed:            boolean;
+  secretMaskingEnabled:      boolean;
+  pathTraversalBlocked:      boolean;
+  clearRequiresConfirmation: boolean;
+  importExportDisabled:      boolean;
+  embeddingsOptional:        boolean;
+}
+
+export interface KnowledgeGraphNode {
+  id:         string;
+  type:       KnowledgeItemType;
+  title:      string;
+  entities:   string[];
+  tags:       string[];
+  importance: number;
+}
+
+export interface KnowledgeGraphEdge {
+  source: string;
+  target: string;
+  type:   KnowledgeRelationType;
+}
+
+export interface KnowledgeStatusResponse {
+  ok:      boolean;
+  workspaceId?: string;
+  enabled: boolean;
+  safety:  KnowledgeSafetyFlags;
+  meta:    KnowledgeMeta;
+}
+
+export interface KnowledgeListResponse {
+  ok:     boolean;
+  workspaceId?: string;
+  items:  KnowledgeItem[];
+  total:  number;
+  meta:   KnowledgeMeta;
+  safety: KnowledgeSafetyFlags;
+}
+
+export interface KnowledgeSearchResponse {
+  ok:      boolean;
+  workspaceId?: string;
+  results: KnowledgeItem[];
+  total:   number;
+  query:   string;
+}
+
+export interface KnowledgeGraphResponse {
+  ok:          boolean;
+  workspaceId?: string;
+  nodes:       KnowledgeGraphNode[];
+  edges:       KnowledgeGraphEdge[];
+  totalNodes:  number;
+  totalEdges:  number;
+  generatedAt: string;
+}
+
+export interface KnowledgeCategorySummary {
+  category: string;
+  summary:  string;
+  method:   'ai' | 'extractive' | 'empty' | 'error';
+  items:    number;
+}
+
+export interface KnowledgeSummaryResponse {
+  ok:        boolean;
+  summaries: Record<string, KnowledgeCategorySummary>;
+}
+
+// ── Phase 51 — Recherche globale + Command Center ─────────────────────────────
+
+export type SearchResultType = 'knowledge' | 'memory' | 'rag' | 'agent' | 'workflow' | 'plugin' | 'doc' | 'diagnostic' | 'command';
+
+export interface SearchResult {
+  id:          string;
+  type:        SearchResultType;
+  title:       string;
+  description: string;
+  score:       number;
+  source:      string;
+  target:      string | null;
+  tags:        string[];
+  actions:     string[];
+  localOnly:   true;
+  _commandId?: string;
+  _sourceId?:  string;
+}
+
+export interface SearchCommand {
+  id:             string;
+  title:          string;
+  description:    string;
+  category:       string;
+  target:         string | null;
+  actions:        string[];
+  tags:           string[];
+  safe:           boolean;
+  dryRunRequired: boolean;
+}
+
+export interface SearchSafetyFlags {
+  localOnly:            true;
+  noCloudAllowed:       boolean;
+  secretMaskingEnabled: boolean;
+  blockedActions:       string[];
+  historyLocalOnly:     boolean;
+  clearHistoryConfirm:  boolean;
+}
+
+export interface SearchStatusResponse {
+  ok:       boolean;
+  enabled:  boolean;
+  safety:   SearchSafetyFlags;
+  commands: number;
+  indexed:  number;
+}
+
+export interface SearchResponse {
+  ok:         boolean;
+  results:    SearchResult[];
+  groups:     Record<string, SearchResult[]>;
+  total:      number;
+  query:      string;
+  suggestion: string | null;
+}
+
+export interface CommandPreviewResponse {
+  ok:      boolean;
+  preview: SearchCommand & { localOnly: true };
+}
+
+export interface CommandRunResponse {
+  ok:      boolean;
+  action:  string;
+  target:  string | null;
+  command: string;
+  dryRun:  boolean;
+  message?: string;
+  query?:  string | null;
+}
+
+export interface SearchHistoryEntry {
+  query:     string;
+  timestamp: string;
+  total:     number;
+}
+
+// ── Phase 52 — Profils utilisateur locaux et espaces de travail ───────────────
+
+export interface WorkspaceSettings {
+  theme:            'dark' | 'light' | 'system';
+  language:         'fr' | 'en';
+  aiEnabled:        boolean;
+  ragEnabled:       boolean;
+  memoryEnabled:    boolean;
+  kbEnabled:        boolean;
+  workflowsEnabled: boolean;
+  agentsEnabled:    boolean;
+}
+
+export interface WorkspaceProfile {
+  id:          string;
+  name:        string;
+  description: string;
+  createdAt:   string;
+  updatedAt:   string;
+  isDefault:   boolean;
+  localOnly:   true;
+  settings:    WorkspaceSettings;
+}
+
+export interface WorkspaceSafetyFlags {
+  localOnly:                    true;
+  noCloudAllowed:               boolean;
+  secretMaskingEnabled:         boolean;
+  pathTraversalBlocked:         boolean;
+  deleteCurrentBlocked:         boolean;
+  deleteDefaultRequiresConfirm: boolean;
+  exportSanitized:              boolean;
+  importStrictValidation:       boolean;
+}
+
+export interface WorkspaceStatusResponse {
+  ok:      boolean;
+  enabled: boolean;
+  current: string;
+  total:   number;
+  safety:  WorkspaceSafetyFlags;
+  migration?: {
+    ok: boolean;
+    workspaceId: string;
+    legacyDetected: boolean;
+    destructive: boolean;
+  };
+}
+
+export interface WorkspaceListResponse {
+  ok:       boolean;
+  profiles: WorkspaceProfile[];
+  total:    number;
+  current:  string;
+}
+
+export interface WorkspaceSwitchResponse {
+  ok:      boolean;
+  current: WorkspaceProfile;
 }

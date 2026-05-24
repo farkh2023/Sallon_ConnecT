@@ -1,4 +1,5 @@
 import { maskSensitiveClientText } from './safety';
+import { getStoredWorkspaceId } from './workspaceStorage';
 
 export function getApiBaseUrl(): string {
   return (
@@ -20,10 +21,11 @@ export function handleApiError(error: unknown): string {
 }
 
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
+  const workspaceId = getStoredWorkspaceId();
   const res = await fetch(buildApiUrl(path), {
     method,
     cache: 'no-store',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'X-Workspace-Id': workspaceId },
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
 
@@ -40,5 +42,6 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
 
 export const apiGet = <T>(path: string) => request<T>('GET', path);
 export const apiPost = <T>(path: string, body?: unknown) => request<T>('POST', path, body);
+export const apiPut = <T>(path: string, body?: unknown) => request<T>('PUT', path, body);
 export const apiPatch = <T>(path: string, body?: unknown) => request<T>('PATCH', path, body);
 export const apiDelete = <T>(path: string, body?: unknown) => request<T>('DELETE', path, body);

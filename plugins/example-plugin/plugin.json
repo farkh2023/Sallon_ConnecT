@@ -1,0 +1,11 @@
+{
+  "id": "example-plugin",
+  "name": "Plugin exemple",
+  "version": "1.0.0",
+  "description": "Plugin de demonstration local. N'effectue aucune action reseau ni acces fichier sensible.",
+  "author": "local",
+  "entrypoint": "index.js",
+  "permissions": [],
+  "localOnly": true,
+  "minAppVersion": "0.4.0"
+}

@@ -1,0 +1,21 @@
+[
+  {
+    "id": "default",
+    "name": "Profil principal",
+    "description": "Espace local par defaut",
+    "createdAt": "2026-05-24T00:33:45.164Z",
+    "updatedAt": "2026-05-24T00:33:45.164Z",
+    "isDefault": true,
+    "localOnly": true,
+    "settings": {
+      "theme": "dark",
+      "language": "fr",
+      "aiEnabled": false,
+      "ragEnabled": false,
+      "memoryEnabled": false,
+      "kbEnabled": false,
+      "workflowsEnabled": false,
+      "agentsEnabled": false
+    }
+  }
+]

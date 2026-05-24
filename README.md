@@ -22,6 +22,16 @@ Le projet est local-first : aucune telemetrie, aucun cloud obligatoire, aucun se
 | Scheduler | Taches locales autorisees par allowlist |
 | Backup / restore | ZIP local, manifest SHA256, dry-run et confirmation |
 | Integrations | ADB read-only, DLNA passif, SmartThings opt-in, streaming assiste |
+| Plugins locaux | Manifeste YAML, registre isole, activation/desactivation, sandbox erreurs |
+| Dashboard widgets | Widgets dynamiques, drag&drop, resize S/M/L/XL, layout localStorage scope par workspace |
+| IA locale (Ollama) | Chat, diagnostics, analyse logs, suggestions dry-run — 100% local, aucun cloud |
+| RAG local | Questions/recherche sur la documentation locale avec citations — embeddings Ollama + fallback lexical |
+| Agents IA locaux | Orchestration sequentielle d'agents specialises (diagnostic, securite, backup, docs, commandes) — dry-run, local-only |
+| Workflows IA visuels | Pipelines DAG sequentiels enchaînant agents, RAG, diagnostics, notifications — dry-run, local-only, 6 templates |
+| Memoire persistante IA | Contexte utilisateur local (preferences, faits, resumes, resultats agents/workflows) — local-only, recherche lexicale, export/import |
+| Base de connaissances locale | Graphe de connaissances unifiant memoire, RAG, workflows, agents, diagnostics, plugins, evenements — local-only, recherche lexicale, graphe relations, resumes IA |
+| Recherche globale + Command Center | Recherche unifiee multi-sources + commandes rapides sures dont workspaces (Ctrl+K) — local-only, historique, suggestions IA optionnelles |
+| Workspaces locaux | Profils de travail locaux, switch, import/export complet, isolation memoire/RAG/KB/agents/workflows/runs et layouts widgets par workspace |
 | Packaging Windows | Installateur guide, raccourcis, scripts start/stop/status, ZIP portable |
 
 ## Architecture
@@ -31,6 +41,7 @@ Sallon-ConnecT/
   server.js                    Backend Express - http://localhost:3000
   server/src/routes/           API locale: health, observability, events, diagnostics
   server/src/services/         Services locaux, securite, backup, scheduler
+  server/src/workspaces/       Profils workspaces locaux et contexte runtime
   frontend/                    App Next.js - http://localhost:3001
   docs/                        Documentation technique et utilisateur
   scripts/windows/             Installation, demarrage, diagnostic, packaging
@@ -195,6 +206,13 @@ Etat valide Phase 33 :
 | [docs/SECURITY_MODEL.md](docs/SECURITY_MODEL.md) | Modele de securite local-first |
 | [docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md) | Installation locale |
 | [docs/PHASE32.md](docs/PHASE32.md) | Diagnostic avance |
+| [docs/PHASE47.md](docs/PHASE47.md) | Agents IA locaux orchestres |
+| [docs/LOCAL_AGENTS.md](docs/LOCAL_AGENTS.md) | Guide agents IA locaux |
+| [docs/PHASE48.md](docs/PHASE48.md) | Workflows IA visuels locaux |
+| [docs/LOCAL_WORKFLOWS.md](docs/LOCAL_WORKFLOWS.md) | Guide workflows IA locaux |
+| [docs/WORKSPACE_ISOLATION.md](docs/WORKSPACE_ISOLATION.md) | Isolation complete des donnees par workspace |
+| [docs/PHASE49.md](docs/PHASE49.md) | Memoire persistante IA locale |
+| [docs/AI_MEMORY.md](docs/AI_MEMORY.md) | Guide memoire IA locale |
 | [docs/PHASE33.md](docs/PHASE33.md) | Release locale stable |
 | [docs/releases/v0.4.0.md](docs/releases/v0.4.0.md) | Notes de release stable |
 | [docs/user/TROUBLESHOOTING.md](docs/user/TROUBLESHOOTING.md) | Depannage utilisateur |

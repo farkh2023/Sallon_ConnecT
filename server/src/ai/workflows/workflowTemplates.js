@@ -1,0 +1,135 @@
+'use strict';
+
+const BUILT_IN_TEMPLATES = [
+  {
+    id:          'diagnostic-review',
+    name:        'Diagnostic Review',
+    description: 'Lit les diagnostics systeme puis demande a l\'agent diagnostic une analyse et des recommandations.',
+    version:     '1.0.0',
+    enabled:     true,
+    localOnly:   true,
+    dryRun:      true,
+    nodes: [
+      { id: 'read-diag', type: 'diagnostic', label: 'Lire diagnostics' },
+      { id: 'agent-diag', type: 'agent', agentId: 'diagnostic-agent', label: 'Analyser', dependsOn: ['read-diag'] },
+      { id: 'notify-result', type: 'notification', severity: 'info', message: 'Analyse diagnostic terminee (dry-run)', label: 'Notifier', dependsOn: ['agent-diag'] },
+    ],
+    edges: [
+      { from: 'read-diag', to: 'agent-diag' },
+      { from: 'agent-diag', to: 'notify-result' },
+    ],
+    triggers: [{ type: 'manual' }],
+  },
+  {
+    id:          'security-check',
+    name:        'Security Check',
+    description: 'Audit securite : diagnostics + plugins + analyse agent securite.',
+    version:     '1.0.0',
+    enabled:     true,
+    localOnly:   true,
+    dryRun:      true,
+    nodes: [
+      { id: 'read-diag', type: 'diagnostic', label: 'Diagnostics' },
+      { id: 'list-plugins', type: 'plugin-tool', label: 'Lister plugins' },
+      { id: 'agent-sec', type: 'agent', agentId: 'security-agent', label: 'Analyser securite', dependsOn: ['read-diag', 'list-plugins'] },
+    ],
+    edges: [
+      { from: 'read-diag', to: 'agent-sec' },
+      { from: 'list-plugins', to: 'agent-sec' },
+    ],
+    triggers: [{ type: 'manual' }],
+  },
+  {
+    id:          'backup-health-check',
+    name:        'Backup Health Check',
+    description: 'Verifie l\'integrite des sauvegardes locales et produit un rapport.',
+    version:     '1.0.0',
+    enabled:     true,
+    localOnly:   true,
+    dryRun:      true,
+    nodes: [
+      { id: 'backup-status', type: 'diagnostic', label: 'Statut backup' },
+      { id: 'agent-backup', type: 'agent', agentId: 'backup-agent', label: 'Analyser backup', dependsOn: ['backup-status'] },
+    ],
+    edges: [
+      { from: 'backup-status', to: 'agent-backup' },
+    ],
+    triggers: [{ type: 'manual' }],
+  },
+  {
+    id:          'update-readiness-check',
+    name:        'Update Readiness Check',
+    description: 'Verifie si le systeme est pret pour une mise a jour (backup, sante, rollback).',
+    version:     '1.0.0',
+    enabled:     true,
+    localOnly:   true,
+    dryRun:      true,
+    nodes: [
+      { id: 'read-diag', type: 'diagnostic', label: 'Diagnostics' },
+      { id: 'backup-status', type: 'diagnostic', label: 'Statut backup' },
+      { id: 'agent-backup', type: 'agent', agentId: 'backup-agent', label: 'Rapport backup', dependsOn: ['backup-status'] },
+      { id: 'cmd-suggest', type: 'safe-command-suggestion', task: 'Verifier la readiness avant mise a jour', label: 'Suggestion commande', dependsOn: ['read-diag', 'agent-backup'] },
+    ],
+    edges: [
+      { from: 'backup-status', to: 'agent-backup' },
+      { from: 'read-diag', to: 'cmd-suggest' },
+      { from: 'agent-backup', to: 'cmd-suggest' },
+    ],
+    triggers: [{ type: 'manual' }],
+  },
+  {
+    id:          'plugin-audit',
+    name:        'Plugin Audit',
+    description: 'Inventaire et audit de securite des plugins locaux installes.',
+    version:     '1.0.0',
+    enabled:     true,
+    localOnly:   true,
+    dryRun:      true,
+    nodes: [
+      { id: 'list-plugins', type: 'plugin-tool', label: 'Lister plugins' },
+      { id: 'rag-plugins', type: 'rag-search', query: 'plugins securite permissions', label: 'RAG securite plugins', dependsOn: ['list-plugins'] },
+      { id: 'agent-sec', type: 'agent', agentId: 'security-agent', label: 'Analyser permissions', dependsOn: ['list-plugins', 'rag-plugins'] },
+    ],
+    edges: [
+      { from: 'list-plugins', to: 'rag-plugins' },
+      { from: 'list-plugins', to: 'agent-sec' },
+      { from: 'rag-plugins', to: 'agent-sec' },
+    ],
+    triggers: [{ type: 'manual' }],
+  },
+  {
+    id:          'documentation-qa',
+    name:        'Documentation Q&A',
+    description: 'Repond a une question via RAG local avec citations et synthese par l\'agent docs.',
+    version:     '1.0.0',
+    enabled:     true,
+    localOnly:   true,
+    dryRun:      true,
+    nodes: [
+      { id: 'rag-ask', type: 'rag-ask', question: 'Comment fonctionne Sallon-ConnecT ?', label: 'Question RAG' },
+      { id: 'agent-docs', type: 'agent', agentId: 'docs-agent', label: 'Synthese docs', dependsOn: ['rag-ask'] },
+    ],
+    edges: [
+      { from: 'rag-ask', to: 'agent-docs' },
+    ],
+    triggers: [{ type: 'manual' }],
+  },
+];
+
+function listTemplates() {
+  return BUILT_IN_TEMPLATES.map(t => ({
+    id:          t.id,
+    name:        t.name,
+    description: t.description,
+    version:     t.version,
+    nodeCount:   t.nodes.length,
+    localOnly:   t.localOnly,
+    dryRun:      t.dryRun,
+  }));
+}
+
+function getTemplate(id) {
+  return BUILT_IN_TEMPLATES.find(t => t.id === id) || null;
+}
+
+module.exports = { BUILT_IN_TEMPLATES, listTemplates, getTemplate };

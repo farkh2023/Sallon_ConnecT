@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { InstallPrompt } from '@/components/pwa/InstallPrompt';
 import { OfflineStatus } from '@/components/pwa/OfflineStatus';
 import { FullscreenButton } from '@/components/tv/FullscreenButton';
@@ -8,6 +8,7 @@ import { useTvMode } from '@/hooks/useTvMode';
 import { ProfileSwitcher } from '@/components/profiles/ProfileSwitcher';
 import type { UserProfile } from '@/lib/types';
 import { PROJECT_PHASE_LABEL } from '@/lib/project';
+import { useWorkspaces } from '@/hooks/useWorkspaces';
 
 interface NavLink {
   href: string;
@@ -26,6 +27,10 @@ const NAV_LINKS: NavLink[] = [
   { href: '#profils', label: 'Profils' },
   { href: '#sauvegarde', label: 'Sauvegarde' },
   { href: '/sauvegardes', label: 'Sauvegardes' },
+  { href: '/plugins',    label: 'Plugins' },
+  { href: '/dashboard',  label: 'Dashboard' },
+  { href: '/ai',         label: 'IA locale' },
+  { href: '/workspaces', label: 'Workspaces' },
 ];
 
 interface TopNavProps {
@@ -50,6 +55,11 @@ export function TopNav({
   onToggleHelpPanel,
 }: TopNavProps) {
   const tv = useTvMode();
+  const { current, currentId, loadProfiles } = useWorkspaces();
+
+  useEffect(() => {
+    void loadProfiles();
+  }, [loadProfiles]);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-navy/90 backdrop-blur-md">
@@ -77,6 +87,15 @@ export function TopNav({
 
         <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
           <OfflineStatus />
+          {(current || currentId) && (
+            <a
+              href="/workspaces"
+              className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-300"
+              title="Workspace actif local"
+            >
+              Workspace: {current?.name || currentId} · Local
+            </a>
+          )}
           {onToggleVoicePanel && (
             <button
               type="button"

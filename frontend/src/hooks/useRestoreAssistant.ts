@@ -31,7 +31,7 @@ export function useRestoreAssistant() {
   const [command, setCommand]       = useState<RestoreManualCommand | null>(null);
   const [checklist, setChecklist]   = useState<RestoreChecklistItem[]>(CHECKLIST_DEFAULTS);
 
-  const safe = <T>(fn: () => void) => { if (mounted.current) fn(); };
+  const safe = (fn: () => void) => { if (mounted.current) fn(); };
 
   const loadAssistant = useCallback(async (snapshotId: string) => {
     safe(() => { setLoading(true); setError(null); });

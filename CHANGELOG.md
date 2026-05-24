@@ -5,6 +5,279 @@ Format : [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/) — versionnem
 
 ---
 
+## [Unreleased] — 2026-05-24
+
+### Phase 53 - Isolation complete workspace RAG / KB / agents / workflows
+
+#### Backend
+- `workspaceContext` expose les helpers runtime RAG, Knowledge, agents, workflows, agent runs et workflow runs.
+- Stores RAG, Knowledge Base, agents et workflows migres vers `runtime/workspaces/<id>/...` avec fallback legacy pour `default`.
+- Routes RAG, Knowledge, Agents, Workflows et Search acceptent `X-Workspace-Id`, query/body `workspaceId` et renvoient `workspaceId`.
+- Export workspace `2.0` complet : memory, rag, knowledge, agents, workflows, dashboards, command history, plugins settings, metadata et checksum SHA-256.
+- Migration legacy non destructive avec rapport et `SALLON_WORKSPACE_MIGRATION_AUTO=false` par defaut.
+- Evenements ajoutes : `workspace.rag.indexed`, `workspace.knowledge.indexed`, `workspace.agent.run.created`, `workspace.workflow.run.created`, `workspace.migration.completed`, `workspace.isolation.violation.blocked`.
+
+#### Frontend
+- Les appels API envoient le workspace actif via `X-Workspace-Id`.
+- Hooks RAG, Knowledge, Agents, Workflows et Memory rafraichissent leurs donnees apres switch workspace.
+- Dashboard widgets remonte les widgets au changement de workspace pour eviter les caches croises.
+
+#### Tests et docs
+- Suite backend anti-fuite `workspaceIsolation.test.js`.
+- Test frontend workspace-aware hooks.
+- Documentation : `docs/PHASE53.md`, `docs/WORKSPACE_ISOLATION.md`.
+- `.env.example` : `SALLON_WORKSPACE_ISOLATION_STRICT`, `SALLON_WORKSPACE_LEGACY_FALLBACK`, `SALLON_WORKSPACE_MIGRATION_AUTO`.
+
+### Phase 52 — Profils utilisateur locaux et espaces de travail
+
+#### Backend
+- Nouveau module `server/src/workspaces/` : types, safety, store, context, export/import, migration.
+- 10 endpoints `/api/workspaces` : status, list, create, current, switch, get, update, delete, export, import.
+- Validation stricte des IDs, blocage traversal, noms Windows reserves refuses.
+- Suppression du workspace courant refusee ; suppression `default` protegee par `SUPPRIMER_WORKSPACE_DEFAULT`.
+- Export/import JSON local avec masquage secrets et refus de `localOnly=false`.
+- `workspaceContext` expose memory, rag, knowledge, workflows, agents, dashboards, plugins et search-history.
+- Memoire IA backend raccordee au workspace courant, avec compatibilite `default` sur `runtime/ai-memory/`.
+
+#### Frontend
+- Route `/workspaces`.
+- Hook `useWorkspaces`.
+- Composants : WorkspacesPanel, WorkspaceSwitcher, WorkspaceCard, WorkspaceEditor, WorkspaceImportExport, WorkspaceSafetyNotice.
+- TopNav : affichage du workspace actif et lien Workspaces.
+- Historique Command Center et layouts widgets scopes par workspace via localStorage.
+
+#### Widgets et Command Center
+- 3 widgets : WorkspaceStatusWidget, WorkspaceSwitcherWidget, WorkspaceSummaryWidget.
+- Commandes : `open.workspaces`, `workspace.switch`, `workspace.export`, `workspace.create`.
+- Aucune suppression via commande rapide.
+
+#### Tests et docs
+- Backend : tests `workspaces.test.js` sur endpoints reels, protections delete, export sans secret, import invalide et paths safe.
+- Frontend : tests WorkspacesPanel, WorkspaceSwitcher et widgets workspaces.
+- Documentation : `docs/PHASE52.md`, `docs/WORKSPACES.md`.
+- `.env.example` : `SALLON_WORKSPACES_ENABLED`, `SALLON_DEFAULT_WORKSPACE`, `SALLON_WORKSPACE_MAX_COUNT`.
+
+### Phase 51 — Recherche globale intelligente + Command Center
+
+#### Backend
+- Module `server/src/search/` : 6 fichiers (globalSearchTypes, globalSearchSafety, globalSearchIndexer, globalSearchRetriever, commandRegistry, commandCenter).
+- 5 endpoints `/api/search` : status, commands, search, preview, run.
+- 15 commandes sures : 10 navigation, 2 action dry-run, 2 search, 1 utility.
+- 6 actions bloquees : shell.execute, restore.apply, update.apply, delete, network.external, secrets.read.
+- Recherche lexicale multi-sources (commands, knowledge, memory) avec tokenisation NFD.
+- Suggestions Ollama optionnelles avec timeout 5s et fallback.
+- Path traversal bloque, secrets masques, localOnly:true.
+- 7 evenements SSE (search.started/completed/failed, command.previewed/executed/rejected, history.cleared).
+
+#### Frontend
+- Hook useGlobalSearch : results, groups, commands, history, 7 methodes.
+- Composants : CommandCenterModal (Ctrl+K + nav clavier), GlobalSearchBox, SearchResultsList (groupes), CommandPreviewPanel, RecentSearches (localStorage), SavedCommands.
+- 3 widgets : GlobalSearchWidget, CommandCenterWidget, RecentSearchesWidget.
+- Types Phase 51 ajoutes dans types.ts (SearchResult, SearchCommand, SearchResponse, etc.).
+
+#### Tests
+- Backend : 12+ tests dans tests/backend/globalSearch.test.js.
+- Frontend : 10 tests CommandCenterModal + 7 tests searchWidgets.
+
+#### Documentation
+- docs/PHASE51.md et docs/COMMAND_CENTER.md ajoutes.
+- .env.example : section Phase 51 avec 4 variables search.
+
+### Phase 50 — Base de connaissances locale unifiee
+
+#### Backend
+- Module `server/src/ai/knowledge/` : 9 fichiers (knowledgeTypes, knowledgeSafety, knowledgeStore, knowledgeEntities, knowledgeRelations, knowledgeGraph, knowledgeIndexer, knowledgeRetriever, knowledgeSummaries).
+- 8 endpoints `/api/ai/knowledge` : status, list, get, search, graph, summarize, reindex, clear.
+- 8 types d'items : memory, rag, workflow, agent, diagnostic, plugin, event, note.
+- 7 types de relations : related-to, derived-from, referenced-by, causes, solves, extends, summarizes.
+- Recherche lexicale (tokenisation NFD, scoring, citations) + embeddings Ollama optionnel avec fallback.
+- Graphe de connaissances : noeuds, liens, auto-liaison par entites.
+- Resumes par categorie via Ollama avec fallback extractif.
+- Extraction automatique d'entites depuis contenu/titre.
+- Stockage local runtime/knowledge/ (items.json + metadata.json).
+- Clear exige confirmation "EFFACER_KNOWLEDGE_BASE".
+- Path traversal bloque, secrets masques, localOnly=true obligatoire.
+- Gate SALLON_KNOWLEDGE_ENABLED=false par defaut.
+- 7 evenements SSE (knowledge.index.started/completed, search, graph, summary, clear, entity.linked).
+
+#### Frontend
+- Hook useKnowledge : items, meta, safety, loading, error, enabled, 7 methodes.
+- Composants : KnowledgeBasePanel (4 onglets), KnowledgeSearchBox, KnowledgeResultsList, KnowledgeEntityCard, KnowledgeFilters, KnowledgeGraphView, KnowledgeSummaryPanel.
+- 3 widgets dashboard : KnowledgeStatusWidget, KnowledgeSearchWidget, KnowledgeGraphWidget.
+- Types Phase 50 ajoutes dans types.ts (KnowledgeItem, KnowledgeRelation, KnowledgeGraphResponse, etc.).
+
+#### Tests
+- Backend : 15+ tests dans tests/backend/aiKnowledge.test.js.
+- Frontend : 12 tests KnowledgeBasePanel + 8 tests knowledgeWidgets.
+
+#### Documentation
+- docs/PHASE50.md et docs/KNOWLEDGE_BASE.md ajoutes.
+- .env.example : section Phase 50 avec 4 variables knowledge.
+
+### Phase 49 — Mémoire persistante IA et contexte utilisateur local
+
+#### Backend
+- Module `server/src/ai/memory/` : 8 fichiers (memoryTypes, memorySafety, memoryStore, memoryIndexer, memoryRetriever, memorySummarizer, memoryRetention, memoryExport).
+- 11 endpoints `/api/ai/memory` : status, list, create, get, update, delete, search, summarize, export, import, clear.
+- 7 types d'items : preference, fact, summary, workflow-result, agent-result, diagnostic-insight, note.
+- Recherche lexicale (tokenisation NFD, scoring, filtres) + fallback embeddings Ollama optionnel.
+- Rétention : purge par âge/type/count, items importance >= 8 protégés.
+- Export/import JSON avec masquage secrets.
+- Stockage : runtime/ai-memory/ (memory.json + index.json + metadata.json + exports/).
+- Clear exige confirmation "EFFACER_MEMOIRE".
+- Gate SALLON_AI_MEMORY_ENABLED=false par defaut.
+- 9 evenements SSE (memory.item.created/updated/deleted, search/summary/export/import/clear/safety).
+
+#### Frontend
+- Hook useMemory : items, meta, safety, loading, error, enabled, 8 methodes.
+- Composants : AiMemoryPanel (5 onglets), MemoryStatusBadge, MemoryList, MemoryEditor, MemorySearchBox, MemoryImportExport, MemoryRetentionSettings.
+- 3 widgets dashboard : MemoryStatusWidget, MemorySearchWidget, MemoryRecentWidget (tous localOnly=true).
+- Types Phase 49 ajoutes dans types.ts.
+- 3 nouvelles permissions plugins : ai-memory-read, ai-memory-write, ai-memory-search.
+
+#### Tests
+- Backend : 30+ tests dans tests/backend/aiMemory.test.js.
+- Frontend : 9 tests AiMemoryPanel + 8 tests memoryWidgets.
+
+#### Documentation
+- docs/PHASE49.md et docs/AI_MEMORY.md ajoutes.
+- .env.example : section Phase 49 avec 6 variables memoire.
+
+### Phase 48 — Workflows IA visuels et automatisations locales
+
+#### Backend
+- Module `server/src/ai/workflows/` : 7 fichiers (workflowTypes, workflowSafety, workflowTemplates, workflowStore, workflowRegistry, workflowRunner, workflowScheduler).
+- 11 endpoints `/api/ai/workflows` : list, templates, runs, run detail, clear, get, create, update, delete, run, import, export.
+- 9 types de noeuds autorises, 6 interdits (shell-execute, restore-apply, delete-files, etc.).
+- 6 templates integres : diagnostic-review, security-check, backup-health-check, update-readiness-check, plugin-audit, documentation-qa.
+- Validation DAG : detection de cycles (DFS) + tri topologique (Kahn).
+- Persistance locale runtime/workflows/ (definitions.json + runs/ + exports/).
+- Suppression requiert confirmation "SUPPRIMER", clear runs requiert "EFFACER_RUNS_WORKFLOWS".
+- dryRun=true force sur tous les runs, localOnly=true obligatoire.
+- 10 evenements SSE (workflow.run.started/completed/failed, workflow.node.*, workflow.action.rejected).
+- Gate SALLON_WORKFLOWS_ENABLED=false par defaut.
+
+#### Frontend
+- Hook useWorkflows : workflows, templates, runs, runResult, loading, error, 8 methodes.
+- Composants : WorkflowsPanel (4 onglets), WorkflowList, WorkflowTemplatesPanel, WorkflowEditor, WorkflowImportExport, WorkflowRunPanel, WorkflowRunTimeline, WorkflowCanvas, WorkflowNodeCard.
+- 3 widgets dashboard : WorkflowsStatusWidget, WorkflowRunWidget, WorkflowTemplatesWidget (tous localOnly=true).
+- Types Phase 48 ajoutes dans types.ts.
+
+#### Tests
+- Backend : 30+ tests dans tests/backend/aiWorkflows.test.js.
+- Frontend : 9 tests WorkflowsPanel + 8 tests workflowWidgets.
+
+#### Documentation
+- docs/PHASE48.md et docs/LOCAL_WORKFLOWS.md ajoutes.
+- .env.example : section Phase 48 avec 6 variables workflows.
+
+### Phase 47 — Agents IA locaux orchestres
+
+#### Backend
+- Module `server/src/ai/agents/` : 8 fichiers (agentTypes, agentRegistry, agentRunner, agentOrchestrator, agentMemory, agentSafety, agentTools, agentPrompts).
+- 6 nouveaux endpoints `/api/ai/agents` : list, get by id, run, runs list, run detail, clear runs.
+- 5 agents integres : diagnostic-agent, security-agent, backup-agent, docs-agent, command-agent.
+- 9 outils autorises en lecture seule (diagnostics, rag, plugins, backups, updates, service, notifications, commands).
+- 6 outils interdits : shell.execute, file.delete, restore.apply, update.apply, network.external, secrets.read.
+- Orchestration sequentielle avec passage de contexte entre agents.
+- Memoire locale dans runtime/agents/ (memory.json + runs/<runId>.json).
+- dryRun=true par defaut, validation humaine obligatoire pour toute action.
+- 7 evenements systemEventBus : agent.run.started/completed/failed, agent.step.started/completed/failed, agent.action.rejected.
+
+#### Frontend
+- Hook useAgents : agents, runs, runResult, loading, error, 4 methodes.
+- Composants : AgentsPanel, AgentCard, AgentRunForm, AgentRunTimeline, AgentRecommendations, AgentSafetySummary.
+- 3 widgets dashboard : AgentsStatusWidget, AgentRunWidget, AgentRecommendationsWidget (tous localOnly=true).
+- Types Phase 47 ajoutes dans types.ts.
+
+#### Tests
+- Backend : 27 tests dans tests/backend/aiAgents.test.js.
+- Frontend : 10 tests AgentsPanel + 8 tests agentWidgets.
+
+#### Documentation
+- docs/PHASE47.md et docs/LOCAL_AGENTS.md ajoutes.
+- .env.example : section Phase 47 avec 5 variables agents.
+
+### Phase 46 — RAG local securise sur documentation et logs
+
+#### Backend
+- Module `server/src/ai/rag/` : 7 fichiers (ragSafety, ragChunker, ragEmbeddings, ragStore, ragCitations, ragRetriever, ragIndexer).
+- 5 nouveaux endpoints `/api/ai/rag` : status, index, search, ask, clear.
+- Indexation docs/**/*.md + README/CHANGELOG/ROADMAP par allowlist stricte.
+- Chunking Markdown par titres H1-H6 avec overlap configurable (defaut 1200/150 chars).
+- Embeddings Ollama (`/api/embeddings`) avec fallback lexical automatique.
+- Secrets masques avant indexation et dans les citations.
+- Clear index avec confirmation `"EFFACER_INDEX"` obligatoire.
+- 6 evenements systemEventBus : rag.index.started/completed/failed, rag.search.completed, rag.ask.completed, rag.clear.completed.
+
+#### Frontend
+- Composants : RagStatusBadge, RagCitationsList, RagSearchBox, RagAskBox, RagPanel.
+- Hook useRag : status, searchResult, askResult, loading, error, 6 methodes.
+- 3 widgets dashboard : RagStatusWidget, RagAskWidget, RagSourcesWidget (tous localOnly=true).
+- Integration dans AiAssistantPanel : bouton bascule "Documentation locale (RAG)".
+- RAG types ajoutes dans types.ts.
+
+#### Tests
+- Backend : 57 tests dans tests/backend/aiRag.test.js.
+- Frontend : 25 tests dans RagPanel.test.tsx et ragWidgets.test.tsx.
+- Total : 345 tests frontend passes, 345 tests backend passes.
+
+#### Documentation
+- docs/PHASE46.md et docs/LOCAL_RAG.md ajoutes.
+- .env.example : section Phase 46 avec 6 variables RAG.
+
+### Phase 45 — IA locale integree (Ollama, modeles locaux)
+
+#### Backend
+- Module `server/src/ai/` : 6 fichiers (aiSafety, ollamaClient, localAiClient, aiPromptTemplates, aiDiagnosticsAssistant, aiLogAnalyzer).
+- Route `/api/ai` : 6 endpoints (status, models, chat, diagnose, analyze-logs, suggest-command).
+- IA desactivee par defaut (`SALLON_AI_ENABLED=false`).
+- URL Ollama validee par regex — localhost / 127.0.0.1 uniquement, toute URL externe bloquee.
+- Blocage commandes dangereuses : rm -rf, Remove-Item -Recurse -Force, del /s, Stop-Computer, shutdown, format, reg delete, curl/wget/iwr externe.
+- Masquage secrets avant envoi a l'IA et dans les reponses (Bearer, password=, token=, api_key=, secret=, C:\Users\).
+- Troncature input a 12 000 caracteres.
+- Permissions plugin etendues : ai-read, ai-chat, ai-diagnostics.
+
+#### Frontend
+- Composants : AiStatusBadge, AiChatBox, AiDiagnosticsActions, AiAssistantPanel.
+- Hook useAiAssistant : statut, messages, loading, error, 5 methodes.
+- 3 widgets dashboard : LocalAiStatusWidget, AiDiagnosticsWidget, AiLogSummaryWidget (tous localOnly=true).
+- Route /ai avec page dediee, lien "IA locale" dans TopNav.
+- Suggestions dry-run uniquement — bouton "Copier" seul, aucun bouton "Executer".
+
+#### Tests
+- Backend : 40+ tests dans tests/backend/ai.test.js.
+- Frontend : 31 tests dans AiAssistantPanel.test.tsx et aiWidgets.test.tsx.
+- Total : 316 tests frontend passes, 288 tests backend passes.
+
+#### Documentation
+- docs/PHASE45.md et docs/LOCAL_AI.md ajoutes.
+- docs/RELEASE_CHECKLIST.md : section 23 Phase 45 ajoutee.
+
+### Phase 44B — Nettoyage ESLint widgets + polish dashboard
+
+#### Corrections ESLint
+- `eslint.config.mjs` : ajout de `argsIgnorePattern: '^_'` et `varsIgnorePattern: '^_'` — convention standard pour les parametres intentionnellement inutilises.
+- `useBackupDashboard.ts` : suppression de l'import inutilise `buildApiUrl`.
+- `useRestoreAssistant.ts` : suppression du generic `<T>` inutilise sur la fonction `safe`.
+- Resultat : `pnpm lint` passe a 0 erreur, 0 warning (etait 0 erreur, 8 warnings).
+
+#### Polish widgets
+- `SSEStatusWidget` : utilisation du prop `size` pour le mode compact (compact = `small`) ; meilleure hierarchie visuelle ; etat vide explicite "Aucune donnee SSE" ; `role="alert"` sur les messages d'erreur.
+- `UpdatesWidget` : utilisation du prop `size` pour masquer la commande PS1 en mode `small`.
+- Tous les boutons refresh (↻) portent desormais un `aria-label` specifique par widget.
+
+#### Tests nouveaux (10 ajouts, total 287 frontend)
+- `widgetLayout.test.ts` : 5 tests localStorage — JSON invalide, widgets absent, widgets null, cle absente, saveLayout sans crash.
+- `DashboardLayout.test.tsx` : 5 tests — corruption localStorage (2), reset layout (1), accessibilite boutons (2).
+
+#### Documentation
+- `docs/WIDGET_SYSTEM.md` : nouveau guide complet du systeme de widgets (architecture, tailles, manifeste, securite, tests).
+- `docs/RELEASE_CHECKLIST.md` : section 22 Phase 44B ajoutee.
+- `docs/INDEX.md` : liens Phase 44 et WIDGET_SYSTEM.md ajoutes.
+
+---
+
 ## [0.4.0] — 2026-05-22 — Release locale stable
 
 ### Ajoute

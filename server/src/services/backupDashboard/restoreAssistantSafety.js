@@ -20,7 +20,9 @@ function maskRestorePath(text) {
   if (!text || typeof text !== 'string') return text;
   return text
     .replace(/[A-Z]:\\Users\\[^\\]+\\/gi, '<user>\\')
-    .replace(/\/home\/[^/]+\//gi, '<home>/');
+    .replace(/\/home\/[^/]+\//gi, '<home>/')
+    .replace(/Bearer\s+[A-Za-z0-9\-._~+/]+=*/g, 'Bearer <masked>')
+    .replace(/token[=:]\s*["']?[A-Za-z0-9\-._~+/]{8,}["']?/gi, 'token=<masked>');
 }
 
 function sanitizeRestoreAssistantResponse(data) {

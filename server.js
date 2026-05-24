@@ -44,6 +44,14 @@ const serverEventBus     = require('./server/src/services/serverEventBus');
 const diagnosticsRoutes  = require('./server/src/routes/diagnostics');
 /* Phase 41 - Tableau de bord visuel des sauvegardes */
 const backupDashboardRoutes = require('./server/src/routes/backupDashboard');
+/* Phase 43 - Plugins locaux extensibles */
+const pluginsRoutes         = require('./server/src/routes/plugins');
+/* Phase 45 - IA locale Ollama */
+const aiRoutes              = require('./server/src/routes/ai');
+/* Phase 51 - Recherche globale + Command Center */
+const searchRoutes          = require('./server/src/routes/search');
+/* Phase 52 - Profils utilisateur et espaces de travail */
+const workspacesRoutes      = require('./server/src/routes/workspaces');
 /* Phase 18B - Seeds tâches planifiées par défaut */
 require('./server/src/services/scheduler/schedulerSeeds');
 
@@ -60,7 +68,7 @@ app.use((req, res, next) => {
   if (CORS_ORIGINS.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Vary', 'Origin');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE,OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   }
   if (req.method === 'OPTIONS') return res.sendStatus(204);
@@ -284,6 +292,26 @@ app.use('/api/diagnostics', diagnosticsRoutes);
    ROUTES PHASE 41 - Tableau de bord sauvegardes
 ----------------------------------------------- */
 app.use('/api/backups', backupDashboardRoutes);
+
+/* -----------------------------------------------
+   ROUTES PHASE 43 - Plugins locaux
+----------------------------------------------- */
+app.use('/api/plugins', pluginsRoutes);
+
+/* -----------------------------------------------
+   ROUTES PHASE 45 - IA locale Ollama
+----------------------------------------------- */
+app.use('/api/ai', aiRoutes);
+
+/* -----------------------------------------------
+   ROUTES PHASE 51 - Recherche globale + Command Center
+----------------------------------------------- */
+app.use('/api/search', searchRoutes);
+
+/* -----------------------------------------------
+   ROUTES PHASE 52 - Profils utilisateur et espaces de travail
+----------------------------------------------- */
+app.use('/api/workspaces', workspacesRoutes);
 
 /* -----------------------------------------------
    FALLBACK — toute route non-API renvoie index.html

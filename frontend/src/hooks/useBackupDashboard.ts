@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { apiGet, apiPost, apiDelete, buildApiUrl, handleApiError } from '../lib/api';
+import { apiGet, apiPost, apiDelete, handleApiError } from '../lib/api';
 import type {
   BackupDashboardResponse,
   BackupDashboardItem,
