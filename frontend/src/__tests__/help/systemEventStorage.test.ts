@@ -31,7 +31,7 @@ describe('isStorageAvailable', () => {
   });
 
   it('retourne false si localStorage.setItem lève une erreur', () => {
-    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+    vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
       throw new Error('SecurityError');
     });
     expect(isStorageAvailable()).toBe(false);
@@ -88,7 +88,7 @@ describe('loadEvents', () => {
   });
 
   it('retourne [] si localStorage.getItem lève une erreur', () => {
-    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+    vi.spyOn(localStorage, 'getItem').mockImplementation(() => {
       throw new Error('SecurityError');
     });
     expect(loadEvents()).toEqual([]);
@@ -113,14 +113,14 @@ describe('saveEvents', () => {
   });
 
   it('ne lève pas d\'erreur si localStorage.setItem échoue (QuotaExceeded)', () => {
-    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+    vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
       throw new Error('QuotaExceededError');
     });
     expect(() => saveEvents([makeEvent()])).not.toThrow();
   });
 
   it('ne sauvegarde pas si localStorage indisponible', () => {
-    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+    vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
       throw new Error('SecurityError');
     });
     saveEvents([makeEvent()]);
